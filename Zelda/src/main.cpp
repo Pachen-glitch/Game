@@ -1,5 +1,6 @@
-#include <iostream>
+#include "core/Game.h"
+
 int main() {
-    std::cout << "Hola Zelda\n";
+    runGame();
     return 0;
 }

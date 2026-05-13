@@ -82,9 +82,9 @@ events:
       The output was:
       0
       Versi├│n de MSBuild 17.14.23+b0019275e para .NET Framework
-      Compilaci├│n iniciada a las 13/05/2026 15:35:30.
+      Compilaci├│n iniciada a las 13/05/2026 15:55:35.
       
-      Proyecto "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\4.3.2\\CompilerIdC\\CompilerIdC.vcxproj" en nodo 1 (destinos predeterminados).
+      Proyecto "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\4.3.2\\CompilerIdC\\CompilerIdC.vcxproj" en nodo 1 (destinos predeterminados).
       PrepareForBuild:
         Creando directorio "Debug\\".
         La salida estructurada est├í habilitada. El formato del diagn├│stico del compilador reflejar├í la jerarqu├¡a de errores. Consulte https://aka.ms/cpp/structured-output para obtener m├ís detalles.
@@ -97,7 +97,7 @@ events:
         CMakeCCompilerId.c
       Link:
         C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdC.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdC.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdC.lib" /MACHINE:X64 Debug\\CMakeCCompilerId.obj
-        CompilerIdC.vcxproj -> C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\4.3.2\\CompilerIdC\\CompilerIdC.exe
+        CompilerIdC.vcxproj -> C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\4.3.2\\CompilerIdC\\CompilerIdC.exe
       PostBuildEvent:
         for %%i in (cl.exe) do @echo CMAKE_C_COMPILER=%%~$PATH:i
         :VCEnd
@@ -105,13 +105,13 @@ events:
       FinalizeBuildStatus:
         Se eliminar├í el archivo "Debug\\CompilerIdC.tlog\\unsuccessfulbuild".
         Aplicando tarea Touch a "Debug\\CompilerIdC.tlog\\CompilerIdC.lastbuildstate".
-      Compilaci├│n del proyecto terminada "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\4.3.2\\CompilerIdC\\CompilerIdC.vcxproj" (destinos predeterminados).
+      Compilaci├│n del proyecto terminada "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\4.3.2\\CompilerIdC\\CompilerIdC.vcxproj" (destinos predeterminados).
       
       Compilaci├│n correcta.
           0 Advertencia(s)
           0 Errores
       
-      Tiempo transcurrido 00:00:00.95
+      Tiempo transcurrido 00:00:00.47
       
       
       Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.exe"
@@ -119,7 +119,7 @@ events:
       Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.vcxproj"
       
       The C compiler identification is MSVC, found in:
-        C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/4.3.2/CompilerIdC/CompilerIdC.exe
+        C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/4.3.2/CompilerIdC/CompilerIdC.exe
       
   -
     kind: "find-v1"
@@ -829,9 +829,9 @@ events:
       The output was:
       0
       Versi├│n de MSBuild 17.14.23+b0019275e para .NET Framework
-      Compilaci├│n iniciada a las 13/05/2026 15:35:31.
+      Compilaci├│n iniciada a las 13/05/2026 15:55:36.
       
-      Proyecto "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\4.3.2\\CompilerIdCXX\\CompilerIdCXX.vcxproj" en nodo 1 (destinos predeterminados).
+      Proyecto "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\4.3.2\\CompilerIdCXX\\CompilerIdCXX.vcxproj" en nodo 1 (destinos predeterminados).
       PrepareForBuild:
         Creando directorio "Debug\\".
         La salida estructurada est├í habilitada. El formato del diagn├│stico del compilador reflejar├í la jerarqu├¡a de errores. Consulte https://aka.ms/cpp/structured-output para obtener m├ís detalles.
@@ -844,7 +844,7 @@ events:
         CMakeCXXCompilerId.cpp
       Link:
         C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdCXX.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdCXX.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdCXX.lib" /MACHINE:X64 Debug\\CMakeCXXCompilerId.obj
-        CompilerIdCXX.vcxproj -> C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\4.3.2\\CompilerIdCXX\\CompilerIdCXX.exe
+        CompilerIdCXX.vcxproj -> C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\4.3.2\\CompilerIdCXX\\CompilerIdCXX.exe
       PostBuildEvent:
         for %%i in (cl.exe) do @echo CMAKE_CXX_COMPILER=%%~$PATH:i
         :VCEnd
@@ -852,13 +852,13 @@ events:
       FinalizeBuildStatus:
         Se eliminar├í el archivo "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild".
         Aplicando tarea Touch a "Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.lastbuildstate".
-      Compilaci├│n del proyecto terminada "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\4.3.2\\CompilerIdCXX\\CompilerIdCXX.vcxproj" (destinos predeterminados).
+      Compilaci├│n del proyecto terminada "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\4.3.2\\CompilerIdCXX\\CompilerIdCXX.vcxproj" (destinos predeterminados).
       
       Compilaci├│n correcta.
           0 Advertencia(s)
           0 Errores
       
-      Tiempo transcurrido 00:00:00.54
+      Tiempo transcurrido 00:00:00.47
       
       
       Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
@@ -866,7 +866,7 @@ events:
       Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.vcxproj"
       
       The CXX compiler identification is MSVC, found in:
-        C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/4.3.2/CompilerIdCXX/CompilerIdCXX.exe
+        C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/4.3.2/CompilerIdCXX/CompilerIdCXX.exe
       
   -
     kind: "find-v1"
@@ -1298,8 +1298,8 @@ events:
     checks:
       - "Detecting C compiler ABI info"
     directories:
-      source: "C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-6byw6q"
-      binary: "C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-6byw6q"
+      source: "C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-pd07ld"
+      binary: "C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-pd07ld"
     cmakeVariables:
       CMAKE_CXX_STDLIB_MODULES_JSON: ""
       CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W3"
@@ -1309,39 +1309,39 @@ events:
       variable: "CMAKE_C_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-6byw6q'
+        Change Dir: 'C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-pd07ld'
         
-        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_4d26d.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_b34dc.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
         Versi├│n de MSBuild 17.14.23+b0019275e para .NET Framework
-        Compilaci├│n iniciada a las 13/05/2026 15:35:32.
+        Compilaci├│n iniciada a las 13/05/2026 15:55:36.
         
-        Proyecto "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-6byw6q\\cmTC_4d26d.vcxproj" en nodo 1 (destinos predeterminados).
+        Proyecto "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-pd07ld\\cmTC_b34dc.vcxproj" en nodo 1 (destinos predeterminados).
         PrepareForBuild:
           La salida estructurada est├í habilitada. El formato del diagn├│stico del compilador reflejar├í la jerarqu├¡a de errores. Consulte https://aka.ms/cpp/structured-output para obtener m├ís detalles.
-          Creando directorio "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-6byw6q\\Debug\\".
-          Creando directorio "cmTC_4d26d.dir\\Debug\\cmTC_4d26d.tlog\\".
+          Creando directorio "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-pd07ld\\Debug\\".
+          Creando directorio "cmTC_b34dc.dir\\Debug\\cmTC_b34dc.tlog\\".
         InitializeBuildStatus:
-          Se crear├í "cmTC_4d26d.dir\\Debug\\cmTC_4d26d.tlog\\unsuccessfulbuild" porque se especific├│ "AlwaysCreate".
-          Aplicando tarea Touch a "cmTC_4d26d.dir\\Debug\\cmTC_4d26d.tlog\\unsuccessfulbuild".
+          Se crear├í "cmTC_b34dc.dir\\Debug\\cmTC_b34dc.tlog\\unsuccessfulbuild" porque se especific├│ "AlwaysCreate".
+          Aplicando tarea Touch a "cmTC_b34dc.dir\\Debug\\cmTC_b34dc.tlog\\unsuccessfulbuild".
         ClCompile:
-          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_4d26d.dir\\Debug\\\\" /Fd"cmTC_4d26d.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.3\\Modules\\CMakeCCompilerABI.c"
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_b34dc.dir\\Debug\\\\" /Fd"cmTC_b34dc.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.3\\Modules\\CMakeCCompilerABI.c"
           Compilador de optimizaci├│n de C/C++ de Microsoft (R) versi├│n 19.44.35216 para x64
           (C) Microsoft Corporation. Todos los derechos reservados.
-          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_4d26d.dir\\Debug\\\\" /Fd"cmTC_4d26d.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.3\\Modules\\CMakeCCompilerABI.c"
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_b34dc.dir\\Debug\\\\" /Fd"cmTC_b34dc.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.3\\Modules\\CMakeCCompilerABI.c"
           CMakeCCompilerABI.c
         Link:
-          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /OUT:"C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-6byw6q\\Debug\\cmTC_4d26d.exe" /INCREMENTAL /ILK:"cmTC_4d26d.dir\\Debug\\cmTC_4d26d.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-6byw6q/Debug/cmTC_4d26d.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-6byw6q/Debug/cmTC_4d26d.lib" /MACHINE:X64  /machine:x64 cmTC_4d26d.dir\\Debug\\CMakeCCompilerABI.obj
-          cmTC_4d26d.vcxproj -> C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-6byw6q\\Debug\\cmTC_4d26d.exe
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /OUT:"C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-pd07ld\\Debug\\cmTC_b34dc.exe" /INCREMENTAL /ILK:"cmTC_b34dc.dir\\Debug\\cmTC_b34dc.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-pd07ld/Debug/cmTC_b34dc.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-pd07ld/Debug/cmTC_b34dc.lib" /MACHINE:X64  /machine:x64 cmTC_b34dc.dir\\Debug\\CMakeCCompilerABI.obj
+          cmTC_b34dc.vcxproj -> C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-pd07ld\\Debug\\cmTC_b34dc.exe
         FinalizeBuildStatus:
-          Se eliminar├í el archivo "cmTC_4d26d.dir\\Debug\\cmTC_4d26d.tlog\\unsuccessfulbuild".
-          Aplicando tarea Touch a "cmTC_4d26d.dir\\Debug\\cmTC_4d26d.tlog\\cmTC_4d26d.lastbuildstate".
-        Compilaci├│n del proyecto terminada "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-6byw6q\\cmTC_4d26d.vcxproj" (destinos predeterminados).
+          Se eliminar├í el archivo "cmTC_b34dc.dir\\Debug\\cmTC_b34dc.tlog\\unsuccessfulbuild".
+          Aplicando tarea Touch a "cmTC_b34dc.dir\\Debug\\cmTC_b34dc.tlog\\cmTC_b34dc.lastbuildstate".
+        Compilaci├│n del proyecto terminada "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-pd07ld\\cmTC_b34dc.vcxproj" (destinos predeterminados).
         
         Compilaci├│n correcta.
             0 Advertencia(s)
             0 Errores
         
-        Tiempo transcurrido 00:00:00.48
+        Tiempo transcurrido 00:00:00.45
         
       exitCode: 0
   -
@@ -1381,8 +1381,8 @@ events:
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-zkavkw"
-      binary: "C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-zkavkw"
+      source: "C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-1exreb"
+      binary: "C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-1exreb"
     cmakeVariables:
       CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /W3 /GR /EHsc"
       CMAKE_CXX_FLAGS_DEBUG: "/MDd /Zi /Ob0 /Od /RTC1"
@@ -1393,33 +1393,33 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-zkavkw'
+        Change Dir: 'C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-1exreb'
         
-        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_7104c.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_8fcca.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
         Versi├│n de MSBuild 17.14.23+b0019275e para .NET Framework
-        Compilaci├│n iniciada a las 13/05/2026 15:35:33.
+        Compilaci├│n iniciada a las 13/05/2026 15:55:37.
         
-        Proyecto "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-zkavkw\\cmTC_7104c.vcxproj" en nodo 1 (destinos predeterminados).
+        Proyecto "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-1exreb\\cmTC_8fcca.vcxproj" en nodo 1 (destinos predeterminados).
         PrepareForBuild:
           La salida estructurada est├í habilitada. El formato del diagn├│stico del compilador reflejar├í la jerarqu├¡a de errores. Consulte https://aka.ms/cpp/structured-output para obtener m├ís detalles.
-          Creando directorio "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-zkavkw\\Debug\\".
-          Creando directorio "cmTC_7104c.dir\\Debug\\cmTC_7104c.tlog\\".
+          Creando directorio "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-1exreb\\Debug\\".
+          Creando directorio "cmTC_8fcca.dir\\Debug\\cmTC_8fcca.tlog\\".
         InitializeBuildStatus:
-          Se crear├í "cmTC_7104c.dir\\Debug\\cmTC_7104c.tlog\\unsuccessfulbuild" porque se especific├│ "AlwaysCreate".
-          Aplicando tarea Touch a "cmTC_7104c.dir\\Debug\\cmTC_7104c.tlog\\unsuccessfulbuild".
+          Se crear├í "cmTC_8fcca.dir\\Debug\\cmTC_8fcca.tlog\\unsuccessfulbuild" porque se especific├│ "AlwaysCreate".
+          Aplicando tarea Touch a "cmTC_8fcca.dir\\Debug\\cmTC_8fcca.tlog\\unsuccessfulbuild".
         ClCompile:
-          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GR /Fo"cmTC_7104c.dir\\Debug\\\\" /Fd"cmTC_7104c.dir\\Debug\\vc143.pdb" /external:W3 /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.3\\Modules\\CMakeCXXCompilerABI.cpp"
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GR /Fo"cmTC_8fcca.dir\\Debug\\\\" /Fd"cmTC_8fcca.dir\\Debug\\vc143.pdb" /external:W3 /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.3\\Modules\\CMakeCXXCompilerABI.cpp"
           Compilador de optimizaci├│n de C/C++ de Microsoft (R) versi├│n 19.44.35216 para x64
           (C) Microsoft Corporation. Todos los derechos reservados.
-          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GR /Fo"cmTC_7104c.dir\\Debug\\\\" /Fd"cmTC_7104c.dir\\Debug\\vc143.pdb" /external:W3 /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.3\\Modules\\CMakeCXXCompilerABI.cpp"
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GR /Fo"cmTC_8fcca.dir\\Debug\\\\" /Fd"cmTC_8fcca.dir\\Debug\\vc143.pdb" /external:W3 /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.3\\Modules\\CMakeCXXCompilerABI.cpp"
           CMakeCXXCompilerABI.cpp
         Link:
-          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /OUT:"C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-zkavkw\\Debug\\cmTC_7104c.exe" /INCREMENTAL /ILK:"cmTC_7104c.dir\\Debug\\cmTC_7104c.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-zkavkw/Debug/cmTC_7104c.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-zkavkw/Debug/cmTC_7104c.lib" /MACHINE:X64  /machine:x64 cmTC_7104c.dir\\Debug\\CMakeCXXCompilerABI.obj
-          cmTC_7104c.vcxproj -> C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-zkavkw\\Debug\\cmTC_7104c.exe
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /OUT:"C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-1exreb\\Debug\\cmTC_8fcca.exe" /INCREMENTAL /ILK:"cmTC_8fcca.dir\\Debug\\cmTC_8fcca.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-1exreb/Debug/cmTC_8fcca.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-1exreb/Debug/cmTC_8fcca.lib" /MACHINE:X64  /machine:x64 cmTC_8fcca.dir\\Debug\\CMakeCXXCompilerABI.obj
+          cmTC_8fcca.vcxproj -> C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-1exreb\\Debug\\cmTC_8fcca.exe
         FinalizeBuildStatus:
-          Se eliminar├í el archivo "cmTC_7104c.dir\\Debug\\cmTC_7104c.tlog\\unsuccessfulbuild".
-          Aplicando tarea Touch a "cmTC_7104c.dir\\Debug\\cmTC_7104c.tlog\\cmTC_7104c.lastbuildstate".
-        Compilaci├│n del proyecto terminada "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-zkavkw\\cmTC_7104c.vcxproj" (destinos predeterminados).
+          Se eliminar├í el archivo "cmTC_8fcca.dir\\Debug\\cmTC_8fcca.tlog\\unsuccessfulbuild".
+          Aplicando tarea Touch a "cmTC_8fcca.dir\\Debug\\cmTC_8fcca.tlog\\cmTC_8fcca.lastbuildstate".
+        Compilaci├│n del proyecto terminada "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-1exreb\\cmTC_8fcca.vcxproj" (destinos predeterminados).
         
         Compilaci├│n correcta.
             0 Advertencia(s)
@@ -1467,8 +1467,8 @@ events:
     checks:
       - "Performing Test CMAKE_HAVE_LIBC_PTHREAD"
     directories:
-      source: "C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-fa24ja"
-      binary: "C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-fa24ja"
+      source: "C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-wz487u"
+      binary: "C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-wz487u"
     cmakeVariables:
       CMAKE_CXX_STDLIB_MODULES_JSON: ""
       CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W3"
@@ -1478,39 +1478,39 @@ events:
       variable: "CMAKE_HAVE_LIBC_PTHREAD"
       cached: true
       stdout: |
-        Change Dir: 'C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-fa24ja'
+        Change Dir: 'C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-wz487u'
         
-        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_f1f5f.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_734d4.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
         Versi├│n de MSBuild 17.14.23+b0019275e para .NET Framework
-        Compilaci├│n iniciada a las 13/05/2026 15:35:34.
+        Compilaci├│n iniciada a las 13/05/2026 15:55:38.
         
-        Proyecto "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-fa24ja\\cmTC_f1f5f.vcxproj" en nodo 1 (destinos predeterminados).
+        Proyecto "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-wz487u\\cmTC_734d4.vcxproj" en nodo 1 (destinos predeterminados).
         PrepareForBuild:
           La salida estructurada est├í habilitada. El formato del diagn├│stico del compilador reflejar├í la jerarqu├¡a de errores. Consulte https://aka.ms/cpp/structured-output para obtener m├ís detalles.
-          Creando directorio "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-fa24ja\\Debug\\".
-          Creando directorio "cmTC_f1f5f.dir\\Debug\\cmTC_f1f5f.tlog\\".
+          Creando directorio "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-wz487u\\Debug\\".
+          Creando directorio "cmTC_734d4.dir\\Debug\\cmTC_734d4.tlog\\".
         InitializeBuildStatus:
-          Se crear├í "cmTC_f1f5f.dir\\Debug\\cmTC_f1f5f.tlog\\unsuccessfulbuild" porque se especific├│ "AlwaysCreate".
-          Aplicando tarea Touch a "cmTC_f1f5f.dir\\Debug\\cmTC_f1f5f.tlog\\unsuccessfulbuild".
+          Se crear├í "cmTC_734d4.dir\\Debug\\cmTC_734d4.tlog\\unsuccessfulbuild" porque se especific├│ "AlwaysCreate".
+          Aplicando tarea Touch a "cmTC_734d4.dir\\Debug\\cmTC_734d4.tlog\\unsuccessfulbuild".
         ClCompile:
-          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CMAKE_HAVE_LIBC_PTHREAD /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_f1f5f.dir\\Debug\\\\" /Fd"cmTC_f1f5f.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-fa24ja\\src.c"
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CMAKE_HAVE_LIBC_PTHREAD /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_734d4.dir\\Debug\\\\" /Fd"cmTC_734d4.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-wz487u\\src.c"
           Compilador de optimizaci├│n de C/C++ de Microsoft (R) versi├│n 19.44.35216 para x64
           (C) Microsoft Corporation. Todos los derechos reservados.
-          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CMAKE_HAVE_LIBC_PTHREAD /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_f1f5f.dir\\Debug\\\\" /Fd"cmTC_f1f5f.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-fa24ja\\src.c"
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CMAKE_HAVE_LIBC_PTHREAD /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_734d4.dir\\Debug\\\\" /Fd"cmTC_734d4.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-wz487u\\src.c"
           src.c
-        C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-fa24ja\\src.c(1,10): error C1083: No se puede abrir el archivo incluir: 'pthread.h': No such file or directory [C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-fa24ja\\cmTC_f1f5f.vcxproj]
-        Compilaci├│n del proyecto terminada "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-fa24ja\\cmTC_f1f5f.vcxproj" (destinos predeterminados) -- ERROR.
+        C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-wz487u\\src.c(1,10): error C1083: No se puede abrir el archivo incluir: 'pthread.h': No such file or directory [C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-wz487u\\cmTC_734d4.vcxproj]
+        Compilaci├│n del proyecto terminada "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-wz487u\\cmTC_734d4.vcxproj" (destinos predeterminados) -- ERROR.
         
         ERROR al compilar.
         
-        "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-fa24ja\\cmTC_f1f5f.vcxproj" (destino predeterminado) (1) ->
+        "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-wz487u\\cmTC_734d4.vcxproj" (destino predeterminado) (1) ->
         (ClCompile destino) -> 
-          C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-fa24ja\\src.c(1,10): error C1083: No se puede abrir el archivo incluir: 'pthread.h': No such file or directory [C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-fa24ja\\cmTC_f1f5f.vcxproj]
+          C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-wz487u\\src.c(1,10): error C1083: No se puede abrir el archivo incluir: 'pthread.h': No such file or directory [C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-wz487u\\cmTC_734d4.vcxproj]
         
             0 Advertencia(s)
             1 Errores
         
-        Tiempo transcurrido 00:00:00.36
+        Tiempo transcurrido 00:00:00.29
         
       exitCode: 1
   -
@@ -1523,8 +1523,8 @@ events:
     checks:
       - "Looking for pthread_create in pthreads"
     directories:
-      source: "C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-nz7uxp"
-      binary: "C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-nz7uxp"
+      source: "C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-e032kg"
+      binary: "C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-e032kg"
     cmakeVariables:
       CMAKE_CXX_STDLIB_MODULES_JSON: ""
       CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W3"
@@ -1534,36 +1534,36 @@ events:
       variable: "CMAKE_HAVE_PTHREADS_CREATE"
       cached: true
       stdout: |
-        Change Dir: 'C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-nz7uxp'
+        Change Dir: 'C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-e032kg'
         
-        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_a3ac0.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_69710.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
         Versi├│n de MSBuild 17.14.23+b0019275e para .NET Framework
-        Compilaci├│n iniciada a las 13/05/2026 15:35:34.
+        Compilaci├│n iniciada a las 13/05/2026 15:55:38.
         
-        Proyecto "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-nz7uxp\\cmTC_a3ac0.vcxproj" en nodo 1 (destinos predeterminados).
+        Proyecto "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-e032kg\\cmTC_69710.vcxproj" en nodo 1 (destinos predeterminados).
         PrepareForBuild:
           La salida estructurada est├í habilitada. El formato del diagn├│stico del compilador reflejar├í la jerarqu├¡a de errores. Consulte https://aka.ms/cpp/structured-output para obtener m├ís detalles.
-          Creando directorio "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-nz7uxp\\Debug\\".
-          Creando directorio "cmTC_a3ac0.dir\\Debug\\cmTC_a3ac0.tlog\\".
+          Creando directorio "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-e032kg\\Debug\\".
+          Creando directorio "cmTC_69710.dir\\Debug\\cmTC_69710.tlog\\".
         InitializeBuildStatus:
-          Se crear├í "cmTC_a3ac0.dir\\Debug\\cmTC_a3ac0.tlog\\unsuccessfulbuild" porque se especific├│ "AlwaysCreate".
-          Aplicando tarea Touch a "cmTC_a3ac0.dir\\Debug\\cmTC_a3ac0.tlog\\unsuccessfulbuild".
+          Se crear├í "cmTC_69710.dir\\Debug\\cmTC_69710.tlog\\unsuccessfulbuild" porque se especific├│ "AlwaysCreate".
+          Aplicando tarea Touch a "cmTC_69710.dir\\Debug\\cmTC_69710.tlog\\unsuccessfulbuild".
         ClCompile:
-          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_a3ac0.dir\\Debug\\\\" /Fd"cmTC_a3ac0.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-nz7uxp\\CheckFunctionExists.c"
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_69710.dir\\Debug\\\\" /Fd"cmTC_69710.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-e032kg\\CheckFunctionExists.c"
           Compilador de optimizaci├│n de C/C++ de Microsoft (R) versi├│n 19.44.35216 para x64
           (C) Microsoft Corporation. Todos los derechos reservados.
-          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_a3ac0.dir\\Debug\\\\" /Fd"cmTC_a3ac0.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-nz7uxp\\CheckFunctionExists.c"
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_69710.dir\\Debug\\\\" /Fd"cmTC_69710.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-e032kg\\CheckFunctionExists.c"
           CheckFunctionExists.c
         Link:
-          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /OUT:"C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-nz7uxp\\Debug\\cmTC_a3ac0.exe" /INCREMENTAL /ILK:"cmTC_a3ac0.dir\\Debug\\cmTC_a3ac0.ilk" /NOLOGO pthreads.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-nz7uxp/Debug/cmTC_a3ac0.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-nz7uxp/Debug/cmTC_a3ac0.lib" /MACHINE:X64  /machine:x64 cmTC_a3ac0.dir\\Debug\\CheckFunctionExists.obj
-        LINK : fatal error LNK1104: no se puede abrir el archivo 'pthreads.lib' [C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-nz7uxp\\cmTC_a3ac0.vcxproj]
-        Compilaci├│n del proyecto terminada "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-nz7uxp\\cmTC_a3ac0.vcxproj" (destinos predeterminados) -- ERROR.
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /OUT:"C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-e032kg\\Debug\\cmTC_69710.exe" /INCREMENTAL /ILK:"cmTC_69710.dir\\Debug\\cmTC_69710.ilk" /NOLOGO pthreads.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-e032kg/Debug/cmTC_69710.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-e032kg/Debug/cmTC_69710.lib" /MACHINE:X64  /machine:x64 cmTC_69710.dir\\Debug\\CheckFunctionExists.obj
+        LINK : fatal error LNK1104: no se puede abrir el archivo 'pthreads.lib' [C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-e032kg\\cmTC_69710.vcxproj]
+        Compilaci├│n del proyecto terminada "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-e032kg\\cmTC_69710.vcxproj" (destinos predeterminados) -- ERROR.
         
         ERROR al compilar.
         
-        "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-nz7uxp\\cmTC_a3ac0.vcxproj" (destino predeterminado) (1) ->
+        "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-e032kg\\cmTC_69710.vcxproj" (destino predeterminado) (1) ->
         (Link destino) -> 
-          LINK : fatal error LNK1104: no se puede abrir el archivo 'pthreads.lib' [C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-nz7uxp\\cmTC_a3ac0.vcxproj]
+          LINK : fatal error LNK1104: no se puede abrir el archivo 'pthreads.lib' [C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-e032kg\\cmTC_69710.vcxproj]
         
             0 Advertencia(s)
             1 Errores
@@ -1581,8 +1581,8 @@ events:
     checks:
       - "Looking for pthread_create in pthread"
     directories:
-      source: "C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-8kx7cn"
-      binary: "C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-8kx7cn"
+      source: "C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-8r5hwn"
+      binary: "C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-8r5hwn"
     cmakeVariables:
       CMAKE_CXX_STDLIB_MODULES_JSON: ""
       CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W3"
@@ -1592,41 +1592,41 @@ events:
       variable: "CMAKE_HAVE_PTHREAD_CREATE"
       cached: true
       stdout: |
-        Change Dir: 'C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-8kx7cn'
+        Change Dir: 'C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-8r5hwn'
         
-        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_a31cc.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_871e6.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
         Versi├│n de MSBuild 17.14.23+b0019275e para .NET Framework
-        Compilaci├│n iniciada a las 13/05/2026 15:35:35.
+        Compilaci├│n iniciada a las 13/05/2026 15:55:39.
         
-        Proyecto "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8kx7cn\\cmTC_a31cc.vcxproj" en nodo 1 (destinos predeterminados).
+        Proyecto "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8r5hwn\\cmTC_871e6.vcxproj" en nodo 1 (destinos predeterminados).
         PrepareForBuild:
           La salida estructurada est├í habilitada. El formato del diagn├│stico del compilador reflejar├í la jerarqu├¡a de errores. Consulte https://aka.ms/cpp/structured-output para obtener m├ís detalles.
-          Creando directorio "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8kx7cn\\Debug\\".
-          Creando directorio "cmTC_a31cc.dir\\Debug\\cmTC_a31cc.tlog\\".
+          Creando directorio "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8r5hwn\\Debug\\".
+          Creando directorio "cmTC_871e6.dir\\Debug\\cmTC_871e6.tlog\\".
         InitializeBuildStatus:
-          Se crear├í "cmTC_a31cc.dir\\Debug\\cmTC_a31cc.tlog\\unsuccessfulbuild" porque se especific├│ "AlwaysCreate".
-          Aplicando tarea Touch a "cmTC_a31cc.dir\\Debug\\cmTC_a31cc.tlog\\unsuccessfulbuild".
+          Se crear├í "cmTC_871e6.dir\\Debug\\cmTC_871e6.tlog\\unsuccessfulbuild" porque se especific├│ "AlwaysCreate".
+          Aplicando tarea Touch a "cmTC_871e6.dir\\Debug\\cmTC_871e6.tlog\\unsuccessfulbuild".
         ClCompile:
-          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_a31cc.dir\\Debug\\\\" /Fd"cmTC_a31cc.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8kx7cn\\CheckFunctionExists.c"
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_871e6.dir\\Debug\\\\" /Fd"cmTC_871e6.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8r5hwn\\CheckFunctionExists.c"
           Compilador de optimizaci├│n de C/C++ de Microsoft (R) versi├│n 19.44.35216 para x64
           (C) Microsoft Corporation. Todos los derechos reservados.
-          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_a31cc.dir\\Debug\\\\" /Fd"cmTC_a31cc.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8kx7cn\\CheckFunctionExists.c"
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /Fo"cmTC_871e6.dir\\Debug\\\\" /Fd"cmTC_871e6.dir\\Debug\\vc143.pdb" /external:W3 /TC /errorReport:queue "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8r5hwn\\CheckFunctionExists.c"
           CheckFunctionExists.c
         Link:
-          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /OUT:"C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8kx7cn\\Debug\\cmTC_a31cc.exe" /INCREMENTAL /ILK:"cmTC_a31cc.dir\\Debug\\cmTC_a31cc.ilk" /NOLOGO pthread.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-8kx7cn/Debug/cmTC_a31cc.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-8kx7cn/Debug/cmTC_a31cc.lib" /MACHINE:X64  /machine:x64 cmTC_a31cc.dir\\Debug\\CheckFunctionExists.obj
-        LINK : fatal error LNK1104: no se puede abrir el archivo 'pthread.lib' [C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8kx7cn\\cmTC_a31cc.vcxproj]
-        Compilaci├│n del proyecto terminada "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8kx7cn\\cmTC_a31cc.vcxproj" (destinos predeterminados) -- ERROR.
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /OUT:"C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8r5hwn\\Debug\\cmTC_871e6.exe" /INCREMENTAL /ILK:"cmTC_871e6.dir\\Debug\\cmTC_871e6.ilk" /NOLOGO pthread.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-8r5hwn/Debug/cmTC_871e6.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/CMakeScratch/TryCompile-8r5hwn/Debug/cmTC_871e6.lib" /MACHINE:X64  /machine:x64 cmTC_871e6.dir\\Debug\\CheckFunctionExists.obj
+        LINK : fatal error LNK1104: no se puede abrir el archivo 'pthread.lib' [C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8r5hwn\\cmTC_871e6.vcxproj]
+        Compilaci├│n del proyecto terminada "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8r5hwn\\cmTC_871e6.vcxproj" (destinos predeterminados) -- ERROR.
         
         ERROR al compilar.
         
-        "C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8kx7cn\\cmTC_a31cc.vcxproj" (destino predeterminado) (1) ->
+        "C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8r5hwn\\cmTC_871e6.vcxproj" (destino predeterminado) (1) ->
         (Link destino) -> 
-          LINK : fatal error LNK1104: no se puede abrir el archivo 'pthread.lib' [C:\\Users\\Admin\\Documents\\Juego\\Game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8kx7cn\\cmTC_a31cc.vcxproj]
+          LINK : fatal error LNK1104: no se puede abrir el archivo 'pthread.lib' [C:\\Users\\Admin\\Documents\\Juego\\game\\Zelda\\build\\CMakeFiles\\CMakeScratch\\TryCompile-8r5hwn\\cmTC_871e6.vcxproj]
         
             0 Advertencia(s)
             1 Errores
         
-        Tiempo transcurrido 00:00:00.36
+        Tiempo transcurrido 00:00:00.37
         
       exitCode: 1
 ...

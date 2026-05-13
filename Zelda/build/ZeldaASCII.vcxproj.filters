@@ -4,7 +4,19 @@
     <ClCompile Include="C:\Users\Admin\Documents\Juego\Game\Zelda\src\core\Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\Admin\Documents\Juego\Game\Zelda\src\entities\Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Admin\Documents\Juego\Game\Zelda\src\input\Input.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Users\Admin\Documents\Juego\Game\Zelda\src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Admin\Documents\Juego\Game\Zelda\src\map\Map.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Admin\Documents\Juego\Game\Zelda\src\movement\Movement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -13,7 +25,7 @@
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{70FEAE9E-B5BA-3A49-9C05-5CD625CF8F40}</UniqueIdentifier>
+      <UniqueIdentifier>{BFC642D9-913D-3410-B05A-075E0CEB12C7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
