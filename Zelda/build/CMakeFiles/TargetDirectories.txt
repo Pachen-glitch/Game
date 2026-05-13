@@ -1,0 +1,3 @@
+C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/ZeldaASCII.dir
+C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/Admin/Documents/Juego/Game/Zelda/build/CMakeFiles/ZERO_CHECK.dir
