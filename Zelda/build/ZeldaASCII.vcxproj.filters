@@ -4,6 +4,9 @@
     <ClCompile Include="C:\Users\Admin\Documents\Juego\Game\Zelda\src\core\Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\Admin\Documents\Juego\Game\Zelda\src\core\Menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Users\Admin\Documents\Juego\Game\Zelda\src\entities\Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -25,7 +28,7 @@
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{BFC642D9-913D-3410-B05A-075E0CEB12C7}</UniqueIdentifier>
+      <UniqueIdentifier>{3ED0B079-6F48-3617-B055-8382EF3D0024}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

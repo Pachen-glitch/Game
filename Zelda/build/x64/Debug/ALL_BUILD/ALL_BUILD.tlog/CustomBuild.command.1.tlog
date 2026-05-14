@@ -1,6 +1,6 @@
 ^C:\USERS\ADMIN\DOCUMENTS\JUEGO\GAME\ZELDA\CMAKELISTS.TXT
 setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Admin/Documents/Juego/Game/Zelda -BC:/Users/Admin/Documents/Juego/game/Zelda/build --check-stamp-file C:/Users/Admin/Documents/Juego/game/Zelda/build/CMakeFiles/generate.stamp
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Admin/Documents/Juego/Game/Zelda -BC:/Users/Admin/Documents/Juego/Game/zelda/build --check-stamp-file C:/Users/Admin/Documents/Juego/Game/zelda/build/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
