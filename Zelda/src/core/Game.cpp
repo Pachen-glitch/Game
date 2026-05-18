@@ -3,13 +3,14 @@
 #include "../input/Input.h"
 #include "../movement/Movement.h"
 #include "../entities/Player.h"
+#include "../ui/Menu.h"
 
 using namespace std;
 
 // Limpiar consola
 void clearScreen() {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    COORD coord = {0, 0};
+    COORD coord = { 0, 0 };
     SetConsoleCursorPosition(hConsole, coord);
 }
 
@@ -23,9 +24,11 @@ void render(Player& player) {
 
             if (x == player.x && y == player.y) {
                 cout << "@";
-            } else if (y == 0 || y == HEIGHT-1 || x == 0 || x == WIDTH-1) {
+            }
+            else if (y == 0 || y == HEIGHT - 1 || x == 0 || x == WIDTH - 1) {
                 cout << "#";
-            } else {
+            }
+            else {
                 cout << " ";
             }
 
@@ -36,6 +39,11 @@ void render(Player& player) {
 
 // LOOP PRINCIPAL
 void runGame() {
+
+    showMenu();
+
+    system("cls");
+
     Player player(10, 5);
 
     bool running = true;
@@ -49,11 +57,13 @@ void runGame() {
         if (input == 27) {
             running = false;
         }
+
         if (input != '\0') {
             handleMovement(player, input);
-}
+        }
+
         // 2. UPDATE
-        
+
 
         // 3. RENDER
         clearScreen();
