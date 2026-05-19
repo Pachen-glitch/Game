@@ -3,27 +3,27 @@
 #include "../input/Input.h"
 #include "../movement/Movement.h"
 #include "../entities/Player.h"
-#include "../map/Map.h"
+#include "../ui/Menu.h"
+
 using namespace std;
 
 // Limpiar consola
 void clearScreen() {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    COORD coord = {0, 0};
+    COORD coord = { 0, 0 };
     SetConsoleCursorPosition(hConsole, coord);
 }
 
-// Dibujar mapa simple + jugador
+
 void render(Player& player, Map& map)
 {
-    clearScreen();
-
     for (int y = 0; y < map.getHeight(); y++) {
 
         for (int x = 0; x < map.getWidth(); x++) {
 
-            // Jugador
+            // PLAYER
             if (x == player.x && y == player.y) {
+
                 cout << "@";
             }
 
@@ -67,12 +67,45 @@ void render(Player& player, Map& map)
         cout << endl;
     }
 }
+void drawUI(int lives) {
+    cout << "\n";
+    cout << "PACHEN \n";
+    cout << "Vida: ";
+
+    for (int i = 0; i < 3; i++) {
+        if (i < lives)
+            cout << "<3";
+        else
+            cout << "X";
+    }
+
+    cout << "\n\n";
+}
+
+// Configuración de la consola
+void setWindowSize() {
+    system("mode con: cols=50 lines=20");
+}
+void hideCursor() {
+    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO info;
+    info.dwSize = 100;
+    info.bVisible = FALSE;
+    SetConsoleCursorInfo(consoleHandle, &info);
+}
 
 // LOOP PRINCIPAL
 void runGame() {
-    Player player(10, 5);
-    Map map;
 
+    showMenu();
+
+    system("cls");
+
+    Player player(10, 5);
+    hideCursor();
+    setWindowSize();
+    system("cls");
+    
     bool running = true;
 
     while (running) {
@@ -84,15 +117,18 @@ void runGame() {
         if (input == 27) {
             running = false;
         }
+
         if (input != '\0') {
-            handleMovement(player, input, map);
-}
+            handleMovement(player, input);
+        }
+
         // 2. UPDATE
-        
+
 
         // 3. RENDER
         clearScreen();
-        render(player, map);
+        render(player);
+        drawUI(player.lives);
 
         // 4. CONTROL DE TIEMPO
         Sleep(50); // 50 ms
