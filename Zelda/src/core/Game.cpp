@@ -32,12 +32,41 @@ void render(Player& player) {
         }
         cout << endl;
     }
+} 
+void drawUI(int lives) {
+    cout << "\n";
+    cout << "PACHEN \n";
+    cout << "Vida: ";
+
+    for (int i = 0; i < 3; i++) {
+        if (i < lives)
+            cout << "<3";
+        else
+            cout << "X";
+    }
+
+    cout << "\n\n";
+}
+
+// Configuración de la consola
+void setWindowSize() {
+    system("mode con: cols=50 lines=20");
+}
+void hideCursor() {
+    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO info;
+    info.dwSize = 100;
+    info.bVisible = FALSE;
+    SetConsoleCursorInfo(consoleHandle, &info);
 }
 
 // LOOP PRINCIPAL
 void runGame() {
     Player player(10, 5);
-
+    hideCursor();
+    setWindowSize();
+    system("cls");
+    
     bool running = true;
 
     while (running) {
@@ -58,8 +87,11 @@ void runGame() {
         // 3. RENDER
         clearScreen();
         render(player);
+        drawUI(player.lives);
 
         // 4. CONTROL DE TIEMPO
         Sleep(50); // 50 ms
     }
 }
+
+
