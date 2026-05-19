@@ -14,25 +14,46 @@ void clearScreen() {
     SetConsoleCursorPosition(hConsole, coord);
 }
 
-// Dibujar mapa simple + jugador
+
 void render(Player& player) {
+
     const int WIDTH = 20;
     const int HEIGHT = 10;
 
     for (int y = 0; y < HEIGHT; y++) {
+
         for (int x = 0; x < WIDTH; x++) {
 
             if (x == player.x && y == player.y) {
                 cout << "@";
             }
+
+            else if (x == 5 && y == 2) {
+                cout << "E";
+            }
+
+            else if (x == 7 && y == 1) {
+                cout << "$";
+            }
+
+            else if (x == 8 && y == 3) {
+                cout << "K";
+            }
+
+            else if (x == 2 && y == 3) {
+                cout << "H";
+            }
+
             else if (y == 0 || y == HEIGHT - 1 || x == 0 || x == WIDTH - 1) {
                 cout << "#";
             }
+
             else {
                 cout << " ";
             }
 
         }
+
         cout << endl;
     }
 }
