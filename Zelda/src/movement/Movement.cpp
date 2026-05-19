@@ -1,22 +1,33 @@
 #include "Movement.h"
 
-void handleMovement(Player& player, char input) {
+void handleMovement(Player& player, char input, Map& map)
+{
+    int newX = player.x;
+    int newY = player.y;
+
     switch (input) {
+
         case 'w':
-            player.move(0, -1);
+            newY--;
             break;
+
         case 's':
-            player.move(0, 1);
+            newY++;
             break;
+
         case 'a':
-            player.move(-1, 0);
+            newX--;
             break;
+
         case 'd':
-            player.move(1, 0);
+            newX++;
             break;
-        case ' ':
-            // ataque básico
-            // por ahora solo mensaje
-            break;
+    }
+
+    // colisiones básicas
+    if (map.getTile(newX, newY) != WALL) {
+
+        player.x = newX;
+        player.y = newY;
     }
 }

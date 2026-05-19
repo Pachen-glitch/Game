@@ -1,79 +1,4 @@
 #include <iostream>
-<<<<<<< HEAD
-#include <vector>
-#include <unistd.h> // usleep
-using namespace std;
-
-const int WIDTH = 40;
-const int HEIGHT = 15;
-
-// Mapa base
-vector<string> map = {
-    "########################################",
-    "#                                      #",
-    "#                                      #",
-    "#                                      #",
-    "#                                      #",
-    "#                                      #",
-    "#                                      #",
-    "#                                      #",
-    "#                                      #",
-    "#                                      #",
-    "#                                      #",
-    "#                                      #",
-    "#                                      #",
-    "#                                      #",
-    "########################################"
-};
-
-// Función para limpiar pantalla
-void clearScreen() {
-    system("clear"); // Linux/Mac
-    // system("cls"); // Windows
-}
-
-// Renderizado
-void drawUI(int life, int score) {
-    cout << "\n";
-    cout << "  ZELDA ASCII - DUNGEON\n";
-    cout << "  Vida: " << life << "   Score: " << score << "\n";
-    cout << "\n";
-}
-
-// Dibujar mapa
-void drawMap(int playerX, int playerY) {
-    for (int i = 0; i < HEIGHT; i++) {
-        for (int j = 0; j < WIDTH; j++) {
-            if (i == playerY && j == playerX) {
-                cout << "@"; // jugador
-            } else {
-                cout << map[i][j];
-            }
-        }
-        cout << endl;
-    }
-}
-
-// Loop base
-int main() {
-    int playerX = 20;
-    int playerY = 7;
-
-    int life = 3;
-    int score = 0;
-
-    while (true) {
-        clearScreen();
-
-        drawUI(life, score);
-        drawMap(playerX, playerY);
-
-        usleep(100000); // 0.1 segundos
-    }
-
-    return 0;
-}
-=======
 #include <windows.h> // Sleep
 #include "../input/Input.h"
 #include "../movement/Movement.h"
@@ -90,48 +15,58 @@ void clearScreen() {
 }
 
 
-void render(Player& player) {
+void render(Player& player, Map& map)
+{
+    for (int y = 0; y < map.getHeight(); y++) {
 
-    const int WIDTH = 20;
-    const int HEIGHT = 10;
+        for (int x = 0; x < map.getWidth(); x++) {
 
-    for (int y = 0; y < HEIGHT; y++) {
-
-        for (int x = 0; x < WIDTH; x++) {
-
+            // PLAYER
             if (x == player.x && y == player.y) {
+
                 cout << "@";
             }
 
-            else if (x == 5 && y == 2) {
-                cout << "E";
-            }
-
-            else if (x == 7 && y == 1) {
-                cout << "$";
-            }
-
-            else if (x == 8 && y == 3) {
-                cout << "K";
-            }
-
-            else if (x == 2 && y == 3) {
-                cout << "H";
-            }
-
-            else if (y == 0 || y == HEIGHT - 1 || x == 0 || x == WIDTH - 1) {
-                cout << "#";
-            }
-
             else {
-                cout << " ";
-            }
 
+                TileType tile = map.getTile(x, y);
+
+                switch (tile) {
+
+                    case WALL:
+                        cout << "#";
+                        break;
+
+                    case EMPTY:
+                        cout << ".";
+                        break;
+
+                    case DOOR:
+                        cout << "D";
+                        break;
+
+                    case KEY:
+                        cout << "K";
+                        break;
+
+                    case HEART:
+                        cout << "H";
+                        break;
+
+                    case COIN:
+                        cout << "$";
+                        break;
+
+                    case ENEMY:
+                        cout << "E";
+                        break;
+                }
+            }
         }
 
         cout << endl;
     }
-} 
+}
 void drawUI(int lives) {
     cout << "\n";
     cout << "PACHEN \n";
@@ -199,6 +134,3 @@ void runGame() {
         Sleep(50); // 50 ms
     }
 }
-
-
->>>>>>> 2e4268244d7af266c50c964293fbd4a2134fe5a6

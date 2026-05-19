@@ -1,0 +1,28 @@
+# Build folders
+build/
+out/
+Debug/
+Release/
+x64/
+
+# Visual Studio
+.vs/
+*.vcxproj
+*.vcxproj.filters
+*.sln
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+
+# Object files
+*.obj
+*.o
+
+# Executables
+*.exe
+
+# Logs
+*.log
