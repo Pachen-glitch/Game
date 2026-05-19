@@ -3,7 +3,12 @@
 
 enum TileType {
     EMPTY,
-    WALL
+    WALL,
+    DOOR,
+    KEY,
+    HEART,
+    COIN,
+    ENEMY
 };
 
 class Map {
