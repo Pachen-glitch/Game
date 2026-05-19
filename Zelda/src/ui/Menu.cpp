@@ -39,7 +39,7 @@ void showMenu() {
         system("cls");
 
         cout << "=====================================" << endl;
-        cout << "          ZELDA ASCII GAME           " << endl;
+        cout << "          The Legend of Pachen           " << endl;
         cout << "=====================================" << endl;
         cout << endl;
 
