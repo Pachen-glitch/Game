@@ -3,7 +3,12 @@
 
 enum TileType {
     EMPTY,
-    WALL
+    WALL,
+    DOOR,
+    KEY,
+    HEART,
+    COIN,
+    ENEMY
 };
 
 class Map {
@@ -11,6 +16,8 @@ public:
     Map();
 
     TileType getTile(int x, int y);
+    void setTile(int x, int y, TileType tile);
+
     int getWidth();
     int getHeight();
 

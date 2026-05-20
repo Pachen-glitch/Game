@@ -1,9 +1,11 @@
 #include "core/Game.h"
-#include "core/Menu.h"
-#include "Pause.h"
+#include "ui/Menu.h"
 
 int main() {
-    showStartScreen();
+
+    showMenu();
+
     runGame();
+
     return 0;
 }
