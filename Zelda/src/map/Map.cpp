@@ -1,9 +1,12 @@
 #include "Map.h"
 
 Map::Map() {
+
+
+    
     grid = {
 
-    {WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL},
+    {WALL,EMPTY,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL},
 
     {WALL,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,COIN,EMPTY,EMPTY,WALL},
 
@@ -49,6 +52,11 @@ TileType Map::getTile(int x, int y) {
     return grid[y][x];
 }
 
+
+void Map::setTile(int x, int y, TileType tile) {
+
+    grid[y][x] = tile;
+}
 int Map::getWidth() {
     return grid[0].size();
 }

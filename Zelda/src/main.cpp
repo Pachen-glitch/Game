@@ -1,16 +1,11 @@
 #include "core/Game.h"
+#include "ui/Menu.h"
 
 int main() {
-    Game game;
-    game.run();
-    return 0;
-}
-#include "core/Game.h"
-#include "core/Menu.h"
 
+    showMenu();
 
-int main() {
-    showStartScreen();
     runGame();
+
     return 0;
 }

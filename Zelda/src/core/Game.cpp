@@ -67,19 +67,28 @@ void render(Player& player, Map& map)
         cout << endl;
     }
 }
-void drawUI(int lives) {
-    cout << "\n";
-    cout << "PACHEN \n";
-    cout << "Vida: ";
+void drawUI(Player& player) {
+
+    cout << "============================\n";
+    cout << "THE LEGEND OF PACHEN\n";
+    cout << "============================\n";
+
+    cout << "Lives: ";
 
     for (int i = 0; i < 3; i++) {
-        if (i < lives)
-            cout << "<3";
+
+        if (i < player.lives)
+            cout << "<3 ";
         else
-            cout << "X";
+            cout << "X ";
     }
 
-    cout << "\n\n";
+    cout << "\n";
+
+    cout << "Coins: " << player.coins << "\n";
+    cout << "Keys : " << player.keys << "\n";
+
+    cout << "============================\n\n";
 }
 
 // Configuración de la consola
@@ -102,35 +111,34 @@ void runGame() {
     system("cls");
 
     Player player(10, 5);
+
+    Map map;
+
     hideCursor();
+
     setWindowSize();
-    system("cls");
-    
+
     bool running = true;
 
     while (running) {
 
-        // 1. INPUT
         char input = getInput();
 
-        // salir con ESC
         if (input == 27) {
             running = false;
         }
 
         if (input != '\0') {
-            handleMovement(player, input);
+
+            handleMovement(player, input, map);
         }
 
-        // 2. UPDATE
-
-
-        // 3. RENDER
         clearScreen();
-        render(player);
-        drawUI(player.lives);
 
-        // 4. CONTROL DE TIEMPO
-        Sleep(50); // 50 ms
+        drawUI(player);
+
+        render(player, map);
+
+        Sleep(50);
     }
 }

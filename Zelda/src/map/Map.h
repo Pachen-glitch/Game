@@ -16,6 +16,8 @@ public:
     Map();
 
     TileType getTile(int x, int y);
+    void setTile(int x, int y, TileType tile);
+
     int getWidth();
     int getHeight();
 

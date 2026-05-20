@@ -1,12 +1,17 @@
 #include "Player.h"
 
 Player::Player(int startX, int startY) {
+
     x = startX;
     y = startY;
-    lives = 3; // Default number of lives
+
+    coins = 0;
+    keys = 0;
+    lives = 3;
 }
 
 void Player::move(int dx, int dy) {
+
     x += dx;
     y += dy;
 }
