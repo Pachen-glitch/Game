@@ -1,5 +1,9 @@
 #include "Map.h"
 
+// ========================================
+// CONSTRUCTOR
+// ========================================
+
 Map::Map() {
 
     grid = {
@@ -44,4 +48,62 @@ Map::Map() {
 
     {WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL}
     };
+}
+
+// ========================================
+// GET TILE
+// ========================================
+
+TileType Map::getTile(int x, int y) {
+
+    if (
+        x < 0 ||
+        y < 0 ||
+        y >= grid.size() ||
+        x >= grid[0].size()
+    ) {
+        return WALL;
+    }
+
+    return grid[y][x];
+}
+
+// ========================================
+// SET TILE
+// ========================================
+
+void Map::setTile(
+    int x,
+    int y,
+    TileType tile
+) {
+
+    if (
+        x < 0 ||
+        y < 0 ||
+        y >= grid.size() ||
+        x >= grid[0].size()
+    ) {
+        return;
+    }
+
+    grid[y][x] = tile;
+}
+
+// ========================================
+// WIDTH
+// ========================================
+
+int Map::getWidth() {
+
+    return grid[0].size();
+}
+
+// ========================================
+// HEIGHT
+// ========================================
+
+int Map::getHeight() {
+
+    return grid.size();
 }

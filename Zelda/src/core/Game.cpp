@@ -2,11 +2,15 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <filesystem>
+
 #include "../map/Map.h"
 
 #include "../entity/player/Player.h"
 
 #include "../movement/PlayerMovement.h"
+
+#include "../render/PlayerRenderer.h"
 
 using namespace sf;
 
@@ -15,6 +19,12 @@ using namespace sf;
 // ========================================
 
 void runGame() {
+
+    // ========================================
+    // WORKING DIRECTORY
+    // ========================================
+    std::filesystem::current_path("Debug");
+    //std::filesystem::current_path("../../");
 
     // ========================================
     // WINDOW
@@ -28,6 +38,12 @@ void runGame() {
     window.setFramerateLimit(60);
 
     // ========================================
+    // CLOCK
+    // ========================================
+
+    Clock clock;
+
+    // ========================================
     // MAP
     // ========================================
 
@@ -39,11 +55,16 @@ void runGame() {
 
     Player player(5, 5);
 
+    PlayerRenderer playerRenderer;
+
     // ========================================
-    // GAME LOOP
+    // LOOP
     // ========================================
 
     while (window.isOpen()) {
+
+        float deltaTime =
+            clock.restart().asSeconds();
 
         // ========================================
         // EVENTS
@@ -101,29 +122,13 @@ void runGame() {
         }
 
         // ========================================
-        // ATTACKS
-        // ========================================
-
-        if (Keyboard::isKeyPressed(Keyboard::C)) {
-
-            player.swordAttack();
-        }
-
-        if (Keyboard::isKeyPressed(Keyboard::X)) {
-
-            player.spinAttack();
-        }
-
-        if (Keyboard::isKeyPressed(Keyboard::V)) {
-
-            player.activateShield();
-        }
-
-        // ========================================
         // UPDATE
         // ========================================
 
-        player.update();
+        playerRenderer.update(
+            player,
+            deltaTime
+        );
 
         // ========================================
         // RENDER
@@ -131,10 +136,7 @@ void runGame() {
 
         window.clear();
 
-        // luego:
-        // renderMap()
-        // renderEntities()
-        // renderUI()
+        playerRenderer.draw(window);
 
         window.display();
     }

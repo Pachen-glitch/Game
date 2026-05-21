@@ -24,7 +24,9 @@ Player::Player(int startX, int startY)
 
 
 // MOVEMENT
+void Player::onInteract(Player& player) {
 
+}
 
 void Player::move(int dx, int dy) {
 

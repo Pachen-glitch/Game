@@ -37,68 +37,38 @@ include_directories(
 
 set(SOURCES
 
-    # ====================================
     # MAIN
-    # ====================================
-
     src/main.cpp
 
-    # ====================================
     # CORE
-    # ====================================
-
     src/core/Game.cpp
 
-    # ====================================
     # UI
-    # ====================================
-
     src/ui/Menu.cpp
 
-    # ====================================
     # MAP
-    # ====================================
-
     src/map/Map.cpp
 
-    # ====================================
     # ENTITY BASE
-    # ====================================
-
     src/entity/base/Entity.cpp
 
-    # ====================================
     # PLAYER
-    # ====================================
-
     src/entity/player/Player.cpp
 
-    # ====================================
-    # ENEMIES
-    # ====================================
-
+    # ENEMY
     src/entity/enemy/Enemy.cpp
 
-    # ====================================
     # ITEMS
-    # ====================================
-
     src/entity/items/Coin.cpp
     src/entity/items/Key.cpp
     src/entity/items/Heart.cpp
     src/entity/items/Door.cpp
 
-    # ====================================
-    # INPUT
-    # ====================================
-
-    src/input/Input.cpp
-
-    # ====================================
     # MOVEMENT
-    # ====================================
-
     src/movement/PlayerMovement.cpp
+
+    # RENDER
+    src/render/PlayerRenderer.cpp
 )
 
 # ========================================
@@ -123,7 +93,7 @@ target_link_libraries(
 )
 
 # ========================================
-# WINDOWS
+# WINDOWS DLL COPY
 # ========================================
 
 if(WIN32)
@@ -139,3 +109,15 @@ if(WIN32)
     )
 
 endif()
+
+# ========================================
+# COPY ASSETS
+# ========================================
+
+add_custom_command(
+    TARGET ZeldaASCII POST_BUILD
+
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/assets
+    $<TARGET_FILE_DIR:ZeldaASCII>/assets
+)

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../entity/base/Entity.h"
+#include "../base/Entity.h"
 
 enum Direction {
     UP,
@@ -70,7 +70,7 @@ public:
     void deactivateShield();
 
     bool hasShield();
-
+    void onInteract(Player& player) override;
   
     // GETTERS
   
