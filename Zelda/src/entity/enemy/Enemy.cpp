@@ -1,5 +1,5 @@
 #include "Enemy.h"
-#include "../entity/Player.h"
+#include "../entity/player/Player.h"
 
 Enemy::Enemy(int startX, int startY)
     : Entity(

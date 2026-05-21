@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../entity/Entity.h"
+#include "../entity/base/Entity.h"
 
 class Coin : public Entity {
 

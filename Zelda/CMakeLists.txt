@@ -1,25 +1,47 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.16)
 
-project(ZeldaASCII)
+project(TheLegendOfPachen)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Buscar pthreads
-find_package(Threads REQUIRED)
+include(FetchContent)
 
-# Incluir headers
-include_directories(
-    ${PROJECT_SOURCE_DIR}/src
+# ========================================
+# SFML
+# ========================================
+
+FetchContent_Declare(
+    SFML
+    GIT_REPOSITORY https://github.com/SFML/SFML.git
+    GIT_TAG 2.6.1
 )
 
-# Buscar todos los .cpp
+FetchContent_MakeAvailable(SFML)
+
+# ========================================
+# SOURCES
+# ========================================
+
 file(GLOB_RECURSE SOURCES
     src/*.cpp
 )
 
-# Crear ejecutable
-add_executable(ZeldaASCII ${SOURCES})
+# ========================================
+# EXECUTABLE
+# ========================================
 
-# Link threads
-target_link_libraries(ZeldaASCII Threads::Threads)
+add_executable(
+    ZeldaASCII
+    ${SOURCES}
+)
+
+# ========================================
+# LINK
+# ========================================
+
+target_link_libraries(
+    ZeldaASCII
+    sfml-graphics
+    sfml-window
+    sfml-system
+)

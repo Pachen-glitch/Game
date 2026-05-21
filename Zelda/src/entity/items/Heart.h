@@ -1,12 +1,12 @@
 #pragma once
 
-#include "../entity/Entity.h"
+#include "../entity/base/Entity.h"
 
-class Key : public Entity {
+class Heart : public Entity {
 
 public:
 
-    Key(int startX, int startY);
+    Heart(int startX, int startY);
 
     void onInteract(Player& player) override;
 

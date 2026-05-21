@@ -1,5 +1,5 @@
 #include "Door.h"
-#include "../entity/Player.h"
+#include "../entity/player/Player.h"
 
 Door::Door(int startX, int startY)
     : Entity(
