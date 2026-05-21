@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../entity/Player.h"
+#include "../entity/player/Player.h"
 #include "../map/Map.h"
 
 class PlayerMovement {

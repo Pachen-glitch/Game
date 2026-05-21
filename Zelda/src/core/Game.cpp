@@ -1,144 +1,141 @@
-#include <iostream>
-#include <windows.h> // Sleep
-#include "../input/Input.h"
-#include "../movement/Movement.h"
-#include "../entities/Player.h"
-#include "../ui/Menu.h"
+#include "Game.h"
 
-using namespace std;
+#include <SFML/Graphics.hpp>
 
-// Limpiar consola
-void clearScreen() {
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    COORD coord = { 0, 0 };
-    SetConsoleCursorPosition(hConsole, coord);
-}
+#include "../map/Map.h"
 
+#include "../entity/player/Player.h"
 
-void render(Player& player, Map& map)
-{
-    for (int y = 0; y < map.getHeight(); y++) {
+#include "../movement/PlayerMovement.h"
 
-        for (int x = 0; x < map.getWidth(); x++) {
+using namespace sf;
 
-            // PLAYER
-            if (x == player.x && y == player.y) {
+// ========================================
+// GAME LOOP
+// ========================================
 
-                cout << "@";
-            }
-
-            else {
-
-                TileType tile = map.getTile(x, y);
-
-                switch (tile) {
-
-                    case WALL:
-                        cout << "#";
-                        break;
-
-                    case EMPTY:
-                        cout << ".";
-                        break;
-
-                    case DOOR:
-                        cout << "D";
-                        break;
-
-                    case KEY:
-                        cout << "K";
-                        break;
-
-                    case HEART:
-                        cout << "H";
-                        break;
-
-                    case COIN:
-                        cout << "$";
-                        break;
-
-                    case ENEMY:
-                        cout << "E";
-                        break;
-                }
-            }
-        }
-
-        cout << endl;
-    }
-}
-void drawUI(Player& player) {
-
-    cout << "============================\n";
-    cout << "THE LEGEND OF PACHEN\n";
-    cout << "============================\n";
-
-    cout << "Lives: ";
-
-    for (int i = 0; i < 3; i++) {
-
-        if (i < player.lives)
-            cout << "<3 ";
-        else
-            cout << "X ";
-    }
-
-    cout << "\n";
-
-    cout << "Coins: " << player.coins << "\n";
-    cout << "Keys : " << player.keys << "\n";
-
-    cout << "============================\n\n";
-}
-
-// Configuración de la consola
-void setWindowSize() {
-    system("mode con: cols=50 lines=20");
-}
-void hideCursor() {
-    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_CURSOR_INFO info;
-    info.dwSize = 100;
-    info.bVisible = FALSE;
-    SetConsoleCursorInfo(consoleHandle, &info);
-}
-
-// LOOP PRINCIPAL
 void runGame() {
 
-    showMenu();
+    // ========================================
+    // WINDOW
+    // ========================================
 
-    system("cls");
+    RenderWindow window(
+        VideoMode(1280, 720),
+        "The Legend of Pachen"
+    );
 
-    Player player(10, 5);
+    window.setFramerateLimit(60);
+
+    // ========================================
+    // MAP
+    // ========================================
 
     Map map;
 
-    hideCursor();
+    // ========================================
+    // PLAYER
+    // ========================================
 
-    setWindowSize();
+    Player player(5, 5);
 
-    bool running = true;
+    // ========================================
+    // GAME LOOP
+    // ========================================
 
-    while (running) {
+    while (window.isOpen()) {
 
-        char input = getInput();
+        // ========================================
+        // EVENTS
+        // ========================================
 
-        if (input == 27) {
-            running = false;
+        Event event;
+
+        while (window.pollEvent(event)) {
+
+            if (
+                event.type == Event::Closed
+            ) {
+                window.close();
+            }
         }
 
-        if (input != '\0') {
+        // ========================================
+        // INPUT
+        // ========================================
 
-            handleMovement(player, input, map);
+        if (Keyboard::isKeyPressed(Keyboard::W)) {
+
+            PlayerMovement::move(
+                player,
+                'w',
+                map
+            );
         }
 
-        clearScreen();
+        if (Keyboard::isKeyPressed(Keyboard::S)) {
 
-        drawUI(player);
+            PlayerMovement::move(
+                player,
+                's',
+                map
+            );
+        }
 
-        render(player, map);
+        if (Keyboard::isKeyPressed(Keyboard::A)) {
 
-        Sleep(50);
+            PlayerMovement::move(
+                player,
+                'a',
+                map
+            );
+        }
+
+        if (Keyboard::isKeyPressed(Keyboard::D)) {
+
+            PlayerMovement::move(
+                player,
+                'd',
+                map
+            );
+        }
+
+        // ========================================
+        // ATTACKS
+        // ========================================
+
+        if (Keyboard::isKeyPressed(Keyboard::C)) {
+
+            player.swordAttack();
+        }
+
+        if (Keyboard::isKeyPressed(Keyboard::X)) {
+
+            player.spinAttack();
+        }
+
+        if (Keyboard::isKeyPressed(Keyboard::V)) {
+
+            player.activateShield();
+        }
+
+        // ========================================
+        // UPDATE
+        // ========================================
+
+        player.update();
+
+        // ========================================
+        // RENDER
+        // ========================================
+
+        window.clear();
+
+        // luego:
+        // renderMap()
+        // renderEntities()
+        // renderUI()
+
+        window.display();
     }
 }
