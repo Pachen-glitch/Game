@@ -28,9 +28,9 @@ public:
 
     Player(int startX, int startY);
 
-    // =========================
+    
     // MOVEMENT
-    // =========================
+  
 
     void move(int dx, int dy);
 
@@ -38,9 +38,9 @@ public:
 
     Direction getDirection();
 
-    // =========================
-    // SIGNALS / EVENTS
-    // =========================
+   
+    // SIGNALS / evenbysd
+  
 
     void addCoin();
 
@@ -50,9 +50,9 @@ public:
 
     void damage(int amount);
 
-    // =========================
+   
     // ATTACKS
-    // =========================
+   
 
     void swordAttack();
 
@@ -62,19 +62,18 @@ public:
 
     bool isSpinning();
 
-    // =========================
+    
     // SHIELD
-    // =========================
-
+    
     void activateShield();
 
     void deactivateShield();
 
     bool hasShield();
 
-    // =========================
+  
     // GETTERS
-    // =========================
+  
 
     int getLives();
 
@@ -82,9 +81,9 @@ public:
 
     int getKeys();
 
-    // =========================
+  
     // UPDATE
-    // =========================
+
 
     void update() override;
 };

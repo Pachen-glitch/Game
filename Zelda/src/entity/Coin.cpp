@@ -1,5 +1,5 @@
 #include "Coin.h"
-#include "../player/Player.h"
+#include "../entity/Player.h"
 
 Coin::Coin(int startX, int startY)
     : Entity(

@@ -22,9 +22,9 @@ Player::Player(int startX, int startY)
     direction = DOWN;
 }
 
-// ========================================
+
 // MOVEMENT
-// ========================================
+
 
 void Player::move(int dx, int dy) {
 
@@ -42,9 +42,9 @@ Direction Player::getDirection() {
     return direction;
 }
 
-// ========================================
+
 // EVENTS
-// ========================================
+
 
 void Player::addCoin() {
 
@@ -75,9 +75,8 @@ void Player::damage(int amount) {
         lives = 0;
 }
 
-// ========================================
+
 // ATTACKS
-// ========================================
 
 void Player::swordAttack() {
 
@@ -105,9 +104,9 @@ bool Player::isSpinning() {
     return spinning;
 }
 
-// ========================================
+
 // SHIELD
-// ========================================
+
 
 void Player::activateShield() {
 
@@ -124,9 +123,8 @@ bool Player::hasShield() {
     return shieldActive;
 }
 
-// ========================================
 // GETTERS
-// ========================================
+
 
 int Player::getLives() {
 
@@ -143,9 +141,8 @@ int Player::getKeys() {
     return keys;
 }
 
-// ========================================
+
 // UPDATE
-// ========================================
 
 void Player::update() {
 
