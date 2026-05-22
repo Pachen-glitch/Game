@@ -1,17 +1,9 @@
 cmake_minimum_required(VERSION 3.16)
 
-# ========================================
-# PROJECT
-# ========================================
-
 project(TheLegendOfPachen)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-# ========================================
-# SFML
-# ========================================
 
 include(FetchContent)
 
@@ -23,100 +15,105 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(SFML)
 
-# ========================================
-# INCLUDE DIRECTORIES
-# ========================================
-
-include_directories(
-    src
-)
-
-# ========================================
-# SOURCE FILES
-# ========================================
+include_directories(src)
 
 set(SOURCES
-
-    # MAIN
     src/main.cpp
 
-    # CORE
+    # Core
     src/core/Game.cpp
+    src/core/GameSession.cpp
 
-    # UI
-    src/ui/Menu.cpp
+    # Interaction
+    src/interaction/EventBus.cpp
+    src/interaction/InteractionSystem.cpp
 
-    # MAP
+    # Map
     src/map/Map.cpp
 
-    # ENTITY BASE
+    # Entity
     src/entity/base/Entity.cpp
-
-    # PLAYER
+    src/entity/base/EntityManager.cpp
     src/entity/player/Player.cpp
-
-    # ENEMY
+    src/entity/player/PlayerStats.cpp
     src/entity/enemy/Enemy.cpp
-
-    # ITEMS
+    src/entity/enemy/EnemyAI.cpp
+    src/entity/enemy/SlimeEnemy.cpp
+    src/entity/enemy/BatEnemy.cpp
+    src/entity/enemy/SkeletonEnemy.cpp
+    src/entity/enemy/SummonerEnemy.cpp
     src/entity/items/Coin.cpp
     src/entity/items/Key.cpp
     src/entity/items/Heart.cpp
     src/entity/items/Door.cpp
+    src/entity/npc/Shopkeeper.cpp
 
-    # MOVEMENT
+    # Movement
     src/movement/PlayerMovement.cpp
+    src/movement/MovementSystem.cpp
+    src/movement/CollisionSystem.cpp
 
-    # RENDER
+    # Combat
+    src/combat/CombatSystem.cpp
+
+    # Animation
+    src/animation/Animation.cpp
+    src/animation/AnimationManager.cpp
+
+    # Render
+    src/render/TextureCache.cpp
     src/render/PlayerRenderer.cpp
+    src/render/Camera.cpp
+    src/render/TilemapRenderer.cpp
+    src/render/EntityRenderer.cpp
+
+    # Procedural
+    src/procedural/Room.cpp
+    src/procedural/DungeonGenerator.cpp
+    src/procedural/World.cpp
+
+    # Economy
+    src/economy/Shop.cpp
+    src/economy/EconomySystem.cpp
+
+    # UI
+    src/ui/Menu.cpp
+    src/ui/HUD.cpp
+    src/ui/Minimap.cpp
+    src/ui/ShopUI.cpp
+    src/ui/DamageNumbers.cpp
+    src/ui/GameScreens.cpp
+
+    # Audio
+    src/audio/AudioManager.cpp
+
+    # Save
+    src/save/SaveSystem.cpp
+
+    # Utils
+    src/utils/FontLoader.cpp
 )
 
-# ========================================
-# EXECUTABLE
-# ========================================
+add_executable(ZeldaASCII ${SOURCES})
 
-add_executable(
-    ZeldaASCII
-    ${SOURCES}
-)
-
-# ========================================
-# LINK LIBRARIES
-# ========================================
-
-target_link_libraries(
-    ZeldaASCII
-
+target_link_libraries(ZeldaASCII
     sfml-graphics
     sfml-window
     sfml-system
 )
 
-# ========================================
-# WINDOWS DLL COPY
-# ========================================
-
 if(WIN32)
-
     add_custom_command(
         TARGET ZeldaASCII POST_BUILD
-
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         $<TARGET_RUNTIME_DLLS:ZeldaASCII>
         $<TARGET_FILE_DIR:ZeldaASCII>
-
         COMMAND_EXPAND_LISTS
     )
-
 endif()
-
-# ========================================
-# COPY ASSETS
-# ========================================
 
 add_custom_command(
     TARGET ZeldaASCII POST_BUILD
-
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_SOURCE_DIR}/assets
     $<TARGET_FILE_DIR:ZeldaASCII>/assets

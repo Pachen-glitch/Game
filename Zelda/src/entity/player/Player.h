@@ -1,89 +1,76 @@
 #pragma once
 
 #include "../base/Entity.h"
+#include "Direction.h"
+#include "PlayerState.h"
+#include "PlayerStats.h"
 
-enum Direction {
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT
-};
+#include "../../utils/Timer.h"
 
+// Player entity — stats, combat states, animation-facing flags.
 class Player : public Entity {
-
-private:
-
-    int lives;
-    int coins;
-    int keys;
-
-    bool shieldActive;
-
-    Direction direction;
-
-    bool attacking;
-    bool spinning;
-
 public:
+    Player(sf::Vector2f startPos);
 
-    Player(int startX, int startY);
+    void update(float deltaTime) override;
+    void onInteract(Player& player) override;
 
-    
-    // MOVEMENT
-  
-
-    void move(int dx, int dy);
-
+    // Movement
+    void setVelocity(sf::Vector2f vel);
+    sf::Vector2f getVelocity() const;
     void setDirection(Direction dir);
+    Direction getDirection() const;
+    bool isMoving() const;
 
-    Direction getDirection();
-
-   
-    // SIGNALS / evenbysd
-  
-
-    void addCoin();
-
-    void addKey();
-
-    void heal(int amount);
+    // Combat actions
+    bool trySwordAttack();
+    bool trySpinAttack();
+    void setShieldHeld(bool held);
+    bool isShieldActive() const;
+    void applyKnockback(sf::Vector2f force);
 
     void damage(int amount);
+    bool canTakeDamage() const;
 
-   
-    // ATTACKS
-   
+    // Pickups / economy
+    void addRupees(int amount);
+    void addKey();
+    bool useKey();
+    void heal(int amount);
+
+    // Getters
+    PlayerStats& getStats();
+    const PlayerStats& getStats() const;
+    PlayerState getState() const;
+    float getSwordDamage() const;
+
+    // Legacy accessors used by items
+    int getLives() const;
+    int getCoins() const;
+    int getKeys() const;
 
     void swordAttack();
-
     void spinAttack();
-
-    bool isAttacking();
-
-    bool isSpinning();
-
-    
-    // SHIELD
-    
     void activateShield();
-
     void deactivateShield();
 
-    bool hasShield();
-    void onInteract(Player& player) override;
-  
-    // GETTERS
-  
+    bool moving = false;
 
-    int getLives();
+private:
+    void updateStateTimers(float dt);
+    void setState(PlayerState state);
 
-    int getCoins();
+    PlayerStats stats;
+    PlayerState state = PlayerState::Idle;
+    Direction direction = Direction::DOWN;
+    sf::Vector2f velocity;
 
-    int getKeys();
+    Timer invulnTimer;
+    Timer attackTimer;
+    Timer spinTimer;
+    Timer hurtTimer;
 
-  
-    // UPDATE
-
-
-    void update() override;
+    bool shieldHeld = false;
+    bool attacking = false;
+    bool spinning = false;
 };

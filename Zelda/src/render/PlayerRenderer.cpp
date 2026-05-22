@@ -1,146 +1,77 @@
 #include "PlayerRenderer.h"
-
-#include <iostream>
-
-// ========================================
-// CONSTRUCTOR
-// ========================================
+#include "../entity/player/PlayerState.h"
 
 PlayerRenderer::PlayerRenderer() {
-
-    animationFrame = 1;
-
-    animationTimer = 0.0f;
-
-    // ========================================
-    // INITIAL SPRITE
-    // ========================================
-
-    if (
-        !texture.loadFromFile(
-            "assets/sprites/player/move/walk_d1.png"
-        )
-    ) {
-
-        std::cout
-            << "SPRITE NOT FOUND"
-            << std::endl;
-    }
-
-    sprite.setTexture(texture);
-
-    // ========================================
-    // SCALE
-    // ========================================
-
-    sprite.setScale(2.0f, 2.0f);
+    buildAnimations();
+    anim.play("idle_down");
+    anim.applyToSprite(sprite, 2.f);
 }
 
-// ========================================
-// UPDATE
-// ========================================
+void PlayerRenderer::buildAnimations() {
+    registerWalkClips();
 
-void PlayerRenderer::update(
-    Player& player,
-    float deltaTime
-) {
+    Animation idle;
+    idle.addFrame("assets/sprites/player/move/walk_d1.png", 0.4f);
+    idle.setLooping(true);
+    anim.registerAnimation("idle_down", idle);
+}
 
-    animationTimer += deltaTime;
+void PlayerRenderer::registerWalkClips() {
+    const char* dirs[] = {"d", "u", "l", "r"};
+    const char* names[] = {"down", "up", "left", "right"};
 
-    // ========================================
-    // ANIMATION TIMER
-    // ========================================
-
-    if (animationTimer >= 0.15f) {
-
-        animationTimer = 0.0f;
-
-        animationFrame++;
-
-        if (animationFrame > 5)
-            animationFrame = 1;
+    for (int d = 0; d < 4; ++d) {
+        Animation walk;
+        for (int f = 1; f <= 5; ++f) {
+            std::string path = "assets/sprites/player/move/walk_" +
+                std::string(dirs[d]) + std::to_string(f) + ".png";
+            walk.addFrame(path, 0.12f);
+        }
+        walk.setLooping(true);
+        anim.registerAnimation(std::string("walk_") + names[d], walk);
     }
+}
 
-    // ========================================
-    // DIRECTION
-    // ========================================
-
-    std::string direction;
-
+std::string PlayerRenderer::clipForState(Player& player) const {
+    std::string dir;
     switch (player.getDirection()) {
-
-        case UP:
-
-            direction = "u";
-
-            break;
-
-        case DOWN:
-
-            direction = "d";
-
-            break;
-
-        case LEFT:
-
-            direction = "l";
-
-            break;
-
-        case RIGHT:
-
-            direction = "r";
-
-            break;
+        case Direction::UP: dir = "up"; break;
+        case Direction::DOWN: dir = "down"; break;
+        case Direction::LEFT: dir = "left"; break;
+        case Direction::RIGHT: dir = "right"; break;
     }
 
-    // ========================================
-    // PATH
-    // ========================================
-
-    std::string path =
-        "assets/sprites/player/move/walk_"
-        + direction
-        + std::to_string(animationFrame)
-        + ".png";
-
-    // ========================================
-    // LOAD TEXTURE
-    // ========================================
-
-    if (!texture.loadFromFile(path)) {
-
-        std::cout
-            << "FAILED TO LOAD: "
-            << path
-            << std::endl;
+    switch (player.getState()) {
+        case PlayerState::Walk:
+            return "walk_" + dir;
+        case PlayerState::Attack:
+            return "walk_" + dir;
+        case PlayerState::Spin:
+            return "walk_" + dir;
+        case PlayerState::Shield:
+            return "idle_" + dir;
+        case PlayerState::Hurt:
+        case PlayerState::Dead:
+            return "idle_down";
+        default:
+            return player.isMoving() ? "walk_" + dir : "idle_down";
     }
-
-    sprite.setTexture(texture);
-
-    // ========================================
-    // TILE SIZE
-    // ========================================
-
-    const int TILE_SIZE = 48;
-
-    // ========================================
-    // POSITION
-    // ========================================
-
-    sprite.setPosition(
-        player.getX() * TILE_SIZE,
-        player.getY() * TILE_SIZE
-    );
 }
 
-// ========================================
-// DRAW
-// ========================================
+void PlayerRenderer::update(Player& player, float deltaTime) {
+    std::string clip = clipForState(player);
+    if (clip != lastClip) {
+        anim.play(clip);
+        lastClip = clip;
+    }
 
-void PlayerRenderer::draw(
-    sf::RenderWindow& window
-) {
+    anim.update(deltaTime);
+    anim.applyToSprite(sprite, 2.f);
 
+    sprite.setPosition(player.getPosition());
+    player.getSprite() = sprite;
+}
+
+void PlayerRenderer::draw(sf::RenderWindow& window) {
     window.draw(sprite);
 }

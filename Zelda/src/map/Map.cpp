@@ -1,109 +1,44 @@
 #include "Map.h"
-
-// ========================================
-// CONSTRUCTOR
-// ========================================
+#include "../core/Constants.h"
 
 Map::Map() {
-
-    grid = {
-
-    {WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL},
-
-    {WALL,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,WALL},
-
-    {WALL,FLOOR,WALL,WALL,WALL,FLOOR,WALL,WALL,WALL,FLOOR,FLOOR,WALL,WALL,WALL,FLOOR,FLOOR,WALL,WALL,FLOOR,WALL},
-
-    {WALL,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,WALL,FLOOR,FLOOR,FLOOR,FLOOR,WALL,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,WALL},
-
-    {WALL,FLOOR,WALL,WALL,WALL,WALL,WALL,FLOOR,WALL,FLOOR,WALL,WALL,FLOOR,WALL,WALL,WALL,WALL,FLOOR,FLOOR,WALL},
-
-    {WALL,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,WALL,FLOOR,FLOOR,FLOOR,WALL,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,WALL,FLOOR,FLOOR,WALL},
-
-    {WALL,FLOOR,WALL,WALL,WALL,FLOOR,WALL,WALL,WALL,FLOOR,WALL,WALL,WALL,WALL,WALL,FLOOR,WALL,WALL,FLOOR,WALL},
-
-    {WALL,FLOOR,FLOOR,FLOOR,WALL,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,WALL,FLOOR,FLOOR,FLOOR,FLOOR,WALL},
-
-    {WALL,FLOOR,WALL,FLOOR,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,FLOOR,WALL,WALL,WALL,WALL,FLOOR,WALL},
-
-    {WALL,FLOOR,WALL,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,WALL,FLOOR,FLOOR,FLOOR,FLOOR,WALL,FLOOR,WALL},
-
-    {WALL,FLOOR,WALL,WALL,WALL,WALL,WALL,FLOOR,WALL,WALL,WALL,FLOOR,WALL,WALL,WALL,WALL,FLOOR,WALL,FLOOR,WALL},
-
-    {WALL,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,WALL,FLOOR,FLOOR,FLOOR,WALL,FLOOR,FLOOR,FLOOR,FLOOR,WALL,FLOOR,FLOOR,FLOOR,WALL},
-
-    {WALL,FLOOR,WALL,WALL,WALL,FLOOR,WALL,WALL,WALL,FLOOR,WALL,WALL,WALL,WALL,FLOOR,WALL,WALL,WALL,FLOOR,WALL},
-
-    {WALL,FLOOR,FLOOR,FLOOR,WALL,FLOOR,FLOOR,FLOOR,WALL,FLOOR,FLOOR,FLOOR,FLOOR,WALL,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,WALL},
-
-    {WALL,FLOOR,WALL,FLOOR,WALL,WALL,WALL,FLOOR,WALL,WALL,WALL,WALL,FLOOR,WALL,WALL,WALL,WALL,FLOOR,FLOOR,WALL},
-
-    {WALL,FLOOR,WALL,FLOOR,FLOOR,FLOOR,WALL,FLOOR,FLOOR,FLOOR,FLOOR,WALL,FLOOR,FLOOR,FLOOR,FLOOR,WALL,FLOOR,FLOOR,WALL},
-
-    {WALL,FLOOR,WALL,WALL,WALL,FLOOR,WALL,WALL,WALL,WALL,FLOOR,WALL,WALL,WALL,WALL,FLOOR,WALL,WALL,FLOOR,WALL},
-
-    {WALL,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,WALL,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,WALL},
-
-    {WALL,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,FLOOR,WALL},
-
-    {WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL,WALL}
-    };
+    initGrid(Constants::ROOM_TILES_W, Constants::ROOM_TILES_H, TileType::FLOOR);
 }
 
-// ========================================
-// GET TILE
-// ========================================
+Map::Map(int width, int height) {
+    initGrid(width, height, TileType::FLOOR);
+}
 
-TileType Map::getTile(int x, int y) {
+void Map::initGrid(int w, int h, TileType fillType) {
+    grid.assign(h, std::vector<TileType>(w, fillType));
+}
 
-    if (
-        x < 0 ||
-        y < 0 ||
-        y >= grid.size() ||
-        x >= grid[0].size()
-    ) {
-        return WALL;
+TileType Map::getTile(int x, int y) const {
+    if (x < 0 || y < 0 || y >= static_cast<int>(grid.size()) ||
+        x >= static_cast<int>(grid[0].size())) {
+        return TileType::WALL;
     }
-
     return grid[y][x];
 }
 
-// ========================================
-// SET TILE
-// ========================================
-
-void Map::setTile(
-    int x,
-    int y,
-    TileType tile
-) {
-
-    if (
-        x < 0 ||
-        y < 0 ||
-        y >= grid.size() ||
-        x >= grid[0].size()
-    ) {
+void Map::setTile(int x, int y, TileType tile) {
+    if (x < 0 || y < 0 || y >= static_cast<int>(grid.size()) ||
+        x >= static_cast<int>(grid[0].size())) {
         return;
     }
-
     grid[y][x] = tile;
 }
 
-// ========================================
-// WIDTH
-// ========================================
-
-int Map::getWidth() {
-
-    return grid[0].size();
+int Map::getWidth() const {
+    return grid.empty() ? 0 : static_cast<int>(grid[0].size());
 }
 
-// ========================================
-// HEIGHT
-// ========================================
+int Map::getHeight() const {
+    return static_cast<int>(grid.size());
+}
 
-int Map::getHeight() {
-
-    return grid.size();
+void Map::fill(TileType tile) {
+    for (auto& row : grid) {
+        for (auto& cell : row) cell = tile;
+    }
 }

@@ -1,36 +1,20 @@
 #include "Door.h"
 #include "../player/Player.h"
 
-Door::Door(int startX, int startY)
-    : Entity(
-        startX,
-        startY,
-        64,
-        64,
-        "assets/sprites/objects/door.png"
-    )
-{
-    locked = true;
-}
+Door::Door(sf::Vector2f pos, bool isLocked)
+    : Entity(pos, {48.f, 48.f}, "assets/sprites/objects/door.png", EntityType::Door)
+    , locked(isLocked)
+{}
 
-void Door::unlock() {
+void Door::unlock() { locked = false; }
 
-    locked = false;
-}
-
-bool Door::isLocked() {
-
-    return locked;
-}
+bool Door::isLocked() const { return locked; }
 
 void Door::onInteract(Player& player) {
-
-    if (player.getKeys() > 0) {
-
+    if (!locked) return;
+    if (player.useKey()) {
         unlock();
     }
 }
 
-void Door::update() {
-
-}
+void Door::update(float) {}

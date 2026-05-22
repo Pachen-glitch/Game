@@ -3,12 +3,8 @@
 #include "../base/Entity.h"
 
 class Heart : public Entity {
-
 public:
-
-    Heart(int startX, int startY);
-
+    Heart(sf::Vector2f pos);
     void onInteract(Player& player) override;
-
-    void update() override;
+    void update(float deltaTime) override;
 };

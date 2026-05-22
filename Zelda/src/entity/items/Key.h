@@ -3,12 +3,8 @@
 #include "../base/Entity.h"
 
 class Key : public Entity {
-
 public:
-
-    Key(int startX, int startY);
-
+    Key(sf::Vector2f pos);
     void onInteract(Player& player) override;
-
-    void update() override;
+    void update(float deltaTime) override;
 };

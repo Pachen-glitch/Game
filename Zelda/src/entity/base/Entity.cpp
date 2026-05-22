@@ -1,53 +1,47 @@
 #include "Entity.h"
+#include "../../render/TextureCache.h"
 
 Entity::Entity(
-    int startX,
-    int startY,
-    int tileWidth,
-    int tileHeight,
-    std::string sprite
-) {
-
-    x = startX;
-    y = startY;
-
-    width = tileWidth;
-    height = tileHeight;
-
-    spritePath = sprite;
-
-    active = true;
+    sf::Vector2f startPos,
+    sf::Vector2f size,
+    const std::string& path,
+    EntityType type
+)
+    : position(startPos)
+    , size(size)
+    , spritePath(path)
+    , entityType(type)
+{
+    const sf::Texture& tex = TextureCache::instance().get(spritePath);
+    sprite.setTexture(tex, true);
+    sprite.setPosition(position);
+    sprite.setScale(
+        size.x / static_cast<float>(tex.getSize().x),
+        size.y / static_cast<float>(tex.getSize().y)
+    );
 }
 
-Entity::~Entity() {}
+Entity::~Entity() = default;
 
-int Entity::getX() {
+sf::Vector2f Entity::getPosition() const { return position; }
 
-    return x;
+void Entity::setPosition(sf::Vector2f pos) {
+    position = pos;
+    sprite.setPosition(position);
 }
 
-int Entity::getY() {
+sf::Vector2f Entity::getSize() const { return size; }
 
-    return y;
+sf::FloatRect Entity::getBounds() const {
+    return sf::FloatRect(position.x, position.y, size.x, size.y);
 }
 
-void Entity::setPosition(int newX, int newY) {
+sf::Sprite& Entity::getSprite() { return sprite; }
+const sf::Sprite& Entity::getSprite() const { return sprite; }
 
-    x = newX;
-    y = newY;
-}
+bool Entity::isActive() const { return active; }
+void Entity::deactivate() { active = false; }
+void Entity::activate() { active = true; }
 
-std::string Entity::getSprite() {
-
-    return spritePath;
-}
-
-bool Entity::isActive() {
-
-    return active;
-}
-
-void Entity::deactivate() {
-
-    active = false;
-}
+EntityType Entity::getType() const { return entityType; }
+std::string Entity::getSpritePath() const { return spritePath; }

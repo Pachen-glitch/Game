@@ -1,25 +1,13 @@
 #include "Coin.h"
 #include "../player/Player.h"
 
-Coin::Coin(int startX, int startY)
-    : Entity(
-        startX,
-        startY,
-        64,
-        64,
-        "assets/sprites/objects/coin.png"
-    )
-{
-
-}
+Coin::Coin(sf::Vector2f pos)
+    : Entity(pos, {32.f, 32.f}, "assets/sprites/objects/coin.png", EntityType::Coin)
+{}
 
 void Coin::onInteract(Player& player) {
-
-    player.addCoin();
-
+    player.addRupees(1);
     deactivate();
 }
 
-void Coin::update() {
-
-}
+void Coin::update(float) {}

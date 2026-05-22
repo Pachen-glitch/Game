@@ -2,30 +2,22 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "../animation/AnimationManager.h"
 #include "../entity/player/Player.h"
 
 class PlayerRenderer {
-
-private:
-
-    sf::Texture texture;
-
-    sf::Sprite sprite;
-
-    int animationFrame;
-
-    float animationTimer;
-
 public:
-
     PlayerRenderer();
 
-    void update(
-        Player& player,
-        float deltaTime
-    );
+    void update(Player& player, float deltaTime);
+    void draw(sf::RenderWindow& window);
 
-    void draw(
-        sf::RenderWindow& window
-    );
+private:
+    sf::Sprite sprite;
+    AnimationManager anim;
+    std::string lastClip;
+
+    void buildAnimations();
+    std::string clipForState(Player& player) const;
+    void registerWalkClips();
 };

@@ -1,67 +1,23 @@
 #include "PlayerMovement.h"
+#include "../core/Constants.h"
 
-
-// PLAYER MOVEMENT
-
-
-void PlayerMovement::move(
-    Player& player,
-    char input,
-    Map& map
-) {
-
-    int newX = player.getX();
-    int newY = player.getY();
+void PlayerMovement::move(Player& player, char input, Map& map) {
+    sf::Vector2f pos = player.getPosition();
+    int tx = static_cast<int>(pos.x) / Constants::TILE_SIZE;
+    int ty = static_cast<int>(pos.y) / Constants::TILE_SIZE;
 
     switch (input) {
-
-        case 'w':
-
-            newY--;
-
-            player.setDirection(UP);
-
-            break;
-
-        case 's':
-
-            newY++;
-
-            player.setDirection(DOWN);
-
-            break;
-
-        case 'a':
-
-            newX--;
-
-            player.setDirection(LEFT);
-
-            break;
-
-        case 'd':
-
-            newX++;
-
-            player.setDirection(RIGHT);
-
-            break;
+        case 'w': ty--; player.setDirection(Direction::UP); break;
+        case 's': ty++; player.setDirection(Direction::DOWN); break;
+        case 'a': tx--; player.setDirection(Direction::LEFT); break;
+        case 'd': tx++; player.setDirection(Direction::RIGHT); break;
     }
 
-    // COLLISION
+    if (map.getTile(tx, ty) == TileType::WALL) return;
 
-
-    if (
-        map.getTile(newX, newY) == WALL
-    ) {
-        return;
-    }
-
-    // APPLY MOVEMENT
-   
-
-    player.setPosition(
-        newX,
-        newY
-    );
+    player.setPosition({
+        static_cast<float>(tx * Constants::TILE_SIZE),
+        static_cast<float>(ty * Constants::TILE_SIZE)
+    });
+    player.moving = true;
 }

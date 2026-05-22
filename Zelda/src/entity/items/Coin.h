@@ -3,12 +3,8 @@
 #include "../base/Entity.h"
 
 class Coin : public Entity {
-
 public:
-
-    Coin(int startX, int startY);
-
+    Coin(sf::Vector2f pos);
     void onInteract(Player& player) override;
-
-    void update() override;
+    void update(float deltaTime) override;
 };

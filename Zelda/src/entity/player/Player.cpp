@@ -1,154 +1,176 @@
 #include "Player.h"
+#include "../../core/Constants.h"
+#include "../../interaction/EventBus.h"
 
-Player::Player(int startX, int startY)
+Player::Player(sf::Vector2f startPos)
     : Entity(
-        startX,
-        startY,
-        64,
-        64,
-        "assets/sprites/player/idle/player_idle.png"
+        startPos,
+        {static_cast<float>(Constants::TILE_SIZE), static_cast<float>(Constants::TILE_SIZE)},
+        "assets/sprites/player/move/walk_d1.png",
+        EntityType::Player
     )
 {
-    lives = 3;
-
-    coins = 0;
-    keys = 0;
-
-    shieldActive = false;
-
-    attacking = false;
-    spinning = false;
-
-    direction = DOWN;
+    stats.maxHearts = Constants::STARTING_HEARTS;
+    stats.hearts = Constants::STARTING_HEARTS;
+    stats.rupees = Constants::STARTING_RUPEES;
 }
 
+void Player::update(float deltaTime) {
+    updateStateTimers(deltaTime);
 
-// MOVEMENT
-void Player::onInteract(Player& player) {
+    if (stats.isDead()) {
+        setState(PlayerState::Dead);
+        return;
+    }
 
+    if (state == PlayerState::Hurt || state == PlayerState::Attack ||
+        state == PlayerState::Spin) {
+        setPosition(position + velocity * deltaTime);
+        velocity *= 0.85f;
+        return;
+    }
+
+    if (state != PlayerState::Shield) {
+        setPosition(position + velocity * deltaTime);
+    }
 }
 
-void Player::move(int dx, int dy) {
+void Player::onInteract(Player&) {}
 
-    x += dx;
-    y += dy;
+void Player::setVelocity(sf::Vector2f vel) { velocity = vel; }
+sf::Vector2f Player::getVelocity() const { return velocity; }
+
+void Player::setDirection(Direction dir) { direction = dir; }
+Direction Player::getDirection() const { return direction; }
+
+bool Player::isMoving() const {
+    return moving && (state == PlayerState::Walk || state == PlayerState::Idle);
 }
 
-void Player::setDirection(Direction dir) {
-
-    direction = dir;
+bool Player::trySwordAttack() {
+    if (state == PlayerState::Attack || state == PlayerState::Spin ||
+        state == PlayerState::Hurt || state == PlayerState::Dead) {
+        return false;
+    }
+    swordAttack();
+    return true;
 }
 
-Direction Player::getDirection() {
-
-    return direction;
+bool Player::trySpinAttack() {
+    if (!stats.hasSpinAttack) return false;
+    if (state == PlayerState::Attack || state == PlayerState::Spin ||
+        state == PlayerState::Hurt || state == PlayerState::Dead) {
+        return false;
+    }
+    spinAttack();
+    return true;
 }
 
-
-// EVENTS
-
-
-void Player::addCoin() {
-
-    coins++;
+void Player::setShieldHeld(bool held) {
+    shieldHeld = held;
+    if (held && stats.hasShield) {
+        activateShield();
+    } else {
+        deactivateShield();
+    }
 }
 
-void Player::addKey() {
-
-    keys++;
+bool Player::isShieldActive() const {
+    return shieldHeld && stats.hasShield && state == PlayerState::Shield;
 }
 
-void Player::heal(int amount) {
-
-    lives += amount;
-
-    if (lives > 3)
-        lives = 3;
+void Player::applyKnockback(sf::Vector2f force) {
+    velocity = force;
+    setState(PlayerState::Hurt);
+    hurtTimer.start(0.25f);
 }
 
 void Player::damage(int amount) {
+    if (!canTakeDamage()) return;
+    if (isShieldActive()) return;
 
-    if (shieldActive)
-        return;
+    stats.takeDamage(amount);
+    invulnTimer.start(Constants::INVULN_DURATION);
+    EventBus::instance().emit("player_damaged");
 
-    lives -= amount;
-
-    if (lives < 0)
-        lives = 0;
+    if (stats.isDead()) {
+        setState(PlayerState::Dead);
+        EventBus::instance().emit("player_died");
+    } else {
+        setState(PlayerState::Hurt);
+        hurtTimer.start(0.3f);
+    }
 }
 
+bool Player::canTakeDamage() const {
+    return invulnTimer.finished() && state != PlayerState::Dead;
+}
 
-// ATTACKS
+void Player::addRupees(int amount) {
+    stats.rupees += amount;
+    EventBus::instance().emit("rupee_pickup");
+}
+
+void Player::addKey() { stats.keys++; }
+
+bool Player::useKey() {
+    if (stats.keys <= 0) return false;
+    stats.keys--;
+    return true;
+}
+
+void Player::heal(int amount) {
+    stats.heal(amount);
+    EventBus::instance().emit("heart_pickup");
+}
+
+PlayerStats& Player::getStats() { return stats; }
+const PlayerStats& Player::getStats() const { return stats; }
+PlayerState Player::getState() const { return state; }
+float Player::getSwordDamage() const { return stats.swordDamage; }
+
+int Player::getLives() const { return stats.hearts; }
+int Player::getCoins() const { return stats.rupees; }
+int Player::getKeys() const { return stats.keys; }
 
 void Player::swordAttack() {
-
     attacking = true;
-
-    // luego:
-    // crear hitbox
-    // sprite attack
+    setState(PlayerState::Attack);
+    attackTimer.start(Constants::ATTACK_DURATION / stats.attackSpeedMult);
+    EventBus::instance().emit("player_attack");
 }
 
 void Player::spinAttack() {
-
     spinning = true;
-
-    // daño en área
+    setState(PlayerState::Spin);
+    spinTimer.start(Constants::SPIN_DURATION);
+    EventBus::instance().emit("player_spin");
 }
 
-bool Player::isAttacking() {
-
-    return attacking;
-}
-
-bool Player::isSpinning() {
-
-    return spinning;
-}
-
-
-// SHIELD
-
-
-void Player::activateShield() {
-
-    shieldActive = true;
-}
-
+void Player::activateShield() { setState(PlayerState::Shield); }
 void Player::deactivateShield() {
-
-    shieldActive = false;
+    if (state == PlayerState::Shield) setState(PlayerState::Idle);
 }
 
-bool Player::hasShield() {
+void Player::updateStateTimers(float dt) {
+    invulnTimer.tick(dt);
+    attackTimer.tick(dt);
+    spinTimer.tick(dt);
+    hurtTimer.tick(dt);
 
-    return shieldActive;
+    if (attackTimer.finished() && state == PlayerState::Attack) {
+        attacking = false;
+        setState(PlayerState::Idle);
+    }
+    if (spinTimer.finished() && state == PlayerState::Spin) {
+        spinning = false;
+        setState(PlayerState::Idle);
+    }
+    if (hurtTimer.finished() && state == PlayerState::Hurt) {
+        setState(PlayerState::Idle);
+    }
 }
 
-// GETTERS
-
-
-int Player::getLives() {
-
-    return lives;
-}
-
-int Player::getCoins() {
-
-    return coins;
-}
-
-int Player::getKeys() {
-
-    return keys;
-}
-
-
-// UPDATE
-
-void Player::update() {
-
-    attacking = false;
-
-    spinning = false;
+void Player::setState(PlayerState newState) {
+    state = newState;
 }
