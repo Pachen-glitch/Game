@@ -9,7 +9,7 @@ class EntityManager;
 class SummonerEnemy : public Enemy {
 public:
     SummonerEnemy(sf::Vector2f pos);
-    void think(Player& player, float dt) override;
+    void think(Player& player, float dt, const Map& map) override;
 
     void setEntityManager(EntityManager* mgr) { entities = mgr; }
 

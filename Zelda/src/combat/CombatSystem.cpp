@@ -33,7 +33,7 @@ void CombatSystem::spawnSwordHitbox(Player& player) {
     sf::Vector2f offset;
     sf::Vector2f hbSize(36.f, 28.f);
 
-    switch (player.getDirection()) {
+    switch (player.getFacingDirection()) {
         case Direction::UP:    offset = {6.f, -28.f}; break;
         case Direction::DOWN:  offset = {6.f, 40.f}; break;
         case Direction::LEFT:  offset = {-32.f, 8.f}; break;
@@ -82,6 +82,7 @@ void CombatSystem::update(float dt, Player& player, EntityManager& entities) {
 }
 
 void CombatSystem::resolvePlayerHits(Player& player, EntityManager& entities) {
+    (void)player;
     for (const auto& hb : hitboxes) {
         if (!hb.fromPlayer) continue;
 
@@ -90,7 +91,8 @@ void CombatSystem::resolvePlayerHits(Player& player, EntityManager& entities) {
             if (ent->getType() != EntityType::Enemy) continue;
 
             auto* enemy = dynamic_cast<Enemy*>(ent.get());
-            if (!enemy || enemy->isDead()) continue;
+            if (!enemy || enemy->isDead() || enemy->isDeathAnimPending()) continue;
+            if (enemy->isHurtAnimating()) continue;
 
             if (hb.rect.intersects(enemy->getBounds())) {
                 enemy->takeHit(static_cast<int>(hb.damage), hb.knockback);
@@ -108,13 +110,18 @@ void CombatSystem::resolveEnemyHits(Player& player, EntityManager& entities) {
 
         auto* enemy = dynamic_cast<Enemy*>(ent.get());
         if (!enemy || enemy->isDead()) continue;
+        if (!enemy->canDealContactDamage()) continue;
 
-        if (enemy->getAttackBounds().intersects(player.getBounds())) {
-            player.damage(1);
-            sf::Vector2f kb = MathUtils::directionTo(
-                enemy->getPosition(), player.getPosition()
-            ) * Constants::KNOCKBACK_FORCE;
-            player.applyKnockback(kb);
-        }
+        if (!enemy->getContactBounds().intersects(player.getBounds())) continue;
+
+        player.damage(enemy->getContactDamage());
+
+        // Empuje en direccion opuesta al slime (alejando al jugador).
+        sf::Vector2f kb = MathUtils::directionTo(
+            enemy->getPosition(), player.getPosition()
+        ) * enemy->getContactKnockback();
+        player.applyKnockback(kb);
+
+        enemy->resetContactCooldown(0.85f);
     }
 }

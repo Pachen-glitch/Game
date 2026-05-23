@@ -1,5 +1,6 @@
 #include "GameSession.h"
 
+#include "CombatFeel.h"
 #include "Constants.h"
 #include "GameState.h"
 
@@ -22,34 +23,10 @@
 #include "../ui/HUD.h"
 #include "../ui/Minimap.h"
 #include "../ui/ShopUI.h"
+#include "../utils/AssetPaths.h"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window/Keyboard.hpp>
-
-#include <filesystem>
-
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
-namespace {
-
-void setWorkingDirectoryToExecutableFolder() {
-    std::error_code ec;
-#ifdef _WIN32
-    wchar_t buffer[MAX_PATH];
-    DWORD len = GetModuleFileNameW(nullptr, buffer, MAX_PATH);
-    if (len > 0 && len < MAX_PATH) {
-        std::filesystem::current_path(
-            std::filesystem::path(buffer).parent_path(), ec
-        );
-    }
-#else
-    (void)ec;
-#endif
-}
-
-} // namespace
 
 void GameSession::setupEvents() {
     EventBus& bus = EventBus::instance();
@@ -60,6 +37,9 @@ void GameSession::setupEvents() {
     bus.subscribe("rupee_pickup", []() {
         AudioManager::instance().playSound("pickup");
     });
+    bus.subscribe("enemy_hit", []() {
+        CombatFeel::instance().triggerHitPause(Constants::HIT_PAUSE_DURATION);
+    });
     bus.subscribe("enemy_died", []() {
         AudioManager::instance().playSound("enemy_death");
     });
@@ -69,9 +49,8 @@ void GameSession::setupEvents() {
 }
 
 void GameSession::run() {
-    // Carpeta del .exe (ahí están assets/ y las DLL de SFML).
-    // Antes hacía chdir("Debug") y rompía si ya estabas en build\Debug.
-    setWorkingDirectoryToExecutableFolder();
+    AssetPaths::initialize();
+    AssetPaths::validateCriticalAssets();
 
     sf::RenderWindow window(
         sf::VideoMode(Constants::WINDOW_W, Constants::WINDOW_H),
@@ -144,23 +123,27 @@ void GameSession::run() {
             }
         }
 
+        CombatFeel::instance().tick(dt);
+        float gameDt = dt * CombatFeel::instance().getTimeScale();
+
         if (state == GameState::Playing) {
             PlayerState prevState = player.getState();
-            movement.update(dt, player, world.currentRoom().map);
+            movement.update(gameDt, player, world.currentRoom().map);
 
             if (player.getState() == PlayerState::Attack &&
-                prevState != PlayerState::Attack) {
+                player.shouldSpawnSwordHit()) {
                 combat.spawnSwordHitbox(player);
+                player.markSwordHitSpawned();
             }
             if (player.getState() == PlayerState::Spin &&
                 prevState != PlayerState::Spin) {
                 combat.spawnSpinHitbox(player);
             }
 
-            player.update(dt);
-            world.updateEnemies(player, dt);
-            world.getEntities().updateAll(dt);
-            combat.update(dt, player, world.getEntities());
+            player.update(gameDt);
+            world.updateEnemies(player, gameDt, world.currentRoom().map);
+            world.getEntities().updateAll(gameDt);
+            combat.update(gameDt, player, world.getEntities());
             interaction.update(player, world.getEntities());
 
             DoorSide side;
@@ -175,8 +158,9 @@ void GameSession::run() {
             }
         }
 
-        playerRenderer.update(player, dt);
-        camera.update(dt, player, window.getSize());
+        playerRenderer.update(player, gameDt);
+        entityRenderer.update(world.getEntities(), gameDt);
+        camera.update(gameDt, player, window.getSize());
 
         window.clear(sf::Color(30, 30, 40));
         window.setView(camera.getView());

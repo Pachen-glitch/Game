@@ -1,8 +1,9 @@
 #include "Coin.h"
 #include "../player/Player.h"
+#include "../../utils/AssetPaths.h"
 
 Coin::Coin(sf::Vector2f pos)
-    : Entity(pos, {32.f, 32.f}, "assets/sprites/objects/coin.png", EntityType::Coin)
+    : Entity(pos, {32.f, 32.f}, AssetPaths::getCoinSprite(), EntityType::Coin)
 {}
 
 void Coin::onInteract(Player& player) {

@@ -1,22 +1,33 @@
 #include "BatEnemy.h"
 
 #include <cmath>
+
 #include "../../core/Constants.h"
 #include "../player/Player.h"
-#include "../../utils/MathUtils.h"
+#include "../../utils/AssetPaths.h"
 
 BatEnemy::BatEnemy(sf::Vector2f pos)
-    : Enemy(pos, EnemyKind::Bat, 1,
-        "assets/sprites/enemies/bat/bat_idle.png")
+    : Enemy(pos, EnemyKind::Bat, 1, AssetPaths::getEnemySprite("bat"))
 {
-    moveSpeed = Constants::BAT_SPEED;
-    aggroRadius = 200.f;
+    initKindStats();
 }
 
-void BatEnemy::think(Player& player, float dt) {
-    Enemy::think(player, dt);
-    if (getAIState() == EnemyState::Chase) {
-        sf::Vector2f wobble(std::sin(stateTimer.getRemaining() * 8.f) * 20.f, 0.f);
-        velocity += wobble * dt;
+void BatEnemy::initKindStats() {
+    moveSpeed = 70.f;
+    chaseSpeed = Constants::BAT_SPEED;
+    aggroRadius = 200.f;
+    deaggroRadius = 300.f;
+    aggroMemoryDuration = 4.5f;
+    maxChaseFromSpawn = 280.f;
+}
+
+void BatEnemy::think(Player& player, float dt, const Map& map) {
+    Enemy::think(player, dt, map);
+}
+
+void BatEnemy::modifyVelocity(float dt) {
+    if (aiState == EnemyState::Chase) {
+        float wobble = std::sin(stateTimer.getRemaining() * 9.f) * 18.f;
+        velocity.x += wobble * dt;
     }
 }

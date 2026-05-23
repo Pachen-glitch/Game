@@ -1,15 +1,15 @@
 #include "SkeletonEnemy.h"
 #include "../player/Player.h"
+#include "../../utils/AssetPaths.h"
 
 SkeletonEnemy::SkeletonEnemy(sf::Vector2f pos)
-    : Enemy(pos, EnemyKind::Skeleton, 4,
-        "assets/sprites/enemies/skeleton/skeleton_idle.png")
+    : Enemy(pos, EnemyKind::Skeleton, 4, AssetPaths::getEnemySprite("skeleton"))
 {
     moveSpeed = 80.f;
 }
 
-void SkeletonEnemy::think(Player& player, float dt) {
-    Enemy::think(player, dt);
+void SkeletonEnemy::think(Player& player, float dt, const Map& map) {
+    Enemy::think(player, dt, map);
 }
 
 void SkeletonEnemy::takeHit(int damage, sf::Vector2f knockback) {

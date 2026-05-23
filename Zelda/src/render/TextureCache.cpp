@@ -1,6 +1,7 @@
 #include "TextureCache.h"
 
 #include <SFML/Graphics/Image.hpp>
+#include <filesystem>
 #include <iostream>
 
 TextureCache& TextureCache::instance() {
@@ -17,8 +18,13 @@ void TextureCache::ensureFallback() {
 }
 
 const sf::Texture& TextureCache::get(const std::string& path) {
+    ensureFallback();
+
     if (path.empty()) {
-        ensureFallback();
+        return fallback;
+    }
+
+    if (failedPaths.count(path)) {
         return fallback;
     }
 
@@ -27,10 +33,22 @@ const sf::Texture& TextureCache::get(const std::string& path) {
         return it->second;
     }
 
+    if (!std::filesystem::exists(path)) {
+        if (!loggedFailures.count(path)) {
+            loggedFailures.insert(path);
+            std::cerr << "[TextureCache] file not found: " << path << "\n";
+        }
+        failedPaths.insert(path);
+        return fallback;
+    }
+
     sf::Texture tex;
     if (!tex.loadFromFile(path)) {
-        std::cerr << "TextureCache: failed to load " << path << std::endl;
-        ensureFallback();
+        if (!loggedFailures.count(path)) {
+            loggedFailures.insert(path);
+            std::cerr << "[TextureCache] failed to load: " << path << "\n";
+        }
+        failedPaths.insert(path);
         return fallback;
     }
 
@@ -42,6 +60,12 @@ bool TextureCache::has(const std::string& path) const {
     return textures.find(path) != textures.end();
 }
 
+bool TextureCache::loadSucceeded(const std::string& path) const {
+    return textures.find(path) != textures.end();
+}
+
 void TextureCache::clear() {
     textures.clear();
+    failedPaths.clear();
+    loggedFailures.clear();
 }

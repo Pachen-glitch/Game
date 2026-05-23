@@ -16,13 +16,11 @@ void MovementSystem::update(float dt, Player& player, const Map& map) {
     bool shield = Keyboard::isKeyPressed(Keyboard::V);
     player.setShieldHeld(shield);
 
-    if (Keyboard::isKeyPressed(Keyboard::C) && !attackPressed) {
-        if (player.trySwordAttack()) {
-            // CombatSystem spawns hitbox from GameSession when attack starts
-        }
+    if (Keyboard::isKeyPressed(Keyboard::F) && !attackPressed) {
+        player.trySwordAttack();
         attackPressed = true;
     }
-    if (!Keyboard::isKeyPressed(Keyboard::C)) attackPressed = false;
+    if (!Keyboard::isKeyPressed(Keyboard::F)) attackPressed = false;
 
     if (Keyboard::isKeyPressed(Keyboard::X) && !spinPressed) {
         player.trySpinAttack();
@@ -30,10 +28,9 @@ void MovementSystem::update(float dt, Player& player, const Map& map) {
     }
     if (!Keyboard::isKeyPressed(Keyboard::X)) spinPressed = false;
 
-    if (player.getState() == PlayerState::Shield ||
-        player.getState() == PlayerState::Attack ||
-        player.getState() == PlayerState::Spin ||
-        player.getState() == PlayerState::Hurt) {
+    if (!player.canMove()) {
+        player.moving = false;
+        player.setVelocity({0.f, 0.f});
         return;
     }
 
@@ -43,9 +40,10 @@ void MovementSystem::update(float dt, Player& player, const Map& map) {
     if (Keyboard::isKeyPressed(Keyboard::A)) input.x -= 1.f;
     if (Keyboard::isKeyPressed(Keyboard::D)) input.x += 1.f;
 
-    player.moving = (input.x != 0.f || input.y != 0.f);
+    bool hasInput = (input.x != 0.f || input.y != 0.f);
+    player.updateLocomotionState(hasInput);
 
-    if (player.moving) {
+    if (hasInput) {
         input = MathUtils::normalize(input);
         if (std::abs(input.x) > std::abs(input.y)) {
             player.setDirection(input.x > 0 ? Direction::RIGHT : Direction::LEFT);

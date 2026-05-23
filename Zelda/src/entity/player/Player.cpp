@@ -1,12 +1,13 @@
 #include "Player.h"
 #include "../../core/Constants.h"
 #include "../../interaction/EventBus.h"
+#include "../../utils/AssetPaths.h"
 
 Player::Player(sf::Vector2f startPos)
     : Entity(
         startPos,
         {static_cast<float>(Constants::TILE_SIZE), static_cast<float>(Constants::TILE_SIZE)},
-        "assets/sprites/player/move/walk_d1.png",
+        AssetPaths::getPlayerIdleSprite(Direction::DOWN), // first idle_d frame
         EntityType::Player
     )
 {
@@ -43,11 +44,27 @@ sf::Vector2f Player::getVelocity() const { return velocity; }
 void Player::setDirection(Direction dir) { direction = dir; }
 Direction Player::getDirection() const { return direction; }
 
+Direction Player::getFacingDirection() const {
+    if (state == PlayerState::Attack) return lockedAttackDirection;
+    return direction;
+}
+
 bool Player::isMoving() const {
     return moving && (state == PlayerState::Walk || state == PlayerState::Idle);
 }
 
+void Player::updateLocomotionState(bool isMovingInput) {
+    moving = isMovingInput;
+    if (!canMove()) return;
+    if (moving) {
+        setState(PlayerState::Walk);
+    } else if (state == PlayerState::Walk) {
+        setState(PlayerState::Idle);
+    }
+}
+
 bool Player::trySwordAttack() {
+    if (!swordCooldown.finished()) return false;
     if (state == PlayerState::Attack || state == PlayerState::Spin ||
         state == PlayerState::Hurt || state == PlayerState::Dead) {
         return false;
@@ -85,7 +102,7 @@ void Player::applyKnockback(sf::Vector2f force) {
     hurtTimer.start(0.25f);
 }
 
-void Player::damage(int amount) {
+void Player::damage(float amount) {
     if (!canTakeDamage()) return;
     if (isShieldActive()) return;
 
@@ -119,8 +136,12 @@ bool Player::useKey() {
     return true;
 }
 
+void Player::damage(int amount) {
+    damage(static_cast<float>(amount));
+}
+
 void Player::heal(int amount) {
-    stats.heal(amount);
+    stats.heal(static_cast<float>(amount));
     EventBus::instance().emit("heart_pickup");
 }
 
@@ -129,15 +150,40 @@ const PlayerStats& Player::getStats() const { return stats; }
 PlayerState Player::getState() const { return state; }
 float Player::getSwordDamage() const { return stats.swordDamage; }
 
-int Player::getLives() const { return stats.hearts; }
+int Player::getLives() const {
+    return static_cast<int>(stats.hearts + 0.999f);
+}
 int Player::getCoins() const { return stats.rupees; }
 int Player::getKeys() const { return stats.keys; }
 
 void Player::swordAttack() {
     attacking = true;
+    swordHitboxSpawned = false;
+    lockedAttackDirection = direction;
     setState(PlayerState::Attack);
-    attackTimer.start(Constants::ATTACK_DURATION / stats.attackSpeedMult);
+    float duration = Constants::ATTACK_DURATION / stats.attackSpeedMult;
+    attackTimer.start(duration);
+    swordCooldown.start(Constants::SWORD_COOLDOWN / stats.attackSpeedMult);
     EventBus::instance().emit("player_attack");
+}
+
+bool Player::isAttacking() const {
+    return state == PlayerState::Attack;
+}
+
+bool Player::canMove() const {
+    return state != PlayerState::Attack && state != PlayerState::Spin &&
+           state != PlayerState::Hurt && state != PlayerState::Dead;
+}
+
+bool Player::shouldSpawnSwordHit() const {
+    if (state != PlayerState::Attack || swordHitboxSpawned) return false;
+    float elapsed = attackTimer.getDuration() - attackTimer.getRemaining();
+    return elapsed >= Constants::ATTACK_HIT_FRAME_TIME;
+}
+
+void Player::markSwordHitSpawned() {
+    swordHitboxSpawned = true;
 }
 
 void Player::spinAttack() {
@@ -157,6 +203,7 @@ void Player::updateStateTimers(float dt) {
     attackTimer.tick(dt);
     spinTimer.tick(dt);
     hurtTimer.tick(dt);
+    swordCooldown.tick(dt);
 
     if (attackTimer.finished() && state == PlayerState::Attack) {
         attacking = false;

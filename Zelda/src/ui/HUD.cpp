@@ -16,8 +16,18 @@ void HUD::draw(sf::RenderWindow& window, const Player& player) {
     hearts.setCharacterSize(22);
     hearts.setFillColor(sf::Color::Red);
     hearts.setPosition(16.f, 12.f);
-    hearts.setString("Hearts: " + std::to_string(player.getStats().hearts) +
-        "/" + std::to_string(player.getStats().maxHearts));
+    auto fmt = [](float v) {
+        std::string s = std::to_string(v);
+        auto dot = s.find('.');
+        if (dot != std::string::npos && dot + 2 < s.size()) {
+            s = s.substr(0, dot + 2);
+        }
+        return s;
+    };
+    hearts.setString(
+        "Hearts: " + fmt(player.getStats().hearts) +
+        "/" + fmt(player.getStats().maxHearts)
+    );
 
     sf::Text rupees;
     rupees.setFont(font);

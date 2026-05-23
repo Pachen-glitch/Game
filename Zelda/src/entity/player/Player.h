@@ -15,36 +15,34 @@ public:
     void update(float deltaTime) override;
     void onInteract(Player& player) override;
 
-    // Movement
     void setVelocity(sf::Vector2f vel);
     sf::Vector2f getVelocity() const;
     void setDirection(Direction dir);
     Direction getDirection() const;
+    Direction getFacingDirection() const;
     bool isMoving() const;
+    void updateLocomotionState(bool isMovingInput);
 
-    // Combat actions
     bool trySwordAttack();
     bool trySpinAttack();
     void setShieldHeld(bool held);
     bool isShieldActive() const;
     void applyKnockback(sf::Vector2f force);
 
+    void damage(float amount);
     void damage(int amount);
     bool canTakeDamage() const;
 
-    // Pickups / economy
     void addRupees(int amount);
     void addKey();
     bool useKey();
     void heal(int amount);
 
-    // Getters
     PlayerStats& getStats();
     const PlayerStats& getStats() const;
     PlayerState getState() const;
     float getSwordDamage() const;
 
-    // Legacy accessors used by items
     int getLives() const;
     int getCoins() const;
     int getKeys() const;
@@ -53,6 +51,11 @@ public:
     void spinAttack();
     void activateShield();
     void deactivateShield();
+
+    bool isAttacking() const;
+    bool canMove() const;
+    bool shouldSpawnSwordHit() const;
+    void markSwordHitSpawned();
 
     bool moving = false;
 
@@ -63,14 +66,17 @@ private:
     PlayerStats stats;
     PlayerState state = PlayerState::Idle;
     Direction direction = Direction::DOWN;
+    Direction lockedAttackDirection = Direction::DOWN;
     sf::Vector2f velocity;
 
     Timer invulnTimer;
     Timer attackTimer;
     Timer spinTimer;
     Timer hurtTimer;
+    Timer swordCooldown;
 
     bool shieldHeld = false;
     bool attacking = false;
     bool spinning = false;
+    bool swordHitboxSpawned = false;
 };

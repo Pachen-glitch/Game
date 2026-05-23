@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DungeonGenerator.h"
+#include "../map/Map.h"
 #include "../entity/base/EntityManager.h"
 #include "../entity/player/Player.h"
 
@@ -17,7 +18,7 @@ public:
     const std::vector<Room>& getRooms() const { return rooms; }
 
     EntityManager& getEntities() { return entities; }
-    void updateEnemies(Player& player, float dt);
+    void updateEnemies(Player& player, float dt, const Map& map);
 
     bool tryTransition(Player& player, DoorSide& outSide);
 

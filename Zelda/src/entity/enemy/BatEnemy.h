@@ -2,11 +2,12 @@
 
 #include "Enemy.h"
 
-class Player;
-
-// Fast flyer — wider aggro, erratic chase.
 class BatEnemy : public Enemy {
 public:
     BatEnemy(sf::Vector2f pos);
-    void think(Player& player, float dt) override;
+    void think(Player& player, float dt, const Map& map) override;
+
+protected:
+    void initKindStats() override;
+    void modifyVelocity(float dt) override;
 };

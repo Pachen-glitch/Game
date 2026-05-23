@@ -23,6 +23,7 @@ set(SOURCES
     # Core
     src/core/Game.cpp
     src/core/GameSession.cpp
+    src/core/CombatFeel.cpp
 
     # Interaction
     src/interaction/EventBus.cpp
@@ -52,6 +53,7 @@ set(SOURCES
     src/movement/PlayerMovement.cpp
     src/movement/MovementSystem.cpp
     src/movement/CollisionSystem.cpp
+    src/movement/EnemyMovement.cpp
 
     # Combat
     src/combat/CombatSystem.cpp
@@ -66,6 +68,7 @@ set(SOURCES
     src/render/Camera.cpp
     src/render/TilemapRenderer.cpp
     src/render/EntityRenderer.cpp
+    src/render/EnemyAnimator.cpp
 
     # Procedural
     src/procedural/Room.cpp
@@ -92,6 +95,7 @@ set(SOURCES
 
     # Utils
     src/utils/FontLoader.cpp
+    src/utils/AssetPaths.cpp
 )
 
 add_executable(ZeldaASCII ${SOURCES})

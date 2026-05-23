@@ -2,9 +2,10 @@
 
 class Timer {
 public:
-    void start(float duration) {
-        remaining = duration;
-        active = duration > 0.f;
+    void start(float dur) {
+        duration = dur;
+        remaining = dur;
+        active = dur > 0.f;
     }
 
     void tick(float dt) {
@@ -19,10 +20,12 @@ public:
     bool isActive() const { return active; }
     bool finished() const { return !active; }
     float getRemaining() const { return remaining; }
+    float getDuration() const { return duration; }
 
     void reset() { active = false; remaining = 0.f; }
 
 private:
+    float duration = 0.f;
     float remaining = 0.f;
     bool active = false;
 };

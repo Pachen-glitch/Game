@@ -10,7 +10,10 @@ namespace Constants {
     constexpr float ENEMY_SPEED = 90.f;
     constexpr float BAT_SPEED = 140.f;
 
-    constexpr float ATTACK_DURATION = 0.35f;
+    constexpr float ATTACK_DURATION = 0.32f;
+    constexpr float SWORD_COOLDOWN = 0.42f;
+    constexpr float ATTACK_HIT_FRAME_TIME = 0.09f;
+    constexpr float HIT_PAUSE_DURATION = 0.05f;
     constexpr float SPIN_DURATION = 0.6f;
     constexpr float SHIELD_BLOCK_ANGLE = 90.f;
 

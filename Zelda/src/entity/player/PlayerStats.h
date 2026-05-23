@@ -1,9 +1,8 @@
 #pragma once
 
-// Persistent / run upgrades — separate from transient combat state.
 struct PlayerStats {
-    int maxHearts = 3;
-    int hearts = 3;
+    float maxHearts = 3.f;
+    float hearts = 3.f;
     int rupees = 0;
     int keys = 0;
 
@@ -14,7 +13,10 @@ struct PlayerStats {
     bool hasSpinAttack = true;
     bool hasShield = true;
 
-    void heal(int amount);
-    void takeDamage(int amount);
+    void heal(float amount);
+    void takeDamage(float amount);
     bool isDead() const;
+
+    int getHeartContainers() const;
+    int getDisplayHearts() const;
 };

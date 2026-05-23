@@ -43,24 +43,25 @@ void World::populateRoom() {
     };
 
     switch (room.type) {
+        case RoomType::Start:
+            entities.spawn<SlimeEnemy>(rndPos());
+            entities.spawn<SlimeEnemy>(rndPos());
+            entities.spawn<Heart>(rndPos());
+            entities.spawn<Key>(rndPos());
+            break;
         case RoomType::Combat:
         case RoomType::Boss:
-            for (int i = 0; i < 3 + std::rand() % 3; ++i) {
-                int pick = std::rand() % 4;
-                if (pick == 0) entities.spawn<SlimeEnemy>(rndPos());
-                else if (pick == 1) entities.spawn<BatEnemy>(rndPos());
-                else if (pick == 2) entities.spawn<SkeletonEnemy>(rndPos());
-                else {
-                    auto* s = entities.spawn<SummonerEnemy>(rndPos());
-                    if (s) s->setEntityManager(&entities);
-                }
+            for (int i = 0; i < 2 + std::rand() % 2; ++i) {
+                entities.spawn<SlimeEnemy>(rndPos());
             }
+            if (std::rand() % 2) entities.spawn<Heart>(rndPos());
+            if (std::rand() % 2) entities.spawn<Key>(rndPos());
             if (std::rand() % 2) entities.spawn<Coin>(rndPos());
             break;
         case RoomType::Treasure:
             entities.spawn<Key>(rndPos());
-            for (int i = 0; i < 5; ++i) entities.spawn<Coin>(rndPos());
-            if (std::rand() % 2) entities.spawn<Heart>(rndPos());
+            entities.spawn<Heart>(rndPos());
+            for (int i = 0; i < 3; ++i) entities.spawn<Coin>(rndPos());
             break;
         case RoomType::Shop:
             entities.spawn<Shopkeeper>(room.getPlayerSpawn() + sf::Vector2f(64.f, 0.f));
@@ -77,11 +78,11 @@ void World::populateRoom() {
 Room& World::currentRoom() { return rooms[currentRoomId]; }
 const Room& World::currentRoom() const { return rooms[currentRoomId]; }
 
-void World::updateEnemies(Player& player, float dt) {
+void World::updateEnemies(Player& player, float dt, const Map& map) {
     for (auto& e : entities.all()) {
         if (!e || !e->isActive() || e->getType() != EntityType::Enemy) continue;
         auto* enemy = dynamic_cast<Enemy*>(e.get());
-        if (enemy) enemy->think(player, dt);
+        if (enemy) enemy->think(player, dt, map);
     }
     entities.removeInactive();
 }

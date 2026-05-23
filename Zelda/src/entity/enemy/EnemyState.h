@@ -2,9 +2,11 @@
 
 enum class EnemyState {
     Idle,
-    Patrol,
+    Wander,
     Chase,
     Attack,
+    ReturnToSpawn,
+    Hurt,
     CallAllies,
     Dead
 };

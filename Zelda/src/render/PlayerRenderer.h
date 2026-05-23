@@ -20,4 +20,6 @@ private:
     void buildAnimations();
     std::string clipForState(Player& player) const;
     void registerWalkClips();
+    void registerIdleClips();
+    void registerAttackClips();
 };
