@@ -96,6 +96,11 @@ set(SOURCES
     # Utils
     src/utils/FontLoader.cpp
     src/utils/AssetPaths.cpp
+
+    # Threads
+    src/threads/JobQueue.cpp
+    src/threads/ThreadPool.cpp
+    src/threads/AsyncSemaphore.cpp
 )
 
 add_executable(ZeldaASCII ${SOURCES})
