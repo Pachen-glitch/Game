@@ -12,6 +12,7 @@
 #include "../entity/items/Heart.h"
 #include "../entity/items/Key.h"
 #include "../entity/npc/Shopkeeper.h"
+#include "../entity/items/Chest.h"
 
 #include <cstdlib>
 
@@ -59,9 +60,15 @@ void World::populateRoom() {
             if (std::rand() % 2) entities.spawn<Coin>(rndPos());
             break;
         case RoomType::Treasure:
+            entities.spawn<Chest>(
+                sf::Vector2f(430.f, 300.f),
+                &entities
+            );
             entities.spawn<Key>(rndPos());
             entities.spawn<Heart>(rndPos());
-            for (int i = 0; i < 3; ++i) entities.spawn<Coin>(rndPos());
+            for (int i = 0; i < 3; ++i) {
+                entities.spawn<Coin>(rndPos());
+            }
             break;
         case RoomType::Shop:
             entities.spawn<Shopkeeper>(room.getPlayerSpawn() + sf::Vector2f(64.f, 0.f));

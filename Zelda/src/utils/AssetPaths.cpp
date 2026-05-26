@@ -412,3 +412,29 @@ void AssetPaths::validateCriticalAssets() {
     logClip("slime_hurt", getEnemyAnimFrames("slime", "hurt"));
     logClip("slime_death", getEnemyAnimFrames("slime", "death"));
 }
+
+std::string AssetPaths::getChestClosedSprite() {
+
+    return resolve(
+        "sprites/objects/chess/Chess_close.png"
+    );
+}
+
+std::string AssetPaths::getChestOpenSprite() {
+
+    return resolve(
+        "sprites/objects/chess/Chess_open.png"
+    );
+}
+
+std::string AssetPaths::getRandomRupeeSprite() {
+
+    static std::vector<std::string> rupees = {
+
+        resolve("sprites/objects/coins/gema_azul.png"),
+        resolve("sprites/objects/coins/gema_diamond.png"),
+        resolve("sprites/objects/coins/gema_roja.png")
+    };
+
+    return rupees[rand() % rupees.size()];
+}
