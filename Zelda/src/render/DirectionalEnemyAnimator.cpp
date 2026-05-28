@@ -4,7 +4,9 @@
 
 #include <cmath>
 
-std::string DirectionalEnemyAnimator::directionToString(Direction dir) const {
+std::string DirectionalEnemyAnimator::directionToString(
+    Direction dir
+) const {
 
     switch (dir) {
 
@@ -36,7 +38,8 @@ void DirectionalEnemyAnimator::setupSkeleton() {
     const std::string states[] = {
         "idle",
         "walk",
-        "attack"
+        "attack",
+        "death"
     };
 
     for (const auto& dir : dirs) {
@@ -55,8 +58,11 @@ void DirectionalEnemyAnimator::setupSkeleton() {
             Animation clip =
                 AssetPaths::buildAnimation(
                     frames,
+                    state == "attack" ? 0.08f :
+                    state == "death" ? 0.14f :
                     0.12f,
-                    true
+
+                    state != "death"
                 );
 
             anim.registerAnimation(
@@ -65,24 +71,6 @@ void DirectionalEnemyAnimator::setupSkeleton() {
             );
         }
     }
-
-    auto deathFrames =
-        AssetPaths::collectFramesByPrefix(
-            "enemies/skeleton",
-            "death_"
-        );
-
-    Animation deathClip =
-        AssetPaths::buildAnimation(
-            deathFrames,
-            0.14f,
-            false
-        );
-
-    anim.registerAnimation(
-        "death",
-        deathClip
-    );
 }
 
 std::string DirectionalEnemyAnimator::pickClip(
@@ -95,17 +83,24 @@ std::string DirectionalEnemyAnimator::pickClip(
         );
 
     if (enemy.isDeathAnimPending()) {
-        return "death";
+        return "death_" + dir;
     }
 
     if (enemy.getAIState() == EnemyState::Attack) {
         return "attack_" + dir;
     }
 
-    sf::Vector2f vel = enemy.getVelocity();
+    sf::Vector2f vel =
+        enemy.getVelocity();
 
     float speed =
-        std::sqrt(vel.x * vel.x + vel.y * vel.y);
+        std::sqrt(
+            vel.x * vel.x +
+            vel.y * vel.y
+        );
+
+    // NO diagonal real
+    // prioriza eje dominante
 
     if (speed > 5.f) {
         return "walk_" + dir;
