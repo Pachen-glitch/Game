@@ -9,7 +9,7 @@ SkeletonEnemy::SkeletonEnemy(sf::Vector2f pos)
     : Enemy(
         pos,
         EnemyKind::Skeleton,
-        6,
+        5,
         AssetPaths::resolveFirst({
             "sprites/enemies/skeleton/idle/idle_d1.png"
         })
