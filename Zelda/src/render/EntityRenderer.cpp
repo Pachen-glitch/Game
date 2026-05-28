@@ -1,4 +1,5 @@
 #include "EntityRenderer.h"
+#include "../entity/player/Player.h"
 
 void EntityRenderer::update(EntityManager& entities, float dt) {
 
