@@ -44,7 +44,7 @@ void SkeletonRenderer::registerWalkClips() {
 
         std::vector<std::string> frames;
 
-        for (int i = 1; i <= 10; ++i) {
+        for (int i = 1; i <= 4; ++i) {
 
             frames.push_back(
                 AssetPaths::resolveFirst({
@@ -90,7 +90,7 @@ void SkeletonRenderer::registerIdleClips() {
 
         std::vector<std::string> frames;
 
-        for (int i = 1; i <= 10; ++i) {
+        for (int i = 1; i <= 4; ++i) {
 
             frames.push_back(
                 AssetPaths::resolveFirst({
@@ -136,7 +136,7 @@ void SkeletonRenderer::registerAttackClips() {
 
         std::vector<std::string> frames;
 
-        for (int i = 1; i <= 10; ++i) {
+        for (int i = 1; i <= 4; ++i) {
 
             frames.push_back(
                 AssetPaths::resolveFirst({
@@ -182,7 +182,7 @@ void SkeletonRenderer::registerDeathClips() {
 
         std::vector<std::string> frames;
 
-        for (int i = 1; i <= 10; ++i) {
+        for (int i = 1; i <= 4; ++i) {
 
             frames.push_back(
                 AssetPaths::resolveFirst({
