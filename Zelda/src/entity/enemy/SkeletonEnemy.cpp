@@ -1,6 +1,7 @@
 #include "SkeletonEnemy.h"
 
 #include "../player/Player.h"
+
 #include "../../utils/AssetPaths.h"
 #include "../../utils/MathUtils.h"
 
@@ -9,43 +10,81 @@ SkeletonEnemy::SkeletonEnemy(sf::Vector2f pos)
         pos,
         EnemyKind::Skeleton,
         6,
-        AssetPaths::getEnemySprite("skeleton", "idle", 1)
+        AssetPaths::resolveFirst({
+            "sprites/enemies/skeleton/idle/idle_d1.png"
+        })
     )
 {
-    moveSpeed = 75.f;
-    chaseSpeed = 115.f;
+    // más lento que player
+    moveSpeed = 55.f;
 
-    aggroRadius = 260.f;
-    deaggroRadius = 340.f;
+    // persecución más lenta
+    chaseSpeed = 70.f;
 
+    // rango de detección
+    aggroRadius = 240.f;
+    deaggroRadius = 320.f;
+
+    // distancia máxima
     maxChaseFromSpawn = 420.f;
 
+    // daño
     contactDamage = 2.f;
     contactKnockback = 170.f;
+
+    // ataque cada 1.5 segundos
+    attackCooldown.start(1.5f);
 }
 
-void SkeletonEnemy::think(Player& player, float dt, const Map& map)
-{
-    Enemy::think(player, dt, map);
+void SkeletonEnemy::think(
+    Player& player,
+    float dt,
+    const Map& map
+) {
 
-    // Rage mode when low HP
-    if (health <= 2 && !isDead()) {
+    Enemy::think(
+        player,
+        dt,
+        map
+    );
 
-        chaseSpeed = 145.f;
-        moveSpeed = 95.f;
+    // SOLO movimiento tipo WASD
+    // elimina diagonales
+
+    if (std::abs(velocity.x) >
+        std::abs(velocity.y)) {
+
+        velocity.y = 0.f;
+    }
+    else {
+
+        velocity.x = 0.f;
+    }
+
+    // rage mode
+    if (health <= 2 &&
+        !isDead()) {
+
+        chaseSpeed = 85.f;
     }
 }
 
-void SkeletonEnemy::takeHit(int damage, sf::Vector2f knockback)
-{
-    Enemy::takeHit(damage, knockback);
+void SkeletonEnemy::takeHit(
+    int damage,
+    sf::Vector2f knockback
+) {
+
+    Enemy::takeHit(
+        damage,
+        knockback
+    );
 
     if (!isDead()) {
 
-        // Rally behavior
-        setAIState(EnemyState::CallAllies);
+        setAIState(
+            EnemyState::Attack
+        );
 
-        // Longer alert duration
-        stateTimer.start(1.0f);
+        attackCooldown.start(1.5f);
     }
 }
