@@ -1,151 +1,37 @@
-#include "EnemyAnimator.h"
+#pragma once
 
-#include "../core/CombatFeel.h"
-#include "../utils/AssetPaths.h"
+#include "../animation/AnimationManager.h"
+#include "../entity/base/Entity.h"
+#include "../entity/enemy/Enemy.h"
 
-#include <cmath>
+#include <string>
 
-void EnemyAnimator::setupSlime() {
+class EnemyAnimator {
+public:
 
-    auto reg = [this](const std::string& name,
-                      const std::string& state,
-                      float dur,
-                      bool loop) {
+    void setupSlime();
+    void setupSkeleton();
 
-        auto frames =
-            AssetPaths::getEnemyAnimFrames("slime", state);
+    void update(Enemy& enemy, float dt);
 
-        Animation clip =
-            AssetPaths::buildAnimation(frames, dur, loop);
+    void applyToEntity(
+        Entity& entity,
+        float scale = 2.f
+    );
 
-        if (!clip.getCurrentFramePath().empty()) {
-            anim.registerAnimation(name, clip);
-        }
-    };
-
-    reg("idle", "idle", 0.14f, true);
-    reg("walk", "walk", 0.10f, true);
-    reg("hurt", "hurt", 0.12f, false);
-    reg("death", "death", 0.14f, false);
-
-    lastClip.clear();
-    deathFinished = false;
-}
-
-void EnemyAnimator::setupSkeleton() {
-
-    auto reg = [this](const std::string& name,
-                      const std::string& state,
-                      float dur,
-                      bool loop) {
-
-        auto frames =
-            AssetPaths::getEnemyAnimFrames("skeleton", state);
-
-        Animation clip =
-            AssetPaths::buildAnimation(frames, dur, loop);
-
-        if (!clip.getCurrentFramePath().empty()) {
-            anim.registerAnimation(name, clip);
-        }
-    };
-
-    reg("idle", "idle", 0.14f, true);
-    reg("walk", "walk", 0.10f, true);
-    reg("hurt", "hurt", 0.12f, false);
-    reg("death", "death", 0.14f, false);
-
-    lastClip.clear();
-    deathFinished = false;
-}
-
-void EnemyAnimator::update(Enemy& enemy, float dt) {
-
-    if (enemy.isDeathAnimPending()) {
-
-        if (lastClip != "death") {
-            anim.play("death", true);
-            lastClip = "death";
-        }
-
-        anim.update(dt);
-
-        if (anim.isFinished()) {
-            deathFinished = true;
-            enemy.deactivate();
-        }
-
-        return;
+    bool isDeathFinished() const {
+        return deathFinished;
     }
 
-    std::string clip = pickClip(enemy);
+private:
 
-    if (clip != lastClip) {
-        anim.play(clip);
-        lastClip = clip;
-    }
+    std::string pickClip(
+        const Enemy& enemy
+    ) const;
 
-    anim.update(dt);
-}
+    AnimationManager anim;
 
-std::string EnemyAnimator::pickClip(const Enemy& enemy) const {
+    std::string lastClip;
 
-    if (enemy.isDeathAnimPending()) return "death";
-
-    if (enemy.isHurtAnimating() ||
-        enemy.getAIState() == EnemyState::Hurt) {
-
-        return "hurt";
-    }
-
-    EnemyState st = enemy.getAIState();
-
-    if (st == EnemyState::Chase ||
-        st == EnemyState::Wander ||
-        st == EnemyState::ReturnToSpawn) {
-
-        sf::Vector2f vel = enemy.getVelocity();
-
-        float speed =
-            std::sqrt(vel.x * vel.x + vel.y * vel.y);
-
-        if (speed > 6.f) {
-            return "walk";
-        }
-    }
-
-    if (st == EnemyState::Attack) {
-
-        sf::Vector2f vel = enemy.getVelocity();
-
-        float speed =
-            std::sqrt(vel.x * vel.x + vel.y * vel.y);
-
-        if (speed > 6.f) {
-            return "walk";
-        }
-    }
-
-    return "idle";
-}
-
-void EnemyAnimator::applyToEntity(Entity& entity, float scale) {
-
-    anim.applyToSprite(entity.getSprite(), scale);
-
-    auto* enemy = dynamic_cast<Enemy*>(&entity);
-
-    if (enemy &&
-        CombatFeel::instance().isEnemyFlashing() &&
-        (enemy->isHurtAnimating() ||
-         enemy->getAIState() == EnemyState::Hurt)) {
-
-        entity.getSprite().setColor(sf::Color(255, 140, 140));
-    }
-    else {
-
-        entity.getSprite().setColor(sf::Color::White);
-    }
-
-    entity.getSprite().setPosition(entity.getPosition());
-}
+    bool deathFinished = false;
+};
