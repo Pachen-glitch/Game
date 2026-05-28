@@ -97,16 +97,26 @@ void World::updateEnemies(Player& player, float dt, const Map& map) {
 bool World::tryTransition(Player& player, DoorSide& outSide) {
     sf::Vector2f pos = player.getPosition();
     Room& room = currentRoom();
-
-    for (const auto& conn : room.connections) {
+    for (auto& conn : room.connections) {
         sf::Vector2f doorPos = room.getDoorWorldPos(conn.side);
         float dist = std::hypot(pos.x - doorPos.x, pos.y - doorPos.y);
         if (dist < Constants::TILE_SIZE * 1.2f) {
-            loadRoom(conn.targetRoomId);
-            player.setPosition(currentRoom().getPlayerSpawn());
-            outSide = conn.side;
-            return true;
+        if (conn.locked) {
+            if (player.getKeys() <= 0) {
+
+                return false;
+            }
+            player.useKey();
+            conn.locked = false;
         }
+        loadRoom(conn.targetRoomId);
+        player.setPosition(
+            currentRoom().getPlayerSpawn()
+        );
+        outSide = conn.side;
+
+        return true;
     }
+}
     return false;
 }

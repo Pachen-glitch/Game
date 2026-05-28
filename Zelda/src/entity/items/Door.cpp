@@ -5,7 +5,12 @@
 #include "../../utils/AssetPaths.h"
 #include "../../interaction/EventBus.h"
 
-Door::Door(sf::Vector2f pos, bool isLocked)
+#include <cmath>
+
+Door::Door(
+    sf::Vector2f pos,
+    bool isLocked
+)
 
     : Entity(
         pos,
@@ -16,13 +21,22 @@ Door::Door(sf::Vector2f pos, bool isLocked)
     locked(isLocked)
 {
     sprite.setScale(2.f, 2.f);
+
+    if (!locked) {
+
+        sprite.setColor(
+            sf::Color(120, 255, 120)
+        );
+    }
 }
 
 void Door::unlock() {
 
     locked = false;
 
-    sprite.setColor(sf::Color(120, 255, 120));
+    sprite.setColor(
+        sf::Color(120, 255, 120)
+    );
 
     EventBus::instance().emit("door_unlock");
 }
@@ -32,9 +46,17 @@ bool Door::isLocked() const {
     return locked;
 }
 
+bool Door::canPass() const {
+
+    return !locked;
+}
+
 void Door::onInteract(Player& player) {
 
     if (!locked)
+        return;
+
+    if (player.getKeys() <= 0)
         return;
 
     if (player.useKey()) {

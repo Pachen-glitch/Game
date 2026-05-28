@@ -7,6 +7,7 @@
 #include "../../utils/AssetPaths.h"
 #include "../../render/TextureCache.h"
 #include "../../interaction/EventBus.h"
+#include <cmath>
 
 Chest::Chest(
     sf::Vector2f pos,
