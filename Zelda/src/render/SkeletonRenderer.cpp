@@ -212,25 +212,27 @@ std::string SkeletonRenderer::clipForState(
     SkeletonEnemy& skeleton
 ) const {
 
+    sf::Vector2f vel =
+        skeleton.getVelocity();
+
     std::string dir;
 
-    switch (skeleton.getFacingDirection()) {
+    // diagonales usan izquierda/derecha
 
-        case Direction::UP:
-            dir = "up";
-            break;
+    if (std::abs(vel.x) >
+        std::abs(vel.y)) {
 
-        case Direction::DOWN:
-            dir = "down";
-            break;
-
-        case Direction::LEFT:
-            dir = "left";
-            break;
-
-        case Direction::RIGHT:
+        if (vel.x > 0.f)
             dir = "right";
-            break;
+        else
+            dir = "left";
+    }
+    else {
+
+        if (vel.y > 0.f)
+            dir = "down";
+        else
+            dir = "up";
     }
 
     if (skeleton.isDeathAnimPending()) {
@@ -240,9 +242,6 @@ std::string SkeletonRenderer::clipForState(
     if (skeleton.getAIState() == EnemyState::Attack) {
         return "attack_" + dir;
     }
-
-    sf::Vector2f vel =
-        skeleton.getVelocity();
 
     float speed =
         std::sqrt(
