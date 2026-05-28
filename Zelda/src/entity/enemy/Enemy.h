@@ -2,6 +2,7 @@
 
 #include "../base/Entity.h"
 #include "EnemyState.h"
+#include "../player/Direction.h"
 
 #include "../../utils/Timer.h"
 
