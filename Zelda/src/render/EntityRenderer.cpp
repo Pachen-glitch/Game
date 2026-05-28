@@ -1,7 +1,10 @@
 #include "EntityRenderer.h"
 
 void EntityRenderer::update(EntityManager& entities, float dt) {
-    for (auto it = slimeAnimators.begin(); it != slimeAnimators.end();) {
+
+    for (auto it = slimeAnimators.begin();
+         it != slimeAnimators.end();) {
+
         if (!it->first || !it->first->isActive()) {
             it = slimeAnimators.erase(it);
         } else {
@@ -9,19 +12,59 @@ void EntityRenderer::update(EntityManager& entities, float dt) {
         }
     }
 
+    for (auto it = skeletonAnimators.begin();
+         it != skeletonAnimators.end();) {
+
+        if (!it->first || !it->first->isActive()) {
+            it = skeletonAnimators.erase(it);
+        } else {
+            ++it;
+        }
+    }
+
     for (auto& ent : entities.all()) {
+
         if (!ent || !ent->isActive()) continue;
 
-        auto* slime = dynamic_cast<SlimeEnemy*>(ent.get());
-        if (!slime) continue;
+        // SLIME
 
-        auto [iter, inserted] = slimeAnimators.try_emplace(slime);
-        if (inserted) {
-            iter->second.setupSlime();
+        auto* slime =
+            dynamic_cast<SlimeEnemy*>(ent.get());
+
+        if (slime) {
+
+            auto [iter, inserted] =
+                slimeAnimators.try_emplace(slime);
+
+            if (inserted) {
+                iter->second.setupSlime();
+            }
+
+            iter->second.update(*slime, dt);
+            iter->second.applyToEntity(*slime, 2.f);
+
+            continue;
         }
 
-        iter->second.update(*slime, dt);
-        iter->second.applyToEntity(*slime, 2.f);
+        // SKELETON
+
+        auto* skeleton =
+            dynamic_cast<SkeletonEnemy*>(ent.get());
+
+        if (skeleton) {
+
+            auto [iter, inserted] =
+                skeletonAnimators.try_emplace(skeleton);
+
+            if (inserted) {
+                iter->second.setupSkeleton();
+            }
+
+            iter->second.update(*skeleton, dt);
+            iter->second.applyToEntity(*skeleton, 2.f);
+
+            continue;
+        }
     }
 }
 

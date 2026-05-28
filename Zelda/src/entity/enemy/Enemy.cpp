@@ -109,18 +109,23 @@ void Enemy::think(Player& player, float dt, const Map& map) {
         case EnemyState::Idle:
             updateIdle(dt, map);
             break;
+
         case EnemyState::Wander:
             updateWander(dt, map);
             break;
+
         case EnemyState::Chase:
             updateChase(player, dt);
             break;
+
         case EnemyState::ReturnToSpawn:
             updateReturnHome(dt);
             break;
+
         case EnemyState::Attack:
             updateAttack(player, dt);
             break;
+
         default:
             velocity = {0.f, 0.f};
             break;
@@ -134,18 +139,28 @@ void Enemy::takeHit(int damage, sf::Vector2f knockback) {
     if (isDead() || deathAnimPending) return;
 
     health -= damage;
+
     velocity = knockback * 1.35f;
+
     CombatFeel::instance().triggerHitPause(0.05f);
     CombatFeel::instance().setEnemyFlashTimer(0.14f);
+
     EventBus::instance().emit("enemy_hit");
 
     if (health <= 0) {
+
         setAIState(EnemyState::Dead);
+
         deathAnimPending = true;
+
         velocity = {0.f, 0.f};
+
         EventBus::instance().emit("enemy_died");
-    } else {
+    }
+    else {
+
         setAIState(EnemyState::Hurt);
+
         hurtAnimTimer.start(0.36f);
     }
 }
@@ -154,9 +169,17 @@ bool Enemy::isDead() const {
     return !isActive() || health <= 0;
 }
 
-int Enemy::getHealth() const { return health; }
-EnemyState Enemy::getAIState() const { return aiState; }
-EnemyKind Enemy::getKind() const { return kind; }
+int Enemy::getHealth() const {
+    return health;
+}
+
+EnemyState Enemy::getAIState() const {
+    return aiState;
+}
+
+EnemyKind Enemy::getKind() const {
+    return kind;
+}
 
 sf::FloatRect Enemy::getAttackBounds() const {
     return getContactBounds();
@@ -179,83 +202,152 @@ void Enemy::setAIState(EnemyState s) {
 }
 
 bool Enemy::seesPlayer(const Player& player) const {
-    return MathUtils::distance(getPosition(), player.getPosition()) <= aggroRadius;
+    return MathUtils::distance(
+        getPosition(),
+        player.getPosition()
+    ) <= aggroRadius;
 }
 
 void Enemy::applyMovement(float dt, const Map& map) {
+
+    if (std::abs(velocity.x) > std::abs(velocity.y)) {
+
+        if (velocity.x > 0.f)
+            facingDirection = Direction::RIGHT;
+
+        else if (velocity.x < 0.f)
+            facingDirection = Direction::LEFT;
+    }
+    else {
+
+        if (velocity.y > 0.f)
+            facingDirection = Direction::DOWN;
+
+        else if (velocity.y < 0.f)
+            facingDirection = Direction::UP;
+    }
+
     sf::Vector2f next = EnemyMovement::moveWithCollision(
-        map, getPosition(), velocity, dt, getSize()
+        map,
+        getPosition(),
+        velocity,
+        dt,
+        getSize()
     );
+
     setPosition(next);
 }
 
 void Enemy::updateIdle(float dt, const Map& map) {
     (void)dt;
+
     velocity = {0.f, 0.f};
 
     if (stateTimer.finished()) {
+
         pickWanderDirection(map);
+
         setAIState(EnemyState::Wander);
+
         stateTimer.start(randomRange(0.28f, 0.65f));
     }
 }
 
 void Enemy::updateWander(float dt, const Map& map) {
     (void)map;
+
     velocity = wanderDirection * (moveSpeed * 0.55f);
 
     if (stateTimer.finished()) {
+
         setAIState(EnemyState::Idle);
+
         stateTimer.start(randomRange(0.7f, 2.0f));
+
         velocity = {0.f, 0.f};
     }
 }
 
 void Enemy::updateChase(const Player& player, float dt) {
     (void)dt;
+
     float speed = chaseSpeed > 0.f ? chaseSpeed : moveSpeed;
+
     sf::Vector2f dir = MathUtils::directionTo(
-        getPosition(), player.getPosition()
+        getPosition(),
+        player.getPosition()
     );
+
     velocity = dir * speed;
 }
 
 void Enemy::updateReturnHome(float dt) {
     (void)dt;
-    float dist = MathUtils::distance(getPosition(), spawnPosition);
+
+    float dist = MathUtils::distance(
+        getPosition(),
+        spawnPosition
+    );
+
     if (dist < 14.f) {
+
         setAIState(EnemyState::Idle);
+
         stateTimer.start(randomRange(0.6f, 1.4f));
+
         velocity = {0.f, 0.f};
+
         return;
     }
-    velocity = MathUtils::directionTo(getPosition(), spawnPosition) * (moveSpeed * 0.7f);
+
+    velocity =
+        MathUtils::directionTo(
+            getPosition(),
+            spawnPosition
+        ) * (moveSpeed * 0.7f);
 }
 
 void Enemy::updateAttack(const Player& player, float dt) {
     (void)player;
     (void)dt;
+
     velocity = {0.f, 0.f};
+
     if (attackCooldown.finished()) {
         attackCooldown.start(1.1f);
     }
 }
 
 void Enemy::pickWanderDirection(const Map& map) {
+
     static const sf::Vector2f dirs[] = {
-        {0.f, -1.f}, {0.f, 1.f}, {-1.f, 0.f}, {1.f, 0.f}
+        {0.f, -1.f},
+        {0.f, 1.f},
+        {-1.f, 0.f},
+        {1.f, 0.f}
     };
 
     for (int attempt = 0; attempt < 6; ++attempt) {
-        int idx = static_cast<int>(rand01() * 4.f) % 4;
+
+        int idx =
+            static_cast<int>(rand01() * 4.f) % 4;
+
         sf::Vector2f dir = dirs[idx];
-        sf::Vector2f probe = getPosition() + dir * static_cast<float>(Constants::TILE_SIZE);
+
+        sf::Vector2f probe =
+            getPosition() +
+            dir * static_cast<float>(Constants::TILE_SIZE);
+
         if (!CollisionSystem::isWall(map, probe)) {
+
             wanderDirection = dir;
+
             return;
         }
     }
-    wanderDirection = dirs[static_cast<int>(rand01() * 4.f) % 4];
+
+    wanderDirection =
+        dirs[static_cast<int>(rand01() * 4.f) % 4];
 }
 
 void Enemy::modifyVelocity(float dt) {

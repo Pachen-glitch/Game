@@ -22,46 +22,71 @@ public:
     virtual void think(Player& player, float dt, const Map& map);
 
     virtual void takeHit(int damage, sf::Vector2f knockback);
+
     bool isDead() const;
     int getHealth() const;
 
     EnemyState getAIState() const;
     EnemyKind getKind() const;
 
+    Direction getFacingDirection() const { return facingDirection; }
+
     sf::FloatRect getAttackBounds() const;
     virtual sf::FloatRect getContactBounds() const;
 
     float getContactDamage() const { return contactDamage; }
     float getContactKnockback() const { return contactKnockback; }
-    bool canDealContactDamage() const { return contactCooldown.finished(); }
+
+    bool canDealContactDamage() const {
+        return contactCooldown.finished();
+    }
+
     void resetContactCooldown(float duration = 0.9f);
 
     void damage(int amount);
 
     sf::Vector2f getVelocity() const { return velocity; }
-    bool isHurtAnimating() const { return hurtAnimTimer.isActive(); }
-    bool isDeathAnimPending() const { return deathAnimPending; }
+
+    bool isHurtAnimating() const {
+        return hurtAnimTimer.isActive();
+    }
+
+    bool isDeathAnimPending() const {
+        return deathAnimPending;
+    }
 
 protected:
     void setAIState(EnemyState s);
+
     bool seesPlayer(const Player& player) const;
+
     void applyMovement(float dt, const Map& map);
 
     virtual void initKindStats();
+
     virtual void modifyVelocity(float dt);
 
     void updateIdle(float dt, const Map& map);
+
     void updateWander(float dt, const Map& map);
+
     void updateChase(const Player& player, float dt);
+
     void updateReturnHome(float dt);
+
     void updateAttack(const Player& player, float dt);
+
     void pickWanderDirection(const Map& map);
+
     float randomRange(float lo, float hi) const;
 
     int health = 2;
     int maxHealth = 2;
+
     EnemyState aiState = EnemyState::Idle;
     EnemyKind kind = EnemyKind::Slime;
+
+    Direction facingDirection = Direction::DOWN;
 
     sf::Vector2f velocity;
     sf::Vector2f spawnPosition;
@@ -83,5 +108,6 @@ protected:
 
     float contactDamage = 1.f;
     float contactKnockback = 120.f;
+
     bool deathAnimPending = false;
 };
