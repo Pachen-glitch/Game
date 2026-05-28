@@ -10,7 +10,8 @@ SkeletonRenderer::SkeletonRenderer() {
 
     anim.play("idle_down");
 
-    anim.applyToSprite(sprite, 4.f);
+    // mismo tamaño que player
+    anim.applyToSprite(sprite, 2.f);
 }
 
 void SkeletonRenderer::buildAnimations() {
@@ -48,7 +49,7 @@ void SkeletonRenderer::registerWalkClips() {
 
             frames.push_back(
                 AssetPaths::resolveFirst({
-                    "sprites/enemies/skeleton/move/walk_" +
+                    "sprites/enemies/skeleton/walk/walk_" +
                     std::string(suffix[d]) +
                     std::to_string(i) +
                     ".png"
@@ -217,8 +218,6 @@ std::string SkeletonRenderer::clipForState(
 
     std::string dir;
 
-    // diagonales usan izquierda/derecha
-
     if (std::abs(vel.x) >
         std::abs(vel.y)) {
 
@@ -276,18 +275,12 @@ void SkeletonRenderer::update(
 
     anim.update(deltaTime);
 
-    anim.applyToSprite(sprite, 4.f);
+    // mismo tamaño que player
+    anim.applyToSprite(sprite, 2.f);
 
     sprite.setPosition(
         skeleton.getPosition()
     );
 
     skeleton.getSprite() = sprite;
-}
-
-void SkeletonRenderer::draw(
-    sf::RenderWindow& window
-) {
-
-    window.draw(sprite);
 }
