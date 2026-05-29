@@ -29,13 +29,12 @@ SkeletonEnemy::SkeletonEnemy(sf::Vector2f pos)
     maxChaseFromSpawn = 420.f;
 
     // daño
-    contactDamage = 2.f;
+    contactDamage = 1.f;
     contactKnockback = 170.f;
 
     // ataque cada 1.5 segundos
-    attackCooldown.start(1.5f);
+    attackCooldown.start(1.75f);
 }
-
 void SkeletonEnemy::think(
     Player& player,
     float dt,

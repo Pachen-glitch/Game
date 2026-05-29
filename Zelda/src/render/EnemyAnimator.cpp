@@ -71,6 +71,10 @@ void EnemyAnimator::update(Enemy& enemy, float dt) {
 
         anim.update(dt);
 
+        // Si no existe animación de muerte,
+        // o terminó la animación,
+        // eliminar enemigo inmediatamente.
+
         if (anim.isFinished()) {
 
             deathFinished = true;
@@ -162,7 +166,6 @@ void EnemyAnimator::applyToEntity(
         dynamic_cast<Enemy*>(&entity);
 
     if (enemy &&
-        CombatFeel::instance().isEnemyFlashing() &&
         (enemy->isHurtAnimating() ||
          enemy->getAIState() == EnemyState::Hurt)) {
 
