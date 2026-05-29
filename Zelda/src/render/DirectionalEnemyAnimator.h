@@ -6,10 +6,9 @@
 
 #include <string>
 
-class EnemyAnimator {
+class DirectionalEnemyAnimator {
 public:
 
-    void setupSlime();
     void setupSkeleton();
 
     void update(Enemy& enemy, float dt);
@@ -19,19 +18,17 @@ public:
         float scale = 2.f
     );
 
-    bool isDeathFinished() const {
-        return deathFinished;
-    }
-
 private:
 
     std::string pickClip(
         const Enemy& enemy
     ) const;
 
+    std::string directionToString(
+        Direction dir
+    ) const;
+
     AnimationManager anim;
 
     std::string lastClip;
-
-    bool deathFinished = false;
 };

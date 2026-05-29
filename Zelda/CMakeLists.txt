@@ -35,18 +35,22 @@ set(SOURCES
     # Entity
     src/entity/base/Entity.cpp
     src/entity/base/EntityManager.cpp
+
     src/entity/player/Player.cpp
     src/entity/player/PlayerStats.cpp
+
     src/entity/enemy/Enemy.cpp
     src/entity/enemy/EnemyAI.cpp
     src/entity/enemy/SlimeEnemy.cpp
     src/entity/enemy/BatEnemy.cpp
     src/entity/enemy/SkeletonEnemy.cpp
     src/entity/enemy/SummonerEnemy.cpp
+
     src/entity/items/Coin.cpp
     src/entity/items/Key.cpp
     src/entity/items/Heart.cpp
     src/entity/items/Door.cpp
+
     src/entity/npc/Shopkeeper.cpp
 
     # Movement
@@ -65,6 +69,7 @@ set(SOURCES
     # Render
     src/render/TextureCache.cpp
     src/render/PlayerRenderer.cpp
+    src/render/SkeletonRenderer.cpp
     src/render/Camera.cpp
     src/render/TilemapRenderer.cpp
     src/render/EntityRenderer.cpp
@@ -112,17 +117,21 @@ target_link_libraries(ZeldaASCII
 )
 
 if(WIN32)
+
     add_custom_command(
         TARGET ZeldaASCII POST_BUILD
+
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         $<TARGET_RUNTIME_DLLS:ZeldaASCII>
         $<TARGET_FILE_DIR:ZeldaASCII>
+
         COMMAND_EXPAND_LISTS
     )
 endif()
 
 add_custom_command(
     TARGET ZeldaASCII POST_BUILD
+
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_SOURCE_DIR}/assets
     $<TARGET_FILE_DIR:ZeldaASCII>/assets
