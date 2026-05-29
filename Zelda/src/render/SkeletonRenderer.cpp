@@ -119,21 +119,19 @@ void SkeletonRenderer::registerIdleClips() {
 
 void SkeletonRenderer::registerAttackClips() {
 
+    // SOLO izquierda y derecha
+
     const char* dirs[] = {
-        "down",
-        "up",
         "left",
         "right"
     };
 
     const char* suffix[] = {
-        "d",
-        "u",
         "l",
         "r"
     };
 
-    for (int d = 0; d < 4; ++d) {
+    for (int d = 0; d < 2; ++d) {
 
         std::vector<std::string> frames;
 
@@ -218,6 +216,8 @@ std::string SkeletonRenderer::clipForState(
 
     std::string dir;
 
+    // diagonales usan izquierda/derecha
+
     if (std::abs(vel.x) >
         std::abs(vel.y)) {
 
@@ -239,7 +239,11 @@ std::string SkeletonRenderer::clipForState(
     }
 
     if (skeleton.getAIState() == EnemyState::Attack) {
-        return "attack_" + dir;
+
+        if (dir == "left")
+            return "attack_left";
+
+        return "attack_right";
     }
 
     float speed =

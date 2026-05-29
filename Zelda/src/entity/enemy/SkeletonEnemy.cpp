@@ -16,10 +16,10 @@ SkeletonEnemy::SkeletonEnemy(sf::Vector2f pos)
     )
 {
     // más lento que player
-    moveSpeed = 55.f;
+    moveSpeed = 70.f;
 
     // persecución más lenta
-    chaseSpeed = 70.f;
+    chaseSpeed = 95.f;
 
     // rango de detección
     aggroRadius = 240.f;
