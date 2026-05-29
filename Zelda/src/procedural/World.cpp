@@ -45,11 +45,11 @@ void World::populateRoom() {
 
     switch (room.type) {
         case RoomType::Start:
-            entities.spawn<SlimeEnemy>(rndPos());
-            entities.spawn<SlimeEnemy>(rndPos());
-            entities.spawn<Heart>(rndPos());
-            entities.spawn<Key>(rndPos());
-            break;
+        entities.spawn<SlimeEnemy>(rndPos());
+        entities.spawn<SlimeEnemy>(rndPos());
+        entities.spawn<Heart>(rndPos());
+        entities.spawn<Key>(rndPos());
+        break;
         case RoomType::Combat:
         case RoomType::Boss:
             for (int i = 0; i < 2 + std::rand() % 2; ++i) {
@@ -60,10 +60,6 @@ void World::populateRoom() {
             if (std::rand() % 2) entities.spawn<Coin>(rndPos());
             break;
         case RoomType::Treasure:
-            entities.spawn<Chest>(
-                sf::Vector2f(430.f, 300.f),
-                &entities
-            );
             entities.spawn<Key>(rndPos());
             entities.spawn<Heart>(rndPos());
             for (int i = 0; i < 3; ++i) {
@@ -71,52 +67,139 @@ void World::populateRoom() {
             }
             break;
         case RoomType::Shop:
-            entities.spawn<Shopkeeper>(room.getPlayerSpawn() + sf::Vector2f(64.f, 0.f));
+            entities.spawn<Shopkeeper>(room.getPlayerSpawn()+ sf::Vector2f(220.f, 0.f));
             break;
         default:
             break;
     }
 
-    for (const auto& conn : room.connections) {
-        entities.spawn<Door>(room.getDoorWorldPos(conn.side), conn.locked);
+        if (
+        room.cleared ||
+        room.type == RoomType::Start ||
+        room.type == RoomType::Shop
+    ) {
+
+        for (const auto& conn : room.connections) {
+
+            entities.spawn<Door>(
+                room.getDoorWorldPos(conn.side),
+                conn.locked
+            );
+        }
     }
 }
 
 Room& World::currentRoom() { return rooms[currentRoomId]; }
 const Room& World::currentRoom() const { return rooms[currentRoomId]; }
 
-void World::updateEnemies(Player& player, float dt, const Map& map) {
+void World::updateEnemies(
+    Player& player,
+    float dt,
+    const Map& map
+) {
+
+    bool hasEnemies = false;
+
     for (auto& e : entities.all()) {
-        if (!e || !e->isActive() || e->getType() != EntityType::Enemy) continue;
-        auto* enemy = dynamic_cast<Enemy*>(e.get());
-        if (enemy) enemy->think(player, dt, map);
+
+        if (!e || !e->isActive())
+            continue;
+
+        if (e->getType() != EntityType::Enemy)
+            continue;
+
+        hasEnemies = true;
+
+        auto* enemy =
+            dynamic_cast<Enemy*>(e.get());
+
+        if (enemy) {
+
+            enemy->think(
+                player,
+                dt,
+                map
+            );
+        }
     }
+
     entities.removeInactive();
+
+    Room& room = currentRoom();
+
+    // sala completada
+    if (!hasEnemies && !room.cleared) {
+
+        room.cleared = true;
+        for (const auto& conn : room.connections) {
+            entities.spawn<Door>(
+                room.getDoorWorldPos(conn.side),
+                conn.locked
+            );
+        }
+        // NO poner cofres en tienda
+        if (
+            room.type != RoomType::Shop &&
+            room.type != RoomType::Start
+        ) {
+
+            entities.spawn<Chest>(
+
+                room.getPlayerSpawn()
+                    + sf::Vector2f(180.f, 0.f),
+
+                &entities
+            );
+        }
+    }
 }
 
 bool World::tryTransition(Player& player, DoorSide& outSide) {
+
     sf::Vector2f pos = player.getPosition();
+
     Room& room = currentRoom();
+
     for (auto& conn : room.connections) {
-        sf::Vector2f doorPos = room.getDoorWorldPos(conn.side);
-        float dist = std::hypot(pos.x - doorPos.x, pos.y - doorPos.y);
-        if (dist < Constants::TILE_SIZE * 1.2f) {
-        if (conn.locked) {
-            if (player.getKeys() <= 0) {
 
-                return false;
-            }
-            player.useKey();
-            conn.locked = false;
-        }
-        loadRoom(conn.targetRoomId);
-        player.setPosition(
-            currentRoom().getPlayerSpawn()
+        sf::Vector2f doorPos =
+            room.getDoorWorldPos(conn.side);
+
+        float dist = std::hypot(
+            pos.x - doorPos.x,
+            pos.y - doorPos.y
         );
-        outSide = conn.side;
 
-        return true;
+        if (dist < Constants::TILE_SIZE * 1.2f) {
+
+            // puerta cerrada
+            if (conn.locked) {
+
+                // no tiene llave
+                if (player.getKeys() <= 0) {
+
+                    return false;
+                }
+
+                // consume llave
+                player.useKey();
+
+                // desbloquea permanentemente
+                conn.locked = false;
+            }
+
+            // cambiar room
+            loadRoom(conn.targetRoomId);
+
+            player.setPosition(
+                currentRoom().getPlayerSpawn()
+            );
+
+            outSide = conn.side;
+
+            return true;
+        }
     }
-}
+
     return false;
 }

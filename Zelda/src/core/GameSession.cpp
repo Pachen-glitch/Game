@@ -91,8 +91,16 @@ void GameSession::run() {
     sf::Clock clock;
 
     EventBus::instance().subscribe("open_shop", [&]() {
+
+        if (state == GameState::Shop)
+            return;
+
         state = GameState::Shop;
-        economy.openShop(player, world.getCurrentRoomId());
+
+        economy.openShop(
+            player,
+            world.getCurrentRoomId()
+        );
     });
 
     while (window.isOpen()) {

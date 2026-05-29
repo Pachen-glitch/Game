@@ -2,11 +2,13 @@
 
 #include "../player/Player.h"
 #include "../base/EntityManager.h"
+
 #include "Coin.h"
 
 #include "../../utils/AssetPaths.h"
 #include "../../render/TextureCache.h"
 #include "../../interaction/EventBus.h"
+#include <iostream>
 #include <cmath>
 
 Chest::Chest(
@@ -15,14 +17,19 @@ Chest::Chest(
 )
 
     : Entity(
+
         pos,
-        {48.f, 48.f},
+
+        {220.f, 202.f},
+
         AssetPaths::getChestClosedSprite(),
+
         EntityType::Chest
     ),
+
     entities(entityManager)
 {
-    sprite.setScale(2.f, 2.f);
+
 }
 
 void Chest::onInteract(Player& player) {
@@ -33,23 +40,13 @@ void Chest::onInteract(Player& player) {
     opened = true;
 
     sprite.setTexture(
+
         TextureCache::instance().get(
             AssetPaths::getChestOpenSprite()
         )
     );
 
-    for (int i = 0; i < 5; ++i) {
-
-        sf::Vector2f offset(
-
-            (rand() % 80) - 40.f,
-            (rand() % 80) - 40.f
-        );
-
-        entities->spawn<Coin>(
-            position + offset
-        );
-    }
+    player.addRupees(25);
 
     EventBus::instance().emit("rupee_pickup");
 }
@@ -62,7 +59,8 @@ void Chest::update(float dt) {
 
         timer += dt;
 
-        float offset = std::sin(timer * 2.5f) * 1.5f;
+        float offset =
+            std::sin(timer * 2.5f) * 2.f;
 
         sprite.setPosition(
             position.x,
