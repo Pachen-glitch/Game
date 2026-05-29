@@ -47,6 +47,9 @@ public:
     static std::string getKeySprite();
     static std::string getCoinSprite();
     static std::string getDoorSprite();
+    static std::string getChestClosedSprite();
+    static std::string getChestOpenSprite();
+    static std::string getRandomRupeeSprite();
     static std::string getShopkeeperSprite();
 
     static std::string getFontPath();

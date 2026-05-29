@@ -44,20 +44,37 @@ sf::Vector2f Room::getPlayerSpawn() const {
     return {cx, cy};
 }
 
-sf::Vector2f Room::getDoorWorldPos(DoorSide side) const {
-    float midX = static_cast<float>(map.getWidth() / 2);
-    float midY = static_cast<float>(map.getHeight() / 2);
-    float ts = static_cast<float>(Constants::TILE_SIZE);
+sf::Vector2f Room::getDoorWorldPos(
+    DoorSide side
+) const {
+
+    float roomWidth =
+        map.getWidth() * Constants::TILE_SIZE;
+
+    float roomHeight =
+        map.getHeight() * Constants::TILE_SIZE;
+
+    float centerX = roomWidth / 2.f;
+
     switch (side) {
+
         case DoorSide::North:
-            return {midX * ts, ts};
+
+            return {
+                centerX - 96.f,
+                -90.f
+            };
+
         case DoorSide::South:
-            return {midX * ts, (map.getHeight() - 2) * ts};
-        case DoorSide::East:
-            return {(map.getWidth() - 2) * ts, midY * ts};
-        case DoorSide::West:
-            return {ts, midY * ts};
+
+            return {
+                centerX - 96.f,
+                roomHeight - 110.f
+            };
+
         default:
-            return getPlayerSpawn();
+            break;
     }
+
+    return {0.f, 0.f};
 }

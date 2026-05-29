@@ -12,6 +12,7 @@
 #include "../entity/items/Heart.h"
 #include "../entity/items/Key.h"
 #include "../entity/npc/Shopkeeper.h"
+#include "../entity/items/Chest.h"
 
 #include <cstdlib>
 
@@ -63,15 +64,11 @@ void World::populateRoom() {
     switch (room.type) {
 
         case RoomType::Start:
-
             entities.spawn<SlimeEnemy>(rndPos());
             entities.spawn<SlimeEnemy>(rndPos());
-
             entities.spawn<Heart>(rndPos());
             entities.spawn<Key>(rndPos());
-
             break;
-
         case RoomType::Combat:
         case RoomType::Boss:
 
@@ -126,31 +123,25 @@ void World::populateRoom() {
             entities.spawn<Key>(rndPos());
 
             entities.spawn<Heart>(rndPos());
-
-            for (int i = 0; i < 3; ++i)
-                entities.spawn<Coin>(rndPos());
-
+            for (int i = 0; i < 3; ++i) entities.spawn<Coin>(rndPos());
             break;
 
         case RoomType::Shop:
-
-            entities.spawn<Shopkeeper>(
-                room.getPlayerSpawn() +
-                sf::Vector2f(64.f, 0.f)
-            );
-
+            entities.spawn<Shopkeeper>(room.getPlayerSpawn() + sf::Vector2f(64.f, 0.f));
             break;
 
         default:
             break;
     }
 
-    for (const auto& conn : room.connections) {
+        if (
+        room.cleared ||
+        room.type == RoomType::Start ||
+        room.type == RoomType::Shop
+    ) {
 
-        entities.spawn<Door>(
-            room.getDoorWorldPos(conn.side),
-            conn.locked
-        );
+    for (const auto& conn : room.connections) {
+        entities.spawn<Door>(room.getDoorWorldPos(conn.side), conn.locked);
     }
 }
 
@@ -162,54 +153,51 @@ const Room& World::currentRoom() const {
     return rooms[currentRoomId];
 }
 
-void World::updateEnemies(
-    Player& player,
-    float dt,
-    const Map& map
-) {
-
+void World::updateEnemies(Player& player, float dt, const Map& map) {
     for (auto& e : entities.all()) {
-
-        if (!e ||
-            !e->isActive() ||
-            e->getType() != EntityType::Enemy)
-            continue;
-
-        auto* enemy =
-            dynamic_cast<Enemy*>(e.get());
-
-        if (enemy)
-            enemy->think(player, dt, map);
+        if (!e || !e->isActive() || e->getType() != EntityType::Enemy) continue;
+        auto* enemy = dynamic_cast<Enemy*>(e.get());
+        if (enemy) enemy->think(player, dt, map);
     }
-
     entities.removeInactive();
+
+    Room& room = currentRoom();
+
+    // sala completada
+    if (!hasEnemies && !room.cleared) {
+
+        room.cleared = true;
+        for (const auto& conn : room.connections) {
+            entities.spawn<Door>(
+                room.getDoorWorldPos(conn.side),
+                conn.locked
+            );
+        }
+        // NO poner cofres en tienda
+        if (
+            room.type != RoomType::Shop &&
+            room.type != RoomType::Start
+        ) {
+
+            entities.spawn<Chest>(
+
+                room.getPlayerSpawn()
+                    + sf::Vector2f(180.f, 0.f),
+
+                &entities
+            );
+        }
+    }
 }
 
-bool World::tryTransition(
-    Player& player,
-    DoorSide& outSide
-) {
-
-    sf::Vector2f pos =
-        player.getPosition();
-
-    Room& room =
-        currentRoom();
+bool World::tryTransition(Player& player, DoorSide& outSide) {
+    sf::Vector2f pos = player.getPosition();
+    Room& room = currentRoom();
 
     for (const auto& conn : room.connections) {
-
-        sf::Vector2f doorPos =
-            room.getDoorWorldPos(conn.side);
-
-        float dist =
-            std::hypot(
-                pos.x - doorPos.x,
-                pos.y - doorPos.y
-            );
-
-        if (dist <
-            Constants::TILE_SIZE * 1.2f) {
-
+        sf::Vector2f doorPos = room.getDoorWorldPos(conn.side);
+        float dist = std::hypot(pos.x - doorPos.x, pos.y - doorPos.y);
+        if (dist < Constants::TILE_SIZE * 1.2f) {
             loadRoom(conn.targetRoomId);
 
             player.setPosition(

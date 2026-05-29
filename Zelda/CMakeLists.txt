@@ -50,7 +50,6 @@ set(SOURCES
     src/entity/items/Key.cpp
     src/entity/items/Heart.cpp
     src/entity/items/Door.cpp
-
     src/entity/npc/Shopkeeper.cpp
 
     # Movement

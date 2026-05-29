@@ -2,24 +2,22 @@
 
 #include "../base/Entity.h"
 
-class Door : public Entity {
+class EntityManager;
+
+class Chest : public Entity {
 
 private:
 
-    bool locked = true;
+    bool opened = false;
+
+    EntityManager* entities;
 
 public:
 
-    Door(
+    Chest(
         sf::Vector2f pos,
-        bool isLocked = true
+        EntityManager* entityManager
     );
-
-    void unlock();
-
-    bool isLocked() const;
-
-    bool canPass() const;
 
     void onInteract(Player& player) override;
 
