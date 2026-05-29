@@ -144,6 +144,7 @@ void World::populateRoom() {
         entities.spawn<Door>(room.getDoorWorldPos(conn.side), conn.locked);
     }
 }
+}
 
 Room& World::currentRoom() {
     return rooms[currentRoomId];
@@ -154,8 +155,10 @@ const Room& World::currentRoom() const {
 }
 
 void World::updateEnemies(Player& player, float dt, const Map& map) {
+    bool hasEnemies = false;
     for (auto& e : entities.all()) {
         if (!e || !e->isActive() || e->getType() != EntityType::Enemy) continue;
+        hasEnemies = true;
         auto* enemy = dynamic_cast<Enemy*>(e.get());
         if (enemy) enemy->think(player, dt, map);
     }
