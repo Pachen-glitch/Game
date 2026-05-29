@@ -279,8 +279,30 @@ void SkeletonRenderer::update(
 
     anim.update(deltaTime);
 
-    // mismo tamaño que player
+
+    if (skeleton.isDeathAnimPending() &&
+        anim.isFinished()) {
+
+        skeleton.deactivate();
+
+        return;
+    }
+
+
     anim.applyToSprite(sprite, 2.f);
+
+    if (skeleton.isHurtAnimating()) {
+
+        sprite.setColor(
+            sf::Color(255, 120, 120)
+        );
+    }
+    else {
+
+        sprite.setColor(
+            sf::Color::White
+        );
+    }
 
     sprite.setPosition(
         skeleton.getPosition()
