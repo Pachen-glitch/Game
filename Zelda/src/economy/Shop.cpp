@@ -10,7 +10,7 @@ void Shop::randomize(int seed) {
     items.push_back({
         "Heart +1",
         50,
-        [](Player& p) { p.heal(1); p.getStats().maxHearts++; }
+        [](Player& p) { p.increaseMaxHearts(1.f); }
     });
 
     items.push_back({
@@ -34,10 +34,7 @@ void Shop::randomize(int seed) {
     items.push_back({
         "Max Life",
         100,
-        [](Player& p) {
-            p.getStats().maxHearts++;
-            p.heal(1);
-        }
+        [](Player& p) { p.increaseMaxHearts(1.f); }
     });
 }
 

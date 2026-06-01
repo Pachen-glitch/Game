@@ -45,6 +45,9 @@ set(SOURCES
     src/entity/enemy/BatEnemy.cpp
     src/entity/enemy/SkeletonEnemy.cpp
     src/entity/enemy/SummonerEnemy.cpp
+    src/entity/enemy/NarutoBoss.cpp
+    src/entity/enemy/NarutoCloneEnemy.cpp
+    src/entity/enemy/NarutoProjectile.cpp
 
     src/entity/items/Coin.cpp
     src/entity/items/Key.cpp
@@ -70,6 +73,7 @@ set(SOURCES
     src/render/TextureCache.cpp
     src/render/PlayerRenderer.cpp
     src/render/SkeletonRenderer.cpp
+    src/render/NarutoRenderer.cpp
     src/render/Camera.cpp
     src/render/TilemapRenderer.cpp
     src/render/EntityRenderer.cpp

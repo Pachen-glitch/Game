@@ -35,6 +35,34 @@ void EntityRenderer::update(
         }
     }
 
+    for (auto it = narutoBossAnimators.begin();
+         it != narutoBossAnimators.end();) {
+
+        if (!it->first ||
+            !it->first->isActive()) {
+
+            it = narutoBossAnimators.erase(it);
+        }
+        else {
+
+            ++it;
+        }
+    }
+
+    for (auto it = narutoCloneAnimators.begin();
+         it != narutoCloneAnimators.end();) {
+
+        if (!it->first ||
+            !it->first->isActive()) {
+
+            it = narutoCloneAnimators.erase(it);
+        }
+        else {
+
+            ++it;
+        }
+    }
+
     for (auto& ent : entities.all()) {
 
         if (!ent ||
@@ -98,6 +126,54 @@ void EntityRenderer::update(
 
             continue;
         }
+
+        // =====================
+        // NARUTO BOSS
+        // =====================
+
+        auto* narutoBoss =
+            dynamic_cast<NarutoBoss*>(
+                ent.get()
+            );
+
+        if (narutoBoss) {
+
+            auto [iter, inserted] =
+                narutoBossAnimators.try_emplace(
+                    narutoBoss
+                );
+
+            iter->second.update(
+                *narutoBoss,
+                dt
+            );
+
+            continue;
+        }
+
+        // =====================
+        // NARUTO CLONE
+        // =====================
+
+        auto* narutoClone =
+            dynamic_cast<NarutoCloneEnemy*>(
+                ent.get()
+            );
+
+        if (narutoClone) {
+
+            auto [iter, inserted] =
+                narutoCloneAnimators.try_emplace(
+                    narutoClone
+                );
+
+            iter->second.updateClone(
+                *narutoClone,
+                dt
+            );
+
+            continue;
+        }
     }
 }
 
@@ -116,6 +192,14 @@ void EntityRenderer::draw(
         if (!ent ||
             !ent->isActive())
             continue;
+
+        if (auto* narutoBoss = dynamic_cast<NarutoBoss*>(ent.get())) {
+            if (narutoBoss->isHidden() &&
+                !narutoBoss->isIntroSmokeActive() &&
+                !narutoBoss->isSubstitutionReappearSmoke()) {
+                continue;
+            }
+        }
 
         window.draw(
             ent->getSprite()

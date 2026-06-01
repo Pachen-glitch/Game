@@ -31,7 +31,9 @@ public:
 
     // --- Future special attack sounds (registered, not used yet) ---
     void playRasenganSound();
+    void playOdamaSound();
     void playRasenShurikenSound();
+    void playNarutoPhaseTransitionSound();
 
     void playSound(const std::string& name);
     void setVolume(float musicVol, float sfxVol);
@@ -57,6 +59,9 @@ private:
     void reshuffleGameplayPlaylist();
 
     sf::Music music;
+    sf::Music rasenganSfx;
+    sf::Music odamaSfx;
+    sf::Music rasenShurikenSfx;
     sf::Sound sfx;
     sf::SoundBuffer sfxBuffer;
 
@@ -69,9 +74,18 @@ private:
     size_t playlistIndex = 0;
     std::string lastGameplayTrack;
 
-    // Registered paths for future boss attack sounds.
+    // Preloaded boss attack streams (avoid openFromFile delay on spawn).
     std::string rasenganPath;
+    std::string odamaPath;
     std::string rasenShurikenPath;
+    bool rasenganSfxReady = false;
+    bool odamaSfxReady = false;
+    bool rasenShurikenSfxReady = false;
+
+    // Temporary — cap projectile SFX at 4s until collision/despawn hooks exist.
+    float rasenganProjectileSfxTimer = 0.f;
+    float odamaProjectileSfxTimer = 0.f;
+    float rasenShurikenProjectileSfxTimer = 0.f;
 
     float musicVolume = 70.f;
     float sfxVolume = 80.f;

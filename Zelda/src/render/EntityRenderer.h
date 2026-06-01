@@ -4,9 +4,12 @@
 
 #include "../entity/enemy/SlimeEnemy.h"
 #include "../entity/enemy/SkeletonEnemy.h"
+#include "../entity/enemy/NarutoBoss.h"
+#include "../entity/enemy/NarutoCloneEnemy.h"
 
 #include "../render/EnemyAnimator.h"
 #include "../render/SkeletonRenderer.h"
+#include "../render/NarutoRenderer.h"
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
@@ -39,4 +42,14 @@ private:
         SkeletonEnemy*,
         SkeletonRenderer
     > skeletonAnimators;
+
+    std::unordered_map<
+        NarutoBoss*,
+        NarutoRenderer
+    > narutoBossAnimators;
+
+    std::unordered_map<
+        NarutoCloneEnemy*,
+        NarutoRenderer
+    > narutoCloneAnimators;
 };

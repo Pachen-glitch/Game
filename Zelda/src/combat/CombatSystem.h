@@ -18,6 +18,7 @@ public:
     void spawnSwordHitbox(Player& player);
     void spawnSpinHitbox(Player& player);
 
+    void steerNarutoProjectiles(float dt, Player& player, EntityManager& entities);
     void update(float dt, Player& player, EntityManager& entities);
 
     const std::vector<Hitbox>& getHitboxes() const { return hitboxes; }
@@ -28,5 +29,6 @@ private:
 
     void resolvePlayerHits(Player& player, EntityManager& entities);
     void resolveEnemyHits(Player& player, EntityManager& entities);
+    void resolveProjectileHits(Player& player, EntityManager& entities);
     static sf::FloatRect offsetRect(sf::Vector2f pos, sf::Vector2f size, sf::Vector2f offset);
 };

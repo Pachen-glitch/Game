@@ -1,8 +1,8 @@
 #pragma once
 
 struct PlayerStats {
-    float maxHearts = 3.f;
-    float hearts = 3.f;
+    float maxHearts = 7.f;
+    float hearts = 7.f;
     int rupees = 0;
     int keys = 0;
 

@@ -3,6 +3,7 @@
 #include "../utils/AssetPaths.h"
 
 #include <algorithm>
+#include <filesystem>
 #include <iostream>
 #include <random>
 
@@ -24,6 +25,11 @@ bool openMusic(sf::Music& player, const std::string& path, bool loop, float volu
     player.play();
     return true;
 }
+
+// Temporary polish caps — stop when projectile collision/despawn hooks exist.
+constexpr float kRasenganProjectileSfxLifetime = 4.f;
+constexpr float kOdamaProjectileSfxLifetime = 3.f;
+constexpr float kRasenShurikenProjectileSfxLifetime = 2.5f;
 
 } // namespace
 
@@ -53,6 +59,45 @@ void AudioManager::load() {
     rasenganPath = AssetPaths::getAudioPath("naruto/Rasengan_1.mp3");
     rasenShurikenPath = AssetPaths::getAudioPath("naruto/RasenShuriken_1.mp3");
 
+    static const char* kOdamaCandidates[] = {
+        "naruto/Odama_1.mp3",
+        "naruto/Odama.mp3",
+        "naruto/odama_1.mp3",
+    };
+    for (const char* candidate : kOdamaCandidates) {
+        std::string path = AssetPaths::getAudioPath(candidate);
+        if (!path.empty() && std::filesystem::exists(path)) {
+            odamaPath = path;
+            break;
+        }
+    }
+
+    if (!rasenganPath.empty()) {
+        rasenganSfxReady = rasenganSfx.openFromFile(rasenganPath);
+        if (rasenganSfxReady) {
+            rasenganSfx.setLoop(false);
+            rasenganSfx.setVolume(sfxVolume);
+        }
+    }
+
+    if (!odamaPath.empty()) {
+        odamaSfxReady = odamaSfx.openFromFile(odamaPath);
+        if (odamaSfxReady) {
+            odamaSfx.setLoop(false);
+            odamaSfx.setVolume(sfxVolume);
+        }
+    } else {
+        std::cerr << "[AudioManager] Odama SFX not found — add assets/audio/naruto/Odama_1.mp3\n";
+    }
+
+    if (!rasenShurikenPath.empty()) {
+        rasenShurikenSfxReady = rasenShurikenSfx.openFromFile(rasenShurikenPath);
+        if (rasenShurikenSfxReady) {
+            rasenShurikenSfx.setLoop(false);
+            rasenShurikenSfx.setVolume(sfxVolume);
+        }
+    }
+
     music.setVolume(musicVolume);
     sfx.setVolume(sfxVolume);
 
@@ -60,7 +105,37 @@ void AudioManager::load() {
 }
 
 void AudioManager::update(float dt) {
-    (void)dt;
+    // Temporary: stop projectile attack SFX after kProjectileSfxLifetime even if
+    // the projectile still exists (no wall collision / despawn audio yet).
+    if (rasenganProjectileSfxTimer > 0.f) {
+        rasenganProjectileSfxTimer -= dt;
+        if (rasenganProjectileSfxTimer <= 0.f) {
+            rasenganProjectileSfxTimer = 0.f;
+            if (rasenganSfxReady) {
+                rasenganSfx.stop();
+            }
+        }
+    }
+
+    if (odamaProjectileSfxTimer > 0.f) {
+        odamaProjectileSfxTimer -= dt;
+        if (odamaProjectileSfxTimer <= 0.f) {
+            odamaProjectileSfxTimer = 0.f;
+            if (odamaSfxReady) {
+                odamaSfx.stop();
+            }
+        }
+    }
+
+    if (rasenShurikenProjectileSfxTimer > 0.f) {
+        rasenShurikenProjectileSfxTimer -= dt;
+        if (rasenShurikenProjectileSfxTimer <= 0.f) {
+            rasenShurikenProjectileSfxTimer = 0.f;
+            if (rasenShurikenSfxReady) {
+                rasenShurikenSfx.stop();
+            }
+        }
+    }
 
     if (context != MusicContext::Gameplay) return;
     if (music.getStatus() != sf::Music::Stopped) return;
@@ -163,14 +238,39 @@ void AudioManager::playBossDeathMusic() {
     playMusicFile("music/Naruto_Dead.mp3", false);
 }
 
+void AudioManager::playNarutoPhaseTransitionSound() {
+    if (!rasenganSfxReady) return;
+    rasenganSfx.stop();
+    rasenganSfx.setPlayingOffset(sf::Time::Zero);
+    rasenganSfx.setVolume(sfxVolume * 0.85f);
+    rasenganSfx.play();
+}
+
 void AudioManager::playRasenganSound() {
-    // Registered path: naruto/Rasengan_1.mp3 — wire during Naruto boss attacks.
-    (void)rasenganPath;
+    if (!rasenganSfxReady) return;
+    rasenganSfx.stop();
+    rasenganSfx.setPlayingOffset(sf::Time::Zero);
+    rasenganSfx.setVolume(sfxVolume);
+    rasenganSfx.play();
+    rasenganProjectileSfxTimer = kRasenganProjectileSfxLifetime;
+}
+
+void AudioManager::playOdamaSound() {
+    if (!odamaSfxReady) return;
+    odamaSfx.stop();
+    odamaSfx.setPlayingOffset(sf::Time::Zero);
+    odamaSfx.setVolume(sfxVolume);
+    odamaSfx.play();
+    odamaProjectileSfxTimer = kOdamaProjectileSfxLifetime;
 }
 
 void AudioManager::playRasenShurikenSound() {
-    // Registered path: naruto/RasenShuriken_1.mp3 — wire during Naruto boss attacks.
-    (void)rasenShurikenPath;
+    if (!rasenShurikenSfxReady) return;
+    rasenShurikenSfx.stop();
+    rasenShurikenSfx.setPlayingOffset(sf::Time::Zero);
+    rasenShurikenSfx.setVolume(sfxVolume);
+    rasenShurikenSfx.play();
+    rasenShurikenProjectileSfxTimer = kRasenShurikenProjectileSfxLifetime;
 }
 
 void AudioManager::playSound(const std::string& name) {
@@ -187,4 +287,13 @@ void AudioManager::setVolume(float musicVol, float sfxVol) {
     sfxVolume = sfxVol;
     music.setVolume(musicVolume);
     sfx.setVolume(sfxVolume);
+    if (rasenganSfxReady) {
+        rasenganSfx.setVolume(sfxVolume);
+    }
+    if (odamaSfxReady) {
+        odamaSfx.setVolume(sfxVolume);
+    }
+    if (rasenShurikenSfxReady) {
+        rasenShurikenSfx.setVolume(sfxVolume);
+    }
 }

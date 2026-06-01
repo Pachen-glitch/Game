@@ -33,6 +33,7 @@
 #include <SFML/Window/Keyboard.hpp>
 
 #include <algorithm>
+#include <iostream>
 
 namespace {
 
@@ -73,6 +74,9 @@ void GameSession::setupEvents(SaveData& saveData) {
     });
     bus.subscribe("player_damaged", []() {
         AudioManager::instance().playSound("hurt");
+    });
+    bus.subscribe("naruto_boss_defeated", []() {
+        AudioManager::instance().playBossDeathMusic();
     });
 }
 
@@ -129,6 +133,7 @@ void GameSession::run() {
 
     EventBus::instance().subscribe("open_shop", [&]() {
         if (state == GameState::Shop) return;
+        if (interaction.isShopOnCooldown()) return;
         state = GameState::Shop;
         economy.openShop(player, world.getCurrentRoomId());
         AudioManager::instance().enterShop();
@@ -184,6 +189,7 @@ void GameSession::run() {
                 if (ev.key.code == sf::Keyboard::Escape) {
                     if (state == GameState::Shop) {
                         state = GameState::Playing;
+                        interaction.startShopCooldown(Constants::SHOP_EXIT_COOLDOWN);
                         AudioManager::instance().resumeGameplayMusic();
                     } else if (state == GameState::Playing) {
                         state = GameState::Paused;
@@ -200,6 +206,22 @@ void GameSession::run() {
                     startNewRun(world, player, saveSystem, saveData);
                     AudioManager::instance().startGameplayMusic();
                     state = GameState::Playing;
+                }
+                if (ev.key.code == sf::Keyboard::P &&
+                    state == GameState::Playing) {
+                    sf::Vector2f spawnPos =
+                        player.getPosition() + sf::Vector2f(180.f, 0.f);
+                    if (world.debugSpawnNarutoNear(spawnPos)) {
+                        std::cerr << "[DEBUG] NarutoBoss spawned\n";
+                    } else {
+                        std::cerr << "[DEBUG] NarutoBoss already exists\n";
+                    }
+                }
+                if (ev.key.code == sf::Keyboard::O &&
+                    state == GameState::Playing) {
+                    if (world.debugRemoveNaruto()) {
+                        std::cerr << "[DEBUG] NarutoBoss removed\n";
+                    }
                 }
             }
 
@@ -278,9 +300,10 @@ void GameSession::run() {
 
             player.update(gameDt);
             world.updateEnemies(player, gameDt, world.currentRoom().map);
+            combat.steerNarutoProjectiles(gameDt, player, world.getEntities());
             world.getEntities().updateAll(gameDt);
             combat.update(gameDt, player, world.getEntities());
-            interaction.update(player, world.getEntities());
+            interaction.update(gameDt, player, world.getEntities());
 
             DoorSide side;
             world.tryTransition(player, side);
