@@ -508,6 +508,46 @@ bool World::debugRemoveNaruto() {
 
 }
 
+int World::debugKillNormalEnemies() {
+    auto shouldDropHeart = [](const Enemy& enemy) {
+        switch (enemy.getKind()) {
+            case EnemyKind::Slime:
+            case EnemyKind::Skeleton:
+            case EnemyKind::Summoner:
+                return std::rand() % 100 < 25;
+            default:
+                return false;
+        }
+    };
+
+    int killed = 0;
+    std::vector<sf::Vector2f> pendingHearts;
+
+    for (auto& e : entities.all()) {
+        if (!e || !e->isActive() || e->getType() != EntityType::Enemy) continue;
+        if (dynamic_cast<NarutoBoss*>(e.get())) continue;
+
+        auto* enemy = dynamic_cast<Enemy*>(e.get());
+        if (!enemy || enemy->isDead() || enemy->isDeathAnimPending()) continue;
+
+        const sf::Vector2f deathPos = enemy->getPosition();
+        const bool wasAlive = !enemy->isDeathAnimPending();
+        enemy->takeHit(9999, {0.f, 0.f});
+        ++killed;
+
+        if (wasAlive && enemy->isDeathAnimPending() && shouldDropHeart(*enemy)) {
+            pendingHearts.push_back(deathPos + sf::Vector2f(8.f, 8.f));
+        }
+    }
+
+    for (const sf::Vector2f& pos : pendingHearts) {
+        entities.spawn<Heart>(pos);
+    }
+
+    entities.removeInactive();
+    return killed;
+}
+
 
 
 void World::updateEnemies(Player& player, float dt, const Map& map) {

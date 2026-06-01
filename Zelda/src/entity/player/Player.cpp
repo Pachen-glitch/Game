@@ -13,6 +13,8 @@ float healthRatio(float hearts, float maxHearts) {
     return hearts / maxHearts;
 }
 
+bool gDebugGodMode = false;
+
 } // namespace
 
 Player::Player(sf::Vector2f startPos)
@@ -210,7 +212,7 @@ void Player::applyKnockback(sf::Vector2f force) {
 }
 
 void Player::damage(float amount) {
-    if (!canTakeDamage()) return;
+    if (gDebugGodMode || !canTakeDamage()) return;
 
     if (isShieldActive()) {
         amount *= Constants::SHIELD_DAMAGE_MULT;
@@ -233,7 +235,16 @@ void Player::damage(float amount) {
 }
 
 bool Player::canTakeDamage() const {
+    if (gDebugGodMode) return false;
     return invulnTimer.finished() && state != PlayerState::Dead;
+}
+
+bool Player::isDebugGodMode() {
+    return gDebugGodMode;
+}
+
+void Player::setDebugGodMode(bool enabled) {
+    gDebugGodMode = enabled;
 }
 
 void Player::addRupees(int amount) {

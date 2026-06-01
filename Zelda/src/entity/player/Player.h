@@ -40,6 +40,9 @@ public:
     void damage(int amount);
     bool canTakeDamage() const;
 
+    static bool isDebugGodMode();
+    static void setDebugGodMode(bool enabled);
+
     void addRupees(int amount);
     void addKey();
     bool useKey();

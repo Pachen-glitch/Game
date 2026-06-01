@@ -33,6 +33,7 @@ public:
     bool hasActiveNarutoBoss() const;
     bool debugSpawnNarutoNear(sf::Vector2f pos);
     bool debugRemoveNaruto();
+    int debugKillNormalEnemies();
 
     bool tryTransition(Player& player, DoorSide& outSide);
     void unlockBossGate();

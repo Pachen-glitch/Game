@@ -291,6 +291,19 @@ void GameSession::run() {
                         std::cerr << "[DEBUG] NarutoBoss removed\n";
                     }
                 }
+                if (ev.key.code == sf::Keyboard::L &&
+                    state == GameState::Playing) {
+                    Player::setDebugGodMode(!Player::isDebugGodMode());
+                    std::cerr << "[DEBUG] GOD MODE "
+                              << (Player::isDebugGodMode() ? "ON" : "OFF")
+                              << "\n";
+                }
+                if (ev.key.code == sf::Keyboard::K &&
+                    state == GameState::Playing) {
+                    const int killed = world.debugKillNormalEnemies();
+                    std::cerr << "[DEBUG] Eliminated " << killed
+                              << " enemies\n";
+                }
             }
 
             if (ev.type == sf::Event::MouseMoved && state == GameState::MainMenu) {
