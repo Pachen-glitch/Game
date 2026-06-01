@@ -115,7 +115,7 @@ void NameEntryScreen::draw(sf::RenderWindow& window) const {
 
     sf::Text prompt;
     prompt.setFont(font);
-    prompt.setString("\xC2\xBF" "Cu\xC3" "\xA1" "l es tu nombre, aventurero?");
+    prompt.setString("Cual es tu nombre, aventurero?");
     prompt.setCharacterSize(28);
     prompt.setFillColor(sf::Color(255, 230, 150));
     prompt.setOutlineColor(sf::Color(30, 18, 8));
