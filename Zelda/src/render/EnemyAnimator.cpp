@@ -58,6 +58,33 @@ void EnemyAnimator::setupSkeleton() {
     deathFinished = false;
 }
 
+void EnemyAnimator::setupSummoner() {
+
+    auto reg = [this](const std::string& name,
+                      const std::string& state,
+                      float dur,
+                      bool loop) {
+
+        auto frames =
+            AssetPaths::getEnemyAnimFrames("summoner", state);
+
+        Animation clip =
+            AssetPaths::buildAnimation(frames, dur, loop);
+
+        if (!clip.getCurrentFramePath().empty()) {
+            anim.registerAnimation(name, clip);
+        }
+    };
+
+    reg("idle", "idle", 0.14f, true);
+    reg("walk", "walk", 0.10f, true);
+    reg("hurt", "hurt", 0.12f, false);
+    reg("death", "death", 0.14f, false);
+
+    lastClip.clear();
+    deathFinished = false;
+}
+
 void EnemyAnimator::update(Enemy& enemy, float dt) {
 
     if (enemy.isDeathAnimPending()) {

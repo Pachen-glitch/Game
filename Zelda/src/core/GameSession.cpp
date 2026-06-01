@@ -101,6 +101,10 @@ void GameSession::run() {
     World world;
     Player player({0.f, 0.f});
 
+    EventBus::instance().subscribe("boss_gate_unlocked", [&world]() {
+        world.unlockBossGate();
+    });
+
     MovementSystem movement;
     CombatSystem combat;
     InteractionSystem interaction;
@@ -328,7 +332,7 @@ void GameSession::run() {
 
         playerRenderer.update(player, gameDt);
         entityRenderer.update(world.getEntities(), gameDt);
-        camera.update(gameDt, player, window.getSize());
+        camera.update(gameDt, player, world.currentRoom().map, window.getSize());
 
         window.clear(sf::Color(30, 30, 40));
         window.setView(camera.getView());

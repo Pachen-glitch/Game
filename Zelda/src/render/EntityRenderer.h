@@ -4,6 +4,7 @@
 
 #include "../entity/enemy/SlimeEnemy.h"
 #include "../entity/enemy/SkeletonEnemy.h"
+#include "../entity/enemy/SummonerEnemy.h"
 #include "../entity/enemy/NarutoBoss.h"
 #include "../entity/enemy/NarutoCloneEnemy.h"
 
@@ -37,6 +38,11 @@ private:
         SlimeEnemy*,
         EnemyAnimator
     > slimeAnimators;
+
+    std::unordered_map<
+        SummonerEnemy*,
+        EnemyAnimator
+    > summonerAnimators;
 
     std::unordered_map<
         SkeletonEnemy*,

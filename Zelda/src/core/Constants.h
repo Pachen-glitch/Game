@@ -42,6 +42,9 @@ namespace Constants {
     constexpr int MIN_ROOMS = 8;
     constexpr int MAX_ROOMS = 14;
 
+    constexpr int KEYS_REQUIRED_FOR_BOSS = 3;
+    constexpr int MAX_FLOORS = 10;
+
     constexpr unsigned WINDOW_W = 1280;
     constexpr unsigned WINDOW_H = 720;
 

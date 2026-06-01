@@ -3,6 +3,16 @@
 #include "../../interaction/EventBus.h"
 #include "../../utils/AssetPaths.h"
 
+#include <algorithm>
+
+namespace {
+
+float healthRatio(float hearts, float maxHearts) {
+    if (maxHearts <= 0.f) return 0.f;
+    return hearts / maxHearts;
+}
+
+} // namespace
 
 Player::Player(sf::Vector2f startPos)
     : Entity(

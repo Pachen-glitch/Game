@@ -8,6 +8,7 @@ enum class TileType {
     WALL,
     DOOR,
     LOCKED_DOOR,
+    OPENING,
     TREE,
     WATER,
     ROCK,

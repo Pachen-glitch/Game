@@ -8,12 +8,14 @@
 #include "../../utils/AssetPaths.h"
 #include "../../render/TextureCache.h"
 #include "../../interaction/EventBus.h"
+#include <cstdlib>
 #include <iostream>
 #include <cmath>
 
 Chest::Chest(
     sf::Vector2f pos,
-    EntityManager* entityManager
+    EntityManager* entityManager,
+    bool randomReward
 )
 
     : Entity(
@@ -27,9 +29,9 @@ Chest::Chest(
         EntityType::Chest
     ),
 
-    entities(entityManager)
+    entities(entityManager),
+    variedLoot(randomReward)
 {
-
 }
 
 void Chest::onInteract(Player& player) {
@@ -45,6 +47,26 @@ void Chest::onInteract(Player& player) {
             AssetPaths::getChestOpenSprite()
         )
     );
+
+    if (variedLoot) {
+        switch (std::rand() % 4) {
+            case 0:
+                player.addRupees(25);
+                EventBus::instance().emit("rupee_pickup");
+                break;
+            case 1:
+                player.heal(1);
+                break;
+            case 2:
+                player.addKey();
+                break;
+            default:
+                player.addRupees(10);
+                EventBus::instance().emit("rupee_pickup");
+                break;
+        }
+        return;
+    }
 
     player.addRupees(25);
 

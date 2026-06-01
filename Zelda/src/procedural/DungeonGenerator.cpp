@@ -1,14 +1,17 @@
 #include "DungeonGenerator.h"
+#include "RoomTemplates.h"
 #include "../core/Constants.h"
 
 #include <SFML/System/Vector2.hpp>
 
 #include <cstdlib>
 #include <ctime>
+#include <map>
 #include <queue>
 #include <set>
 
 static int rnd(int seed, int mod) {
+    if (mod <= 0) return 0;
     return (std::abs(seed * 1103515245 + 12345) % mod);
 }
 
@@ -23,8 +26,13 @@ RoomType DungeonGenerator::pickWeightedRoom(
     return RoomType::Combat;
 }
 
-std::vector<Room> DungeonGenerator::generate(int s) {
+std::vector<Room> DungeonGenerator::generate(
+    int s,
+    int floorIndex,
+    bool placeBoss
+) {
     seed = s == 0 ? static_cast<int>(std::time(nullptr)) : s;
+    seed ^= floorIndex * 991;
     std::srand(seed);
 
     int roomCount = Constants::MIN_ROOMS +
@@ -33,8 +41,8 @@ std::vector<Room> DungeonGenerator::generate(int s) {
     std::vector<Room> rooms;
     rooms.reserve(roomCount);
 
-    std::set<std::pair<int,int>> used;
-    std::queue<std::pair<int,int>> frontier;
+    std::set<std::pair<int, int>> used;
+    std::queue<std::pair<int, int>> frontier;
     frontier.push({0, 0});
     used.insert({0, 0});
 
@@ -43,7 +51,6 @@ std::vector<Room> DungeonGenerator::generate(int s) {
 
     for (int i = 0; i < roomCount; ++i) {
         if (frontier.empty()) {
-            // La expansion aleatoria puede vaciar la cola antes de crear todas las salas.
             int nx = rooms.empty() ? 0 : rooms.back().gridPos.x + 1;
             int ny = rooms.empty() ? 0 : rooms.back().gridPos.y;
             while (used.count({nx, ny})) {
@@ -62,19 +69,15 @@ std::vector<Room> DungeonGenerator::generate(int s) {
 
         if (i == 0) {
             room.type = RoomType::Start;
-        } else if (i == roomCount - 1) {
-            room.type = RoomType::Boss;
         } else {
             room.type = pickWeightedRoom(!shopPlaced, !treasurePlaced, i);
             if (room.type == RoomType::Shop) shopPlaced = true;
             if (room.type == RoomType::Treasure) treasurePlaced = true;
         }
 
-        room.generateLayout();
         rooms.push_back(room);
 
-        // expand graph in cardinal directions
-        const int dirs[4][2] = {{0,-1},{0,1},{1,0},{-1,0}};
+        const int dirs[4][2] = {{0, -1}, {0, 1}, {1, 0}, {-1, 0}};
         for (int d = 0; d < 4; ++d) {
             int nx = room.gridPos.x + dirs[d][0];
             int ny = room.gridPos.y + dirs[d][1];
@@ -86,21 +89,80 @@ std::vector<Room> DungeonGenerator::generate(int s) {
     }
 
     connectRooms(rooms);
+
+    if (placeBoss) {
+        int bossId = assignBossRoom(rooms);
+        rooms[bossId].type = RoomType::Boss;
+        markBossGates(rooms, bossId);
+    }
+
+    buildAllLayouts(rooms);
     return rooms;
 }
 
 void DungeonGenerator::connectRooms(std::vector<Room>& rooms) {
-    // Linear flow with occasional branches — Isaac/Zelda hybrid feel
-    for (size_t i = 0; i + 1 < rooms.size(); ++i) {
-        RoomConnection fwd;
-        fwd.targetRoomId = static_cast<int>(i + 1);
-        fwd.side = DoorSide::South;
-        fwd.locked = (rnd(seed + static_cast<int>(i), 100) < 20);
-        rooms[i].connections.push_back(fwd);
+    std::map<std::pair<int, int>, int> gridToId;
+    for (const auto& room : rooms) {
+        gridToId[{room.gridPos.x, room.gridPos.y}] = room.id;
+    }
 
-        RoomConnection back;
-        back.targetRoomId = static_cast<int>(i);
-        back.side = DoorSide::North;
-        rooms[i + 1].connections.push_back(back);
+    const int dirs[4][2] = {{0, -1}, {0, 1}, {1, 0}, {-1, 0}};
+    const DoorSide sides[4] = {
+        DoorSide::North, DoorSide::South, DoorSide::East, DoorSide::West
+    };
+
+    for (auto& room : rooms) {
+        room.connections.clear();
+        for (int d = 0; d < 4; ++d) {
+            int nx = room.gridPos.x + dirs[d][0];
+            int ny = room.gridPos.y + dirs[d][1];
+            auto it = gridToId.find({nx, ny});
+            if (it == gridToId.end()) continue;
+
+            RoomConnection conn;
+            conn.targetRoomId = it->second;
+            conn.side = sides[d];
+            conn.locked = false;
+            conn.isBossGate = false;
+            room.connections.push_back(conn);
+        }
+    }
+}
+
+int DungeonGenerator::assignBossRoom(std::vector<Room>& rooms) const {
+    if (rooms.empty()) return 0;
+
+    sf::Vector2i start = rooms.front().gridPos;
+    int bestId = static_cast<int>(rooms.size()) - 1;
+    int bestDist = -1;
+
+    for (const auto& room : rooms) {
+        if (room.type == RoomType::Shop) continue;
+        int dist = std::abs(room.gridPos.x - start.x) +
+                   std::abs(room.gridPos.y - start.y);
+        if (dist > bestDist) {
+            bestDist = dist;
+            bestId = room.id;
+        }
+    }
+
+    return bestId;
+}
+
+void DungeonGenerator::markBossGates(std::vector<Room>& rooms, int bossRoomId) {
+    for (auto& room : rooms) {
+        for (auto& conn : room.connections) {
+            if (conn.targetRoomId == bossRoomId) {
+                conn.isBossGate = true;
+                conn.locked = true;
+            }
+        }
+    }
+}
+
+void DungeonGenerator::buildAllLayouts(std::vector<Room>& rooms) {
+    for (auto& room : rooms) {
+        int salt = seed + room.id * 17 + room.gridPos.x * 31 + room.gridPos.y * 53;
+        room.buildLayout(salt);
     }
 }

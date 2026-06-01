@@ -9,6 +9,7 @@ class Chest : public Entity {
 private:
 
     bool opened = false;
+    bool variedLoot = false;
 
     EntityManager* entities;
 
@@ -16,7 +17,8 @@ public:
 
     Chest(
         sf::Vector2f pos,
-        EntityManager* entityManager
+        EntityManager* entityManager,
+        bool randomReward = false
     );
 
     void onInteract(Player& player) override;

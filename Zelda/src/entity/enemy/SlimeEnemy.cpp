@@ -16,21 +16,29 @@ SlimeEnemy::SlimeEnemy(sf::Vector2f pos)
     contactDamage = 0.5f;
     contactKnockback = 150.f;
     contactCooldown.start(0.f);
-    hopCooldown.start(0.4f);
+    hopCooldown.start(0.15f);
+    stateTimer.start(randomRange(0.12f, 0.30f));
 }
 
 void SlimeEnemy::initKindStats() {
-    moveSpeed = 52.f;
-    chaseSpeed = 68.f;
-    aggroRadius = 120.f;
-    deaggroRadius = 200.f;
-    aggroMemoryDuration = 2.8f;
-    maxChaseFromSpawn = 180.f;
+    moveSpeed = 58.f;
+    chaseSpeed = 78.f;
+    aggroRadius = 200.f;
+    deaggroRadius = 280.f;
+    aggroMemoryDuration = 3.2f;
+    maxChaseFromSpawn = 220.f;
 }
 
 void SlimeEnemy::think(Player& player, float dt, const Map& map) {
     if (deathAnimPending) return;
     updateHopTimers(dt);
+
+    if (aiState == EnemyState::Idle && stateTimer.isActive()) {
+        stateTimer.tick(dt * 0.85f);
+    } else if (aiState == EnemyState::Wander && stateTimer.isActive()) {
+        stateTimer.tick(dt * 0.65f);
+    }
+
     Enemy::think(player, dt, map);
 }
 
@@ -45,12 +53,12 @@ void SlimeEnemy::updateHopTimers(float dt) {
 
     if (hopBurstActive && hopBurstTimer.finished()) {
         hopBurstActive = false;
-        hopCooldown.start(0.55f + randomRange(0.f, 0.9f));
+        hopCooldown.start(0.28f + randomRange(0.f, 0.35f));
     }
 
     if (!hopBurstActive && hopCooldown.finished()) {
         hopBurstActive = true;
-        hopBurstTimer.start(0.14f + randomRange(0.f, 0.08f));
+        hopBurstTimer.start(0.20f + randomRange(0.f, 0.10f));
     }
 }
 
