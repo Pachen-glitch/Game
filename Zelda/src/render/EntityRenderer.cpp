@@ -2,80 +2,43 @@
 
 #include "../entity/player/Player.h"
 
+namespace {
+
+bool isEntityRegistered(const EntityManager& entities, Entity* ptr) {
+    if (!ptr) return false;
+    for (const auto& ent : entities.all()) {
+        if (ent.get() == ptr) return true;
+    }
+    return false;
+}
+
+template<typename Map>
+void pruneAnimatorMap(Map& animators, const EntityManager& entities) {
+    for (auto it = animators.begin(); it != animators.end();) {
+        if (!isEntityRegistered(entities, it->first)) {
+            it = animators.erase(it);
+            continue;
+        }
+        if (!it->first->isActive()) {
+            it = animators.erase(it);
+            continue;
+        }
+        ++it;
+    }
+}
+
+} // namespace
+
 void EntityRenderer::update(
     EntityManager& entities,
     float dt
 ) {
 
-    for (auto it = slimeAnimators.begin();
-         it != slimeAnimators.end();) {
-
-        if (!it->first ||
-            !it->first->isActive()) {
-
-            it = slimeAnimators.erase(it);
-        }
-        else {
-
-            ++it;
-        }
-    }
-
-    for (auto it = summonerAnimators.begin();
-         it != summonerAnimators.end();) {
-
-        if (!it->first ||
-            !it->first->isActive()) {
-
-            it = summonerAnimators.erase(it);
-        }
-        else {
-
-            ++it;
-        }
-    }
-
-    for (auto it = skeletonAnimators.begin();
-         it != skeletonAnimators.end();) {
-
-        if (!it->first ||
-            !it->first->isActive()) {
-
-            it = skeletonAnimators.erase(it);
-        }
-        else {
-
-            ++it;
-        }
-    }
-
-    for (auto it = narutoBossAnimators.begin();
-         it != narutoBossAnimators.end();) {
-
-        if (!it->first ||
-            !it->first->isActive()) {
-
-            it = narutoBossAnimators.erase(it);
-        }
-        else {
-
-            ++it;
-        }
-    }
-
-    for (auto it = narutoCloneAnimators.begin();
-         it != narutoCloneAnimators.end();) {
-
-        if (!it->first ||
-            !it->first->isActive()) {
-
-            it = narutoCloneAnimators.erase(it);
-        }
-        else {
-
-            ++it;
-        }
-    }
+    pruneAnimatorMap(slimeAnimators, entities);
+    pruneAnimatorMap(summonerAnimators, entities);
+    pruneAnimatorMap(skeletonAnimators, entities);
+    pruneAnimatorMap(narutoBossAnimators, entities);
+    pruneAnimatorMap(narutoCloneAnimators, entities);
 
     for (auto& ent : entities.all()) {
 

@@ -7,9 +7,27 @@
 #include "../core/Constants.h"
 #include "../entity/enemy/Enemy.h"
 #include "../entity/enemy/NarutoProjectile.h"
+#include "../entity/items/Heart.h"
 #include "../entity/player/Direction.h"
 #include "../interaction/EventBus.h"
 #include "../utils/MathUtils.h"
+
+#include <cstdlib>
+
+namespace {
+
+bool dropsHeartOnDeath(const Enemy& enemy) {
+    switch (enemy.getKind()) {
+        case EnemyKind::Slime:
+        case EnemyKind::Skeleton:
+        case EnemyKind::Summoner:
+            return std::rand() % 100 < 25;
+        default:
+            return false;
+    }
+}
+
+} // namespace
 
 void CombatSystem::clear() {
     hitboxes.clear();
@@ -104,6 +122,8 @@ void CombatSystem::steerNarutoProjectiles(
 
 void CombatSystem::resolvePlayerHits(Player& player, EntityManager& entities) {
     (void)player;
+    std::vector<sf::Vector2f> pendingHearts;
+
     for (const auto& hb : hitboxes) {
         if (!hb.fromPlayer) continue;
 
@@ -116,9 +136,22 @@ void CombatSystem::resolvePlayerHits(Player& player, EntityManager& entities) {
             if (enemy->isHurtAnimating()) continue;
 
             if (hb.rect.intersects(enemy->getBounds())) {
+                const bool wasAlive = !enemy->isDeathAnimPending();
+                const sf::Vector2f deathPos = enemy->getPosition();
                 enemy->takeHit(static_cast<int>(hb.damage), hb.knockback);
+
+                if (wasAlive && enemy->isDeathAnimPending() &&
+                    dropsHeartOnDeath(*enemy)) {
+                    pendingHearts.push_back(
+                        deathPos + sf::Vector2f(8.f, 8.f)
+                    );
+                }
             }
         }
+    }
+
+    for (const sf::Vector2f& pos : pendingHearts) {
+        entities.spawn<Heart>(pos);
     }
 }
 

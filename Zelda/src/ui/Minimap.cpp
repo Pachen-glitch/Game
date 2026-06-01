@@ -26,6 +26,8 @@ void Minimap::draw(
             cell.setFillColor(sf::Color::Yellow);
         } else if (room.type == RoomType::Boss) {
             cell.setFillColor(sf::Color::Red);
+        } else if (room.type == RoomType::BossAntechamber) {
+            cell.setFillColor(sf::Color(255, 140, 40));
         } else if (room.type == RoomType::Shop) {
             cell.setFillColor(sf::Color::Cyan);
         } else {

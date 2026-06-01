@@ -152,9 +152,15 @@ int DungeonGenerator::assignBossRoom(std::vector<Room>& rooms) const {
 void DungeonGenerator::markBossGates(std::vector<Room>& rooms, int bossRoomId) {
     for (auto& room : rooms) {
         for (auto& conn : room.connections) {
-            if (conn.targetRoomId == bossRoomId) {
-                conn.isBossGate = true;
-                conn.locked = true;
+            if (conn.targetRoomId != bossRoomId) continue;
+
+            conn.isBossGate = true;
+            conn.locked = true;
+
+            if (room.id != bossRoomId &&
+                room.type != RoomType::Shop &&
+                room.type != RoomType::Start) {
+                room.type = RoomType::BossAntechamber;
             }
         }
     }

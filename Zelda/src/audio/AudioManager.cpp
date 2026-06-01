@@ -224,8 +224,18 @@ void AudioManager::playBossSpawnMusic() {
 }
 
 void AudioManager::playBossPreBattleMusic() {
+    if (context == MusicContext::BossPreBattle) return;
+
     context = MusicContext::BossPreBattle;
-    playMusicFile("music/Naruto_PreBatle.mp3", true);
+
+    static const char* kCandidates[] = {
+        "music/Naruto_PreBattle.mp3",
+        "music/Naruto_PreBatle.mp3",
+    };
+
+    for (const char* track : kCandidates) {
+        if (playMusicFile(track, true)) return;
+    }
 }
 
 void AudioManager::playBossBattleMusic() {
