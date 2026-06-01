@@ -119,6 +119,7 @@ target_link_libraries(ZeldaASCII
     sfml-graphics
     sfml-window
     sfml-system
+    sfml-audio
 )
 
 if(WIN32)

@@ -92,7 +92,7 @@ void GameSession::run() {
 
     setupEvents(saveData);
     AudioManager::instance().load();
-    AudioManager::instance().playMusic("music/Menu.mp3");
+    AudioManager::instance().playMenuMusic();
 
     World world;
     Player player({0.f, 0.f});
@@ -131,6 +131,7 @@ void GameSession::run() {
         if (state == GameState::Shop) return;
         state = GameState::Shop;
         economy.openShop(player, world.getCurrentRoomId());
+        AudioManager::instance().enterShop();
     });
 
     while (window.isOpen()) {
@@ -155,22 +156,35 @@ void GameSession::run() {
                             startNewRun(world, player, saveSystem, saveData);
                             gameStarted = true;
                         }
-                        AudioManager::instance().playMusic("music/Menu.mp3", false);
+                        AudioManager::instance().startGameplayMusic();
                     } else if (result.nextState == GameState::Statistics) {
                         statisticsScreen.prepare(window.getSize(), saveData);
                     }
                     state = result.nextState;
                 }
             } else if (state == GameState::Controls) {
-                state = controlsScreen.handleEvent(ev, window);
+                GameState next = controlsScreen.handleEvent(ev, window);
+                if (next == GameState::MainMenu) {
+                    AudioManager::instance().playMenuMusic();
+                }
+                state = next;
             } else if (state == GameState::Instructions) {
-                state = instructionsScreen.handleEvent(ev, window);
+                GameState next = instructionsScreen.handleEvent(ev, window);
+                if (next == GameState::MainMenu) {
+                    AudioManager::instance().playMenuMusic();
+                }
+                state = next;
             } else if (state == GameState::Statistics) {
-                state = statisticsScreen.handleEvent(ev, window);
+                GameState next = statisticsScreen.handleEvent(ev, window);
+                if (next == GameState::MainMenu) {
+                    AudioManager::instance().playMenuMusic();
+                }
+                state = next;
             } else if (ev.type == sf::Event::KeyPressed) {
                 if (ev.key.code == sf::Keyboard::Escape) {
                     if (state == GameState::Shop) {
                         state = GameState::Playing;
+                        AudioManager::instance().resumeGameplayMusic();
                     } else if (state == GameState::Playing) {
                         state = GameState::Paused;
                     } else if (state == GameState::Paused) {
@@ -184,6 +198,7 @@ void GameSession::run() {
                 if (ev.key.code == sf::Keyboard::R &&
                     state == GameState::GameOver) {
                     startNewRun(world, player, saveSystem, saveData);
+                    AudioManager::instance().startGameplayMusic();
                     state = GameState::Playing;
                 }
             }
@@ -215,6 +230,7 @@ void GameSession::run() {
         }
 
         if (isMenuState(state)) {
+            AudioManager::instance().update(dt);
             window.clear(sf::Color(10, 10, 20));
             switch (state) {
                 case GameState::MainMenu:
@@ -238,6 +254,7 @@ void GameSession::run() {
 
         CombatFeel::instance().tick(dt);
         float gameDt = dt * CombatFeel::instance().getTimeScale();
+        AudioManager::instance().update(dt);
 
         if (state == GameState::Playing) {
             saveData.totalPlayTimeSeconds += gameDt;
@@ -278,6 +295,7 @@ void GameSession::run() {
             if (player.getStats().isDead()) {
                 saveData.totalDeaths++;
                 state = GameState::GameOver;
+                AudioManager::instance().playGameOverMusic();
             }
             if (world.currentRoom().type == RoomType::Boss &&
                 world.currentRoom().cleared) {
