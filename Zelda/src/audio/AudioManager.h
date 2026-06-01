@@ -57,6 +57,7 @@ private:
     void reshuffleGameplayPlaylist();
 
     sf::Music music;
+    sf::Music attackSfxMusic;
     sf::Sound sfx;
     sf::SoundBuffer sfxBuffer;
 

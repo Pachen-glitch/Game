@@ -74,6 +74,9 @@ void GameSession::setupEvents(SaveData& saveData) {
     bus.subscribe("player_damaged", []() {
         AudioManager::instance().playSound("hurt");
     });
+    bus.subscribe("naruto_boss_defeated", []() {
+        AudioManager::instance().playBossDeathMusic();
+    });
 }
 
 void GameSession::run() {

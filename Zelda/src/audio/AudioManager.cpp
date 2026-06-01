@@ -164,13 +164,21 @@ void AudioManager::playBossDeathMusic() {
 }
 
 void AudioManager::playRasenganSound() {
-    // Registered path: naruto/Rasengan_1.mp3 — wire during Naruto boss attacks.
-    (void)rasenganPath;
+    if (rasenganPath.empty()) return;
+    if (attackSfxMusic.openFromFile(rasenganPath)) {
+        attackSfxMusic.setLoop(false);
+        attackSfxMusic.setVolume(sfxVolume);
+        attackSfxMusic.play();
+    }
 }
 
 void AudioManager::playRasenShurikenSound() {
-    // Registered path: naruto/RasenShuriken_1.mp3 — wire during Naruto boss attacks.
-    (void)rasenShurikenPath;
+    if (rasenShurikenPath.empty()) return;
+    if (attackSfxMusic.openFromFile(rasenShurikenPath)) {
+        attackSfxMusic.setLoop(false);
+        attackSfxMusic.setVolume(sfxVolume);
+        attackSfxMusic.play();
+    }
 }
 
 void AudioManager::playSound(const std::string& name) {
