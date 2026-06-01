@@ -391,6 +391,24 @@ std::string AssetPaths::getFontPath() {
     return resolveFirst({"fonts/arial.ttf", "fonts/default.ttf"});
 }
 
+std::string AssetPaths::getMenuStartBackground() {
+    return resolveFirst({
+        "menu/start.png",
+        "ui/menu/start.png",
+        "sprites/ui/menu/start.png"
+    });
+}
+
+std::string AssetPaths::getMenuFondoBackground() {
+    std::string fondo = resolveFirst({
+        "menu/fondo.png",
+        "ui/menu/fondo.png",
+        "sprites/ui/menu/fondo.png"
+    });
+    if (!fondo.empty()) return fondo;
+    return getMenuStartBackground();
+}
+
 std::string AssetPaths::getAudioPath(const std::string& filename) {
     return resolveFirst({"audio/" + filename});
 }

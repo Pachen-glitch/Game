@@ -86,6 +86,11 @@ set(SOURCES
 
     # UI
     src/ui/Menu.cpp
+    src/ui/menu/MenuScreenBase.cpp
+    src/ui/menu/MainMenu.cpp
+    src/ui/menu/ControlsScreen.cpp
+    src/ui/menu/InstructionsScreen.cpp
+    src/ui/menu/StatisticsScreen.cpp
     src/ui/HUD.cpp
     src/ui/Minimap.cpp
     src/ui/ShopUI.cpp
@@ -114,6 +119,7 @@ target_link_libraries(ZeldaASCII
     sfml-graphics
     sfml-window
     sfml-system
+    sfml-audio
 )
 
 if(WIN32)
@@ -123,6 +129,10 @@ if(WIN32)
 
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         $<TARGET_RUNTIME_DLLS:ZeldaASCII>
+        $<TARGET_FILE_DIR:ZeldaASCII>
+
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_BINARY_DIR}/_deps/sfml-src/extlibs/bin/x64/openal32.dll"
         $<TARGET_FILE_DIR:ZeldaASCII>
 
         COMMAND_EXPAND_LISTS
