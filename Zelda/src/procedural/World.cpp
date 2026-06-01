@@ -110,6 +110,8 @@ void World::loadRoom(int roomId) {
 
     if (rooms[roomId].type == RoomType::BossAntechamber) {
         AudioManager::instance().playBossPreBattleMusic();
+    } else {
+        AudioManager::instance().resumeGameplayMusic();
     }
 
 }

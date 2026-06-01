@@ -206,10 +206,19 @@ void AudioManager::enterShop() {
 }
 
 void AudioManager::resumeGameplayMusic() {
-    if (context != MusicContext::Shop) return;
+    if (context == MusicContext::Shop) {
+        context = MusicContext::Gameplay;
+        advanceGameplayTrack();
+        return;
+    }
 
-    context = MusicContext::Gameplay;
-    advanceGameplayTrack();
+    if (context == MusicContext::BossPreBattle) {
+        context = MusicContext::Gameplay;
+        if (shuffledPlaylist.empty()) {
+            reshuffleGameplayPlaylist();
+        }
+        playCurrentGameplayTrack();
+    }
 }
 
 void AudioManager::playGameOverMusic() {
