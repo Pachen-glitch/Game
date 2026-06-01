@@ -3,6 +3,7 @@
 #include "../../interaction/EventBus.h"
 #include "../../utils/AssetPaths.h"
 
+
 Player::Player(sf::Vector2f startPos)
     : Entity(
         startPos,
@@ -32,7 +33,7 @@ void Player::update(float deltaTime) {
     }
 
     if (state != PlayerState::Shield) {
-        setPosition(position + velocity * deltaTime);
+    // Movimiento manejado por MovementSystem
     }
 }
 
@@ -40,6 +41,22 @@ void Player::onInteract(Player&) {}
 
 void Player::setVelocity(sf::Vector2f vel) { velocity = vel; }
 sf::Vector2f Player::getVelocity() const { return velocity; }
+sf::FloatRect Player::getBounds() const {
+
+    float width = size.x * 0.55f;
+    float height = size.y * 0.45f;
+
+    float offsetX = (size.x - width) * 0.5f;
+    float offsetY = size.y - height;
+
+    return {
+        position.x + offsetX,
+        position.y + offsetY,
+        width,
+        height
+    };
+}
+
 
 void Player::setDirection(Direction dir) { direction = dir; }
 Direction Player::getDirection() const { return direction; }
@@ -220,4 +237,9 @@ void Player::updateStateTimers(float dt) {
 
 void Player::setState(PlayerState newState) {
     state = newState;
+}
+
+float Player::getMoveSpeed() const {
+    return Constants::PLAYER_SPEED *
+           stats.moveSpeedMult;
 }

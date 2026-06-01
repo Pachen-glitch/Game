@@ -13,9 +13,8 @@ static bool rectHitsWall(const Map& map, sf::FloatRect box) {
 }
 
 bool CollisionSystem::isWall(const Map& map, sf::Vector2f worldPos) {
-    int tx = static_cast<int>(worldPos.x) / Constants::TILE_SIZE;
-    int ty = static_cast<int>(worldPos.y) / Constants::TILE_SIZE;
-    return map.getTile(tx, ty) == TileType::WALL;
+    sf::Vector2i tile = map.worldToTile(worldPos);
+    return !map.isWalkable(tile.x, tile.y);
 }
 
 sf::Vector2f CollisionSystem::resolveMovement(

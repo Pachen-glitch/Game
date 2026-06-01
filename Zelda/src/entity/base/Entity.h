@@ -37,7 +37,7 @@ public:
     sf::Vector2f getPosition() const;
     void setPosition(sf::Vector2f pos);
     sf::Vector2f getSize() const;
-    sf::FloatRect getBounds() const;
+    virtual sf::FloatRect getBounds() const;
 
     sf::Sprite& getSprite();
     const sf::Sprite& getSprite() const;

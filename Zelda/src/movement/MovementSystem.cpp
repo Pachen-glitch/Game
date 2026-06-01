@@ -52,14 +52,14 @@ void MovementSystem::update(float dt, Player& player, const Map& map) {
         }
     }
 
-    float speed = Constants::PLAYER_SPEED * player.getStats().moveSpeedMult;
+    float speed = player.getMoveSpeed();
     sf::Vector2f vel = input * speed;
     player.setVelocity(vel);
 
-    sf::Vector2f from = player.getPosition();
+    sf::FloatRect bounds = player.getBounds();
+    sf::Vector2f from(bounds.left, bounds.top);
     sf::Vector2f to = from + vel * dt;
-    sf::Vector2f resolved = CollisionSystem::resolveMovement(
-        map, from, to, player.getSize()
-    );
-    player.setPosition(resolved);
+    sf::Vector2f resolved = CollisionSystem::resolveMovement(map,from,to,{bounds.width, bounds.height});
+    float offsetX = (player.getSize().x - bounds.width) * 0.5f;
+    float offsetY = player.getSize().y - bounds.height;player.setPosition({resolved.x - offsetX,resolved.y - offsetY});
 }

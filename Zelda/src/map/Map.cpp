@@ -42,3 +42,39 @@ void Map::fill(TileType tile) {
         for (auto& cell : row) cell = tile;
     }
 }
+
+bool Map::isWalkable(int x, int y) const {
+
+    TileType tile = getTile(x, y);
+
+    switch (tile) {
+
+        case TileType::FLOOR:
+        case TileType::DOOR:
+            return true;
+
+        default:
+            return false;
+    }
+}
+
+bool Map::isDoor(int x, int y) const {
+    TileType tile = getTile(x, y);
+
+    return tile == TileType::DOOR ||
+           tile == TileType::LOCKED_DOOR;
+}
+
+sf::Vector2i Map::worldToTile(sf::Vector2f pos) const {
+    return {
+        static_cast<int>(pos.x) / Constants::TILE_SIZE,
+        static_cast<int>(pos.y) / Constants::TILE_SIZE
+    };
+}
+
+sf::Vector2f Map::tileToWorld(int x, int y) const {
+    return {
+        static_cast<float>(x * Constants::TILE_SIZE),
+        static_cast<float>(y * Constants::TILE_SIZE)
+    };
+}
