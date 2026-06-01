@@ -186,7 +186,15 @@ void Room::carveEdge(DoorSide side, TileType tile) {
 bool Room::exitsAreOpen() const {
     return cleared ||
            type == RoomType::Start ||
-           type == RoomType::Shop;
+           type == RoomType::Shop ||
+           type == RoomType::BossAntechamber;
+}
+
+sf::Vector2f Room::getBossGateWorldPos() const {
+    const float ts = static_cast<float>(Constants::TILE_SIZE);
+    const float cx = (map.getWidth() / 2.f) * ts;
+    const float cy = (map.getHeight() / 2.f) * ts;
+    return {cx - 32.f, cy - 40.f};
 }
 
 sf::Vector2f Room::getPlayerSpawn() const {

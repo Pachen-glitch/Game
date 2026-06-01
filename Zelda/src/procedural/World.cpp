@@ -8,6 +8,8 @@
 
 #include "../core/Constants.h"
 
+#include "../audio/AudioManager.h"
+
 #include "../entity/enemy/SlimeEnemy.h"
 
 #include "../entity/enemy/SkeletonEnemy.h"
@@ -100,6 +102,10 @@ void World::loadRoom(int roomId) {
 
     populateRoom();
 
+    if (rooms[roomId].type == RoomType::BossAntechamber) {
+        AudioManager::instance().playBossPreBattleMusic();
+    }
+
 }
 
 
@@ -160,7 +166,9 @@ void World::spawnConnectionDoors(Room& room) {
 
 
 
-        sf::Vector2f pos = room.getOpeningWorldPos(conn.side);
+        sf::Vector2f pos = room.type == RoomType::BossAntechamber
+            ? room.getBossGateWorldPos()
+            : room.getOpeningWorldPos(conn.side);
 
         bool locked = !bossGateUnlocked;
 
@@ -244,6 +252,14 @@ void World::populateRoom() {
             if (std::rand() % 2) entities.spawn<Coin>(rndPos());
             break;
         }
+
+
+
+        case RoomType::BossAntechamber:
+
+            room.cleared = true;
+
+            break;
 
 
 
@@ -495,7 +511,8 @@ void World::updateEnemies(Player& player, float dt, const Map& map) {
 
 
 
-        if (room.type != RoomType::Shop && room.type != RoomType::Start) {
+        if (room.type != RoomType::Shop && room.type != RoomType::Start &&
+            room.type != RoomType::BossAntechamber) {
 
             entities.spawn<Chest>(
 

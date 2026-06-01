@@ -34,6 +34,8 @@ public:
     sf::FloatRect getOpeningBounds(DoorSide side) const;
     sf::Vector2f getTransitionSpawn(DoorSide enteredFrom) const;
 
+    sf::Vector2f getBossGateWorldPos() const;
+
     bool exitsAreOpen() const;
 
 private:
