@@ -5,6 +5,7 @@
 #include "../../core/Constants.h"
 #include "../../utils/AssetPaths.h"
 #include "../../interaction/EventBus.h"
+#include "../../save/RunScoreTracker.h"
 
 #include <cmath>
 
@@ -37,6 +38,9 @@ void Door::unlock() {
     sprite.setColor(sf::Color(120, 255, 120));
 
     if (doorKind == DoorKind::BossGate) {
+        if (RunScoreTracker* tracker = RunScoreTracker::active()) {
+            tracker->onBossGateUnlocked();
+        }
         EventBus::instance().emit("boss_gate_unlocked");
     } else {
         EventBus::instance().emit("door_unlock");

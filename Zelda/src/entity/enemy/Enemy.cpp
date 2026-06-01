@@ -7,6 +7,7 @@
 #include "../../core/CombatFeel.h"
 #include "../../core/Constants.h"
 #include "../../interaction/EventBus.h"
+#include "../../save/RunScoreTracker.h"
 #include "../../map/Map.h"
 #include "../../movement/CollisionSystem.h"
 #include "../../movement/EnemyMovement.h"
@@ -154,6 +155,10 @@ void Enemy::takeHit(int damage, sf::Vector2f knockback) {
         deathAnimPending = true;
 
         velocity = {0.f, 0.f};
+
+        if (RunScoreTracker* tracker = RunScoreTracker::active()) {
+            tracker->onEnemyDefeated(kind);
+        }
 
         EventBus::instance().emit("enemy_died");
     }

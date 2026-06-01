@@ -8,6 +8,7 @@
 #include "../../utils/AssetPaths.h"
 #include "../../render/TextureCache.h"
 #include "../../interaction/EventBus.h"
+#include "../../save/RunScoreTracker.h"
 #include <cstdlib>
 #include <iostream>
 #include <cmath>
@@ -40,6 +41,10 @@ void Chest::onInteract(Player& player) {
         return;
 
     opened = true;
+
+    if (RunScoreTracker* tracker = RunScoreTracker::active()) {
+        tracker->onChestOpened();
+    }
 
     sprite.setTexture(
 

@@ -14,13 +14,6 @@ constexpr int kMaxPlayerNameLength = 16;
 
 std::string normalizePlayerName(const std::string& raw);
 
-int computeRunScore(
-    int rupeesCollected,
-    int enemiesDefeated,
-    int maxRoomReached,
-    bool narutoDefeated
-);
-
 void submitHighScore(
     std::vector<HighScoreEntry>& scores,
     int& bestScore,

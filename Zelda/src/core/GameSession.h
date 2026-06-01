@@ -9,5 +9,5 @@ public:
     void run();
 
 private:
-    void setupEvents(SaveData& saveData, RunTracker* runTracker);
+    void setupEvents(SaveData& saveData);
 };

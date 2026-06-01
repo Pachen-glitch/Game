@@ -27,21 +27,6 @@ std::string normalizePlayerName(const std::string& raw) {
     return trimmed.empty() ? "Aventurero" : trimmed;
 }
 
-int computeRunScore(
-    int rupeesCollected,
-    int enemiesDefeated,
-    int maxRoomReached,
-    bool narutoDefeated
-) {
-    int score = rupeesCollected +
-                enemiesDefeated * 5 +
-                maxRoomReached * 100;
-    if (narutoDefeated) {
-        score += 5000;
-    }
-    return score;
-}
-
 void submitHighScore(
     std::vector<HighScoreEntry>& scores,
     int& bestScore,
