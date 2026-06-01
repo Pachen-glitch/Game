@@ -6,6 +6,8 @@
 #include <filesystem>
 #include <iostream>
 #include <random>
+#include <string>
+#include <vector>
 
 AudioManager& AudioManager::instance() {
     static AudioManager mgr;
@@ -30,6 +32,17 @@ bool openMusic(sf::Music& player, const std::string& path, bool loop, float volu
 constexpr float kRasenganProjectileSfxLifetime = 4.f;
 constexpr float kOdamaProjectileSfxLifetime = 3.f;
 constexpr float kRasenShurikenProjectileSfxLifetime = 2.5f;
+
+std::string resolveExistingAudio(const std::vector<const char*>& candidates) {
+    const std::string& root = AssetPaths::assetsRoot();
+    for (const char* candidate : candidates) {
+        std::string abs = root + "/audio/" + candidate;
+        if (std::filesystem::exists(abs)) {
+            return abs;
+        }
+    }
+    return {};
+}
 
 } // namespace
 
@@ -56,21 +69,21 @@ void AudioManager::load() {
     loadSfx("enemy_death", "enemy_death.wav");
     loadSfx("hurt", "hurt.wav");
 
-    rasenganPath = AssetPaths::getAudioPath("naruto/Rasengan_1.mp3");
-    rasenShurikenPath = AssetPaths::getAudioPath("naruto/RasenShuriken_1.mp3");
-
-    static const char* kOdamaCandidates[] = {
+    rasenganPath = resolveExistingAudio({
+        "naruto/Rasengan_1.mp3",
         "naruto/Odama_1.mp3",
         "naruto/Odama.mp3",
         "naruto/odama_1.mp3",
-    };
-    for (const char* candidate : kOdamaCandidates) {
-        std::string path = AssetPaths::getAudioPath(candidate);
-        if (!path.empty() && std::filesystem::exists(path)) {
-            odamaPath = path;
-            break;
-        }
-    }
+    });
+    rasenShurikenPath = resolveExistingAudio({
+        "naruto/RasenShuriken_1.mp3",
+        "naruto/RasenShuriken.mp3",
+    });
+    odamaPath = resolveExistingAudio({
+        "naruto/Odama_1.mp3",
+        "naruto/Odama.mp3",
+        "naruto/odama_1.mp3",
+    });
 
     if (!rasenganPath.empty()) {
         rasenganSfxReady = rasenganSfx.openFromFile(rasenganPath);
@@ -78,6 +91,8 @@ void AudioManager::load() {
             rasenganSfx.setLoop(false);
             rasenganSfx.setVolume(sfxVolume);
         }
+    } else {
+        std::cerr << "[AudioManager] Rasengan SFX not found — add assets/audio/naruto/Rasengan_1.mp3\n";
     }
 // Carga el SFX de Odama
     if (!odamaPath.empty()) {

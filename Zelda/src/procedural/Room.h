@@ -38,8 +38,11 @@ public:
 
     bool exitsAreOpen() const;
 
+    static constexpr DoorSide AntechamberSecretPassageSide = DoorSide::East;
+
 private:
     TileType charToTile(char c);
     void loadTemplate(const std::vector<std::string>& layout);
     void carveEdge(DoorSide side, TileType tile);
+    void applyAntechamberConnectionTiles(bool bossGateUnlocked);
 };
