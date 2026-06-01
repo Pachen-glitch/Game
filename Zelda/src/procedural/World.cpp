@@ -48,20 +48,21 @@ void World::populateRoom() {
     int w = room.map.getWidth();
     int h = room.map.getHeight();
 
-    auto rndPos = [w, h]() {
+    auto rndPos = [&room, w, h]() {
 
-        return sf::Vector2f(
+        while (true) {
 
-            static_cast<float>(
-                (2 + std::rand() % (w - 4))
-                * Constants::TILE_SIZE
-            ),
+            int tx = 2 + std::rand() % (w - 4);
+            int ty = 2 + std::rand() % (h - 4);
 
-            static_cast<float>(
-                (2 + std::rand() % (h - 4))
-                * Constants::TILE_SIZE
-            )
-        );
+            if (room.map.isWalkable(tx, ty)) {
+
+                return sf::Vector2f(
+                    static_cast<float>(tx * Constants::TILE_SIZE),
+                    static_cast<float>(ty * Constants::TILE_SIZE)
+                );
+            }
+        }
     };
 
     switch (room.type) {
@@ -73,51 +74,35 @@ void World::populateRoom() {
             entities.spawn<Key>(rndPos());
             break;
         case RoomType::Combat:
+        case RoomType::Boss:
+            for (int i = 0; i < 2 + std::rand() % 2; ++i) {
 
-            for (int i = 0;
-                 i < 2 + std::rand() % 2;
-                 ++i) {
-
-                int enemyType =
-                    std::rand() % 4;
+                int enemyType = std::rand() % 4;
 
                 switch (enemyType) {
 
                     case 0:
-                        entities.spawn<SlimeEnemy>(
-                            rndPos()
-                        );
+                        entities.spawn<SlimeEnemy>(rndPos());
                         break;
 
                     case 1:
-                        entities.spawn<BatEnemy>(
-                            rndPos()
-                        );
+                        entities.spawn<BatEnemy>(rndPos());
                         break;
 
                     case 2:
-                        entities.spawn<SkeletonEnemy>(
-                            rndPos()
-                        );
+                        entities.spawn<SkeletonEnemy>(rndPos());
                         break;
 
                     case 3:
-                        entities.spawn<SummonerEnemy>(
-                            rndPos()
-                        );
+                        entities.spawn<SummonerEnemy>(rndPos());
                         break;
                 }
             }
 
-            if (std::rand() % 2)
-                entities.spawn<Heart>(rndPos());
-
-            if (std::rand() % 2)
-                entities.spawn<Key>(rndPos());
-
-            if (std::rand() % 2)
-                entities.spawn<Coin>(rndPos());
-
+            
+            if (std::rand() % 2) entities.spawn<Heart>(rndPos());
+            if (std::rand() % 2) entities.spawn<Key>(rndPos());
+            if (std::rand() % 2) entities.spawn<Coin>(rndPos());
             break;
 
         case RoomType::Boss: {
@@ -282,18 +267,37 @@ void World::updateEnemies(Player& player, float dt, const Map& map) {
     }
 }
 
-bool World::tryTransition(Player& player, DoorSide& outSide) {
+
+
+bool World::tryTransition(Player& player, DoorSide& outSide)
+{
     sf::Vector2f pos = player.getPosition();
+
+    if (transitionCooldown > 0.f)
+    {
+        transitionCooldown -= 1.f / 60.f;
+        return false;
+    }
+
     Room& room = currentRoom();
 
-    for (const auto& conn : room.connections) {
+    for (const auto& conn : room.connections)
+    {
         sf::Vector2f doorPos = room.getDoorWorldPos(conn.side);
-        float dist = std::hypot(pos.x - doorPos.x, pos.y - doorPos.y);
-        if (dist < Constants::TILE_SIZE * 1.2f) {
+
+        float dist = std::hypot(
+            pos.x - doorPos.x,
+            pos.y - doorPos.y
+        );
+
+        if (dist < Constants::TILE_SIZE * 1.2f)
+        {
             loadRoom(conn.targetRoomId);
 
+            transitionCooldown = 0.5f;
+
             player.setPosition(
-                currentRoom().getPlayerSpawn()
+                currentRoom().getTransitionSpawn(conn.side)
             );
 
             outSide = conn.side;

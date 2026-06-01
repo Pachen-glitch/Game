@@ -17,6 +17,8 @@ public:
 
     void setVelocity(sf::Vector2f vel);
     sf::Vector2f getVelocity() const;
+    sf::FloatRect getBounds() const override;
+
     void setDirection(Direction dir);
     Direction getDirection() const;
     Direction getFacingDirection() const;
@@ -63,6 +65,8 @@ public:
     void markSwordHitSpawned();
 
     bool moving = false;
+
+    float getMoveSpeed() const;
 
 private:
     void updateStateTimers(float dt);

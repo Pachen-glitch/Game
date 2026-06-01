@@ -1,11 +1,9 @@
 #pragma once
-
 #include "RoomType.h"
 #include "../map/Map.h"
-
 #include <SFML/System/Vector2.hpp>
-
 #include <vector>
+#include <string>
 
 struct RoomConnection {
     int targetRoomId = -1;
@@ -28,4 +26,14 @@ public:
     void generateLayout();
     sf::Vector2f getPlayerSpawn() const;
     sf::Vector2f getDoorWorldPos(DoorSide side) const;
+    sf::Vector2f getTransitionSpawn(DoorSide enteredFrom) const;
+private:
+
+    TileType charToTile(char c);
+
+    void loadTemplate(
+        const std::vector<std::string>& layout
+    );
 };
+
+

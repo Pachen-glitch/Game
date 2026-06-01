@@ -1,14 +1,20 @@
 #pragma once
 
 #include <vector>
+#include <SFML/System/Vector2.hpp>
 
 enum class TileType {
     FLOOR,
     WALL,
     DOOR,
-    LOCKED_DOOR
+    LOCKED_DOOR,
+    TREE,
+    WATER,
+    ROCK,
+    BUSH,
+    PIT,
+    STATUE
 };
-
 class Map {
 public:
     Map();
@@ -21,6 +27,10 @@ public:
     int getHeight() const;
 
     void fill(TileType tile);
+    bool isWalkable(int x, int y) const;
+    bool isDoor(int x, int y) const;
+    sf::Vector2i worldToTile(sf::Vector2f pos) const;
+    sf::Vector2f tileToWorld(int x, int y) const;
 
 private:
     std::vector<std::vector<TileType>> grid;

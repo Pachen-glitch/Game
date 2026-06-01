@@ -31,4 +31,6 @@ private:
     int currentRoomId = 0;
     EntityManager entities;
     DungeonGenerator generator;
+    float transitionCooldown = 0.f;
+
 };
