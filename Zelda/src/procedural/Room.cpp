@@ -85,9 +85,9 @@ bool isValidPlayerSpawn(const Map& map, sf::Vector2f worldPos) {// Devuelve si l
     };
 
     return cornerWalkable(box.left, box.top)
-        && cornerWalkable(box.left + box.width - 1.f, box.top)// Devuelve si la posicion del jugador es valida           
-        && cornerWalkable(box.left, box.top + box.height - 1.f)// Devuelve si la posicion del jugador es valida           
-        && cornerWalkable(box.left + box.width - 1.f, box.top + box.height - 1.f)// Devuelve si la posicion del jugador es valida           
+        && cornerWalkable(box.left + box.width - 1.f, box.top)
+        && cornerWalkable(box.left, box.top + box.height - 1.f)
+        && cornerWalkable(box.left + box.width - 1.f, box.top + box.height - 1.f);
 }
 
 sf::Vector2f trySpawnTile(const Map& map, int tx, int ty) {// Intenta spawnar un tile
