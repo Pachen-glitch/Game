@@ -1,5 +1,6 @@
 #include "Shop.h"
 #include "../entity/player/Player.h"
+#include "../save/RunScoreTracker.h"
 
 #include <cstdlib>
 
@@ -45,5 +46,8 @@ bool Shop::buy(Player& player, int index) {
 
     player.getStats().rupees -= item.cost;
     if (item.apply) item.apply(player);
+    if (RunScoreTracker* tracker = RunScoreTracker::active()) {
+        tracker->onShopPurchase(item.cost);
+    }
     return true;
 }

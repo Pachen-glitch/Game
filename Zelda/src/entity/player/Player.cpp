@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "../../core/Constants.h"
 #include "../../interaction/EventBus.h"
+#include "../../save/RunScoreTracker.h"
 #include "../../utils/AssetPaths.h"
 
 #include <algorithm>
@@ -237,10 +238,18 @@ bool Player::canTakeDamage() const {
 
 void Player::addRupees(int amount) {
     stats.rupees += amount;
+    if (RunScoreTracker* tracker = RunScoreTracker::active()) {
+        tracker->onRupeeCollected(amount);
+    }
     EventBus::instance().emit("rupee_pickup");
 }
 
-void Player::addKey() { stats.keys++; }
+void Player::addKey() {
+    stats.keys++;
+    if (RunScoreTracker* tracker = RunScoreTracker::active()) {
+        tracker->onKeyCollected();
+    }
+}
 
 bool Player::useKey() {
     if (stats.keys <= 0) return false;

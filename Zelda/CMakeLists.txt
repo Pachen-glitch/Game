@@ -109,6 +109,7 @@ set(SOURCES
     # Save
     src/save/SaveSystem.cpp
     src/save/HighScore.cpp
+    src/save/RunScoreTracker.cpp
 
     # Utils
     src/utils/FontLoader.cpp

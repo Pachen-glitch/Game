@@ -34,6 +34,8 @@
 
 #include "../entity/items/Chest.h"
 
+#include "../save/RunScoreTracker.h"
+
 
 
 #include <cstdlib>
@@ -92,7 +94,11 @@ void World::loadRoom(int roomId) {
 
     if (roomId < 0 || roomId >= static_cast<int>(rooms.size())) return;
 
-
+    if (!rooms[roomId].visited) {
+        if (RunScoreTracker* tracker = RunScoreTracker::active()) {
+            tracker->onRoomFirstEnter(roomId);
+        }
+    }
 
     currentRoomId = roomId;
 
@@ -506,6 +512,10 @@ void World::updateEnemies(Player& player, float dt, const Map& map) {
     if (roomClearedNow && !room.cleared) {
 
         room.cleared = true;
+
+        if (RunScoreTracker* tracker = RunScoreTracker::active()) {
+            tracker->onRoomCleared(room.id);
+        }
 
         spawnConnectionDoors(room);
 

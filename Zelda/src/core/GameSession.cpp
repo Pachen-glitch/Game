@@ -19,6 +19,7 @@
 #include "../render/TilemapRenderer.h"
 #include "../save/SaveSystem.h"
 #include "../save/HighScore.h"
+#include "../save/RunScoreTracker.h"
 #include "../ui/DamageNumbers.h"
 #include "../ui/GameScreens.h"
 #include "../ui/HUD.h"
@@ -54,41 +55,34 @@ void startNewRun(
 } // namespace
 
 struct RunTracker {
+    RunScoreTracker score;
     std::string playerName = "Aventurero";
-    int enemiesDefeated = 0;
-    int maxRoomReached = 0;
-    bool narutoDefeated = false;
     bool scoreSubmitted = false;
 
     void beginRun(const std::string& name) {
         playerName = normalizePlayerName(name);
-        enemiesDefeated = 0;
-        maxRoomReached = 0;
-        narutoDefeated = false;
         scoreSubmitted = false;
+        score.reset();
+        RunScoreTracker::setActive(&score);
     }
 
-    void submitScore(SaveData& saveData, int rupeesCollected) {
+    void submitScore(SaveData& saveData) {
         if (scoreSubmitted) return;
         scoreSubmitted = true;
 
-        const int score = computeRunScore(
-            rupeesCollected,
-            enemiesDefeated,
-            maxRoomReached,
-            narutoDefeated
-        );
+        const int finalScore = score.finalizeScore();
         submitHighScore(
             saveData.highScores,
             saveData.bestScore,
             saveData.bestScoreHolder,
             playerName,
-            score
+            finalScore
         );
+        RunScoreTracker::setActive(nullptr);
     }
 };
 
-void GameSession::setupEvents(SaveData& saveData, RunTracker* runTracker) {
+void GameSession::setupEvents(SaveData& saveData) {
     EventBus& bus = EventBus::instance();
 
     bus.subscribe("player_attack", []() {
@@ -101,20 +95,17 @@ void GameSession::setupEvents(SaveData& saveData, RunTracker* runTracker) {
     bus.subscribe("enemy_hit", []() {
         CombatFeel::instance().triggerHitPause(Constants::HIT_PAUSE_DURATION);
     });
-    bus.subscribe("enemy_died", [&saveData, runTracker]() {
+    bus.subscribe("enemy_died", [&saveData]() {
         AudioManager::instance().playSound("enemy_death");
         saveData.enemiesDefeated++;
-        if (runTracker) {
-            runTracker->enemiesDefeated++;
-        }
     });
     bus.subscribe("player_damaged", []() {
         AudioManager::instance().playSound("hurt");
     });
-    bus.subscribe("naruto_boss_defeated", [runTracker]() {
+    bus.subscribe("naruto_boss_defeated", []() {
         AudioManager::instance().playBossDeathMusic();
-        if (runTracker) {
-            runTracker->narutoDefeated = true;
+        if (RunScoreTracker* tracker = RunScoreTracker::active()) {
+            tracker->onNarutoBossDefeated();
         }
     });
 }
@@ -134,7 +125,7 @@ void GameSession::run() {
     saveSystem.load(saveData);
 
     RunTracker runTracker;
-    setupEvents(saveData, &runTracker);
+    setupEvents(saveData);
     AudioManager::instance().load();
     AudioManager::instance().playMenuMusic();
 
@@ -347,10 +338,7 @@ void GameSession::run() {
                 saveData.maxRoomReached,
                 world.getCurrentRoomId()
             );
-            runTracker.maxRoomReached = std::max(
-                runTracker.maxRoomReached,
-                world.getCurrentRoomId()
-            );
+            runTracker.score.addSurvivalTime(gameDt);
 
             PlayerState prevState = player.getState();
             movement.update(gameDt, player, world.currentRoom().map);
@@ -377,13 +365,13 @@ void GameSession::run() {
 
             if (player.getStats().isDead()) {
                 saveData.totalDeaths++;
-                runTracker.submitScore(saveData, player.getCoins());
+                runTracker.submitScore(saveData);
                 state = GameState::GameOver;
                 AudioManager::instance().playGameOverMusic();
             }
             if (world.currentRoom().type == RoomType::Boss &&
                 world.currentRoom().cleared) {
-                runTracker.submitScore(saveData, player.getCoins());
+                runTracker.submitScore(saveData);
                 state = GameState::Victory;
             }
         }
