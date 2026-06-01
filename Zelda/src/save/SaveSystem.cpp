@@ -3,6 +3,21 @@
 
 #include <algorithm>
 #include <fstream>
+#include <sstream>
+
+namespace {
+
+std::string sanitizeStoredName(const std::string& name) {
+    std::string clean;
+    clean.reserve(name.size());
+    for (char c : name) {
+        if (c == '\n' || c == '\r') continue;
+        clean.push_back(c);
+    }
+    return clean.empty() ? "Aventurero" : clean;
+}
+
+} // namespace
 
 bool SaveSystem::save(const SaveData& data) {
     std::ofstream out(PATH);
@@ -19,7 +34,14 @@ bool SaveSystem::save(const SaveData& data) {
         << data.maxRoomReached << " "
         << data.totalRupeesCollected << " "
         << data.totalPlayTimeSeconds << " "
-        << data.bestScore;
+        << data.bestScore << "\n";
+
+    out << sanitizeStoredName(data.bestScoreHolder) << "\n";
+    out << data.highScores.size() << "\n";
+    for (const auto& entry : data.highScores) {
+        out << sanitizeStoredName(entry.name) << " " << entry.score << "\n";
+    }
+
     return true;
 }
 
@@ -45,6 +67,59 @@ bool SaveSystem::load(SaveData& data) {
            >> data.totalRupeesCollected
            >> data.totalPlayTimeSeconds
            >> data.bestScore;
+    }
+
+    std::string line;
+    std::getline(in, line);
+
+    if (std::getline(in, line) && !line.empty()) {
+        std::istringstream probe(line);
+        size_t maybeCount = 0;
+        if (probe >> maybeCount && probe.eof()) {
+            size_t count = maybeCount;
+            data.highScores.clear();
+            data.highScores.reserve(count);
+            for (size_t i = 0; i < count; ++i) {
+                if (!std::getline(in, line)) break;
+                std::istringstream row(line);
+                std::string name;
+                int score = 0;
+                row >> name >> score;
+                if (name.empty()) continue;
+                data.highScores.push_back({sanitizeStoredName(name), score});
+            }
+        } else {
+            data.bestScoreHolder = sanitizeStoredName(line);
+
+            size_t count = 0;
+            if (in >> count) {
+                std::getline(in, line);
+                data.highScores.clear();
+                data.highScores.reserve(count);
+                for (size_t i = 0; i < count; ++i) {
+                    if (!std::getline(in, line)) break;
+                    std::istringstream row(line);
+                    std::string name;
+                    int score = 0;
+                    row >> name >> score;
+                    if (name.empty()) continue;
+                    data.highScores.push_back({sanitizeStoredName(name), score});
+                }
+            }
+        }
+
+        std::sort(data.highScores.begin(), data.highScores.end(),
+            [](const HighScoreEntry& a, const HighScoreEntry& b) {
+                return a.score > b.score;
+            });
+        if (data.highScores.size() > kMaxHighScores) {
+            data.highScores.resize(kMaxHighScores);
+        }
+    }
+
+    if (!data.highScores.empty()) {
+        data.bestScore = data.highScores.front().score;
+        data.bestScoreHolder = data.highScores.front().name;
     }
 
     return true;

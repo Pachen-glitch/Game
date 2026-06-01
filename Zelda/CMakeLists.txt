@@ -96,6 +96,7 @@ set(SOURCES
     src/ui/menu/ControlsScreen.cpp
     src/ui/menu/InstructionsScreen.cpp
     src/ui/menu/StatisticsScreen.cpp
+    src/ui/menu/NameEntryScreen.cpp
     src/ui/HUD.cpp
     src/ui/Minimap.cpp
     src/ui/ShopUI.cpp
@@ -107,6 +108,7 @@ set(SOURCES
 
     # Save
     src/save/SaveSystem.cpp
+    src/save/HighScore.cpp
 
     # Utils
     src/utils/FontLoader.cpp

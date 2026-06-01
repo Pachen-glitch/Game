@@ -1,8 +1,10 @@
 #pragma once
 
 #include "../entity/player/PlayerStats.h"
+#include "HighScore.h"
 
 #include <string>
+#include <vector>
 
 struct SaveData {
     PlayerStats metaStats;
@@ -13,6 +15,8 @@ struct SaveData {
     int totalRupeesCollected = 0;
     float totalPlayTimeSeconds = 0.f;
     int bestScore = 0;
+    std::string bestScoreHolder = "Aventurero";
+    std::vector<HighScoreEntry> highScores;
     bool spinUnlocked = true;
     bool shieldUnlocked = true;
 };

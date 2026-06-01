@@ -65,7 +65,8 @@ void MenuScreenBase::drawLines(
     sf::RenderWindow& window,
     const std::vector<std::string>& lines,
     float startY,
-    unsigned charSize
+    unsigned charSize,
+    float startX
 ) const {
     if (!fontLoaded) return;
 
@@ -78,7 +79,7 @@ void MenuScreenBase::drawLines(
         text.setFillColor(sf::Color(255, 248, 220));
         text.setOutlineColor(sf::Color(20, 20, 30));
         text.setOutlineThickness(1.f);
-        text.setPosition(120.f, y);
+        text.setPosition(startX, y);
         window.draw(text);
         y += static_cast<float>(charSize) + 14.f;
     }
