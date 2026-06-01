@@ -81,6 +81,7 @@ set(SOURCES
 
     # Procedural
     src/procedural/Room.cpp
+    src/procedural/RoomTemplates.cpp
     src/procedural/DungeonGenerator.cpp
     src/procedural/World.cpp
 

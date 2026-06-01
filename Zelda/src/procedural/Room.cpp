@@ -1,255 +1,78 @@
 #include "Room.h"
+#include "RoomTemplates.h"
 #include "../core/Constants.h"
 
+#include <algorithm>
 #include <cstdlib>
 
-void Room::generateLayout() {
+namespace {
+
+void carveTiles(Map& map, DoorSide side, TileType tile) {
+    const int midX = map.getWidth() / 2;
+    const int midY = map.getHeight() / 2;
+    const int w = map.getWidth();
+    const int h = map.getHeight();
+
+    switch (side) {
+        case DoorSide::North:
+            for (int dx = -1; dx <= 1; ++dx) {
+                map.setTile(midX + dx, 0, tile);
+            }
+            break;
+        case DoorSide::South:
+            for (int dx = -1; dx <= 1; ++dx) {
+                map.setTile(midX + dx, h - 1, tile);
+            }
+            break;
+        case DoorSide::East:
+            for (int dy = -1; dy <= 1; ++dy) {
+                map.setTile(w - 1, midY + dy, tile);
+            }
+            break;
+        case DoorSide::West:
+            for (int dy = -1; dy <= 1; ++dy) {
+                map.setTile(0, midY + dy, tile);
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+} // namespace
+
+void Room::buildLayout(int layoutSalt) {
     map = Map();
 
-    static const std::vector<std::string> combatA = {
+    uint8_t required = requiredOpeningMask(connections);
+    const RoomTemplateDef* tmpl = pickRoomTemplate(type, required, layoutSalt);
+    templateId = tmpl->id;
+    loadTemplate(*tmpl->layout);
+    applyConnectionTiles(false);
+}
 
-        "####################",
-        "#..................#",
-        "#....T......T......#",
-        "#..................#",
-        "#........WW........#",
-        "#..................#",
-        "#....R......R......#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#....S......S......#",
-        "#..................#",
-        "#........PP........#",
-        "#..................#",
-        "#....B......B......#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "####################"
-    };
-
-    static const std::vector<std::string> shopA = {
-
-        "####################",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#......SSSS........#",
-        "#......S..S........#",
-        "#......S..S........#",
-        "#......SSSS........#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "####################"
-    };
-
-    static const std::vector<std::string> shopB = {
-
-        "####################",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#....SS......SS....#",
-        "#....S........S....#",
-        "#....S........S....#",
-        "#....SS......SS....#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "####################"
-    };
-
-    static const std::vector<std::string> treasureB = {
-
-        "####################",
-        "#..................#",
-        "#..................#",
-        "#....WWWWWWWW......#",
-        "#....W......W......#",
-        "#....W......W......#",
-        "#....W......W......#",
-        "#....WWWWWWWW......#",
-        "#..................#",
-        "#..................#",
-        "#......SSSS........#",
-        "#......S..S........#",
-        "#......S..S........#",
-        "#......SSSS........#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "####################"
-    };
-
-    static const std::vector<std::string> combatB = {
-        "####################",
-        "#..................#",
-        "#....TT....TT......#",
-        "#..................#",
-        "#......RRRR........#",
-        "#..................#",
-        "#....TT....TT......#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#......WWWW........#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#....BB....BB......#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "####################"
-    };
-
-    static const std::vector<std::string> combatC = {
-        "####################",
-        "#..................#",
-        "#..RR........RR....#",
-        "#..................#",
-        "#..................#",
-        "#....WW....WW......#",
-        "#..................#",
-        "#..................#",
-        "#..RR........RR....#",
-        "#..................#",
-        "#..................#",
-        "#....TT....TT......#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#....BB....BB......#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "####################"
-    };
-
-    static const std::vector<std::string> treasureA = {
-
-        "####################",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#......SSSS........#",
-        "#......S..S........#",
-        "#......S..S........#",
-        "#......SSSS........#",
-        "#..................#",
-        "#..................#",
-        "#........WW........#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "#..................#",
-        "####################"
-    };
-    if (type == RoomType::Combat || type == RoomType::Boss) {
-
-        std::vector<const std::vector<std::string>*> combatLayouts = {
-
-            &combatA,
-            &combatB,
-            &combatC
-        };
-
-        int layoutIndex = std::rand() % combatLayouts.size();
-
-        loadTemplate(*combatLayouts[layoutIndex]);
-    }
-    else if (type == RoomType::Treasure) {
-
-        std::vector<const std::vector<std::string>*> treasureLayouts = {
-
-            &treasureA,
-            &treasureB
-        };
-
-        int layoutIndex = std::rand() % treasureLayouts.size();
-
-        loadTemplate(*treasureLayouts[layoutIndex]);
-    }
-    else if (type == RoomType::Shop) {
-
-        loadTemplate(shopA);
-    }
-    else {
-
-        loadTemplate(combatA);
-    }
+void Room::applyConnectionTiles(bool bossGateUnlocked) {
     for (const auto& conn : connections) {
-        int midX = map.getWidth() / 2;
-        int midY = map.getHeight() / 2;
-
-        switch (conn.side) {
-
-            case DoorSide::North:
-                map.setTile(
-                    midX,
-                    0,
-                    conn.locked ? TileType::LOCKED_DOOR
-                                : TileType::DOOR
-                );
-                break;
-
-            case DoorSide::South:
-                map.setTile(
-                    midX,
-                    map.getHeight() - 1,
-                    conn.locked ? TileType::LOCKED_DOOR
-                                : TileType::DOOR
-                );
-                break;
-
-            case DoorSide::East:
-                map.setTile(
-                    map.getWidth() - 1,
-                    midY,
-                    conn.locked ? TileType::LOCKED_DOOR
-                                : TileType::DOOR
-                );
-                break;
-
-            case DoorSide::West:
-                map.setTile(
-                    0,
-                    midY,
-                    conn.locked ? TileType::LOCKED_DOOR
-                                : TileType::DOOR
-                );
-                break;
-
-            default:
-                break;
+        if (conn.isBossGate) {
+            if (bossGateUnlocked) {
+                carveEdge(conn.side, TileType::OPENING);
+            } else {
+                carveEdge(conn.side, TileType::LOCKED_DOOR);
+            }
+        } else {
+            carveEdge(conn.side, TileType::OPENING);
         }
     }
+}
+
+void Room::carveEdge(DoorSide side, TileType tile) {
+    carveTiles(map, side, tile);
+}
+
+bool Room::exitsAreOpen() const {
+    return cleared ||
+           type == RoomType::Start ||
+           type == RoomType::Shop;
 }
 
 sf::Vector2f Room::getPlayerSpawn() const {
@@ -258,114 +81,80 @@ sf::Vector2f Room::getPlayerSpawn() const {
     return {cx, cy};
 }
 
-sf::Vector2f Room::getDoorWorldPos(DoorSide side) const {
+sf::Vector2f Room::getOpeningWorldPos(DoorSide side) const {
+    return getOpeningBounds(side).getPosition();
+}
+
+sf::FloatRect Room::getOpeningBounds(DoorSide side) const {
     float midX = static_cast<float>(map.getWidth() / 2);
     float midY = static_cast<float>(map.getHeight() / 2);
     float ts = static_cast<float>(Constants::TILE_SIZE);
+    const float w = ts * 3.f;
+    const float h = ts;
 
     switch (side) {
-
         case DoorSide::North:
-            return {midX * ts, ts};
-
+            return { (midX - 1.5f) * ts, 0.f, w, h };
         case DoorSide::South:
-            return {midX * ts, (map.getHeight() - 2) * ts};
-
+            return { (midX - 1.5f) * ts, (map.getHeight() - 1) * ts, w, h };
         case DoorSide::East:
-            return {(map.getWidth() - 2) * ts, midY * ts};
-
+            return { (map.getWidth() - 1) * ts, (midY - 1.5f) * ts, h, w };
         case DoorSide::West:
-            return {ts, midY * ts};
-
+            return { 0.f, (midY - 1.5f) * ts, h, w };
         default:
-            return {midX * ts, midY * ts};
+            return { midX * ts, midY * ts, ts, ts };
     }
 }
 
-sf::Vector2f Room::getTransitionSpawn(DoorSide enteredFrom) const
-{
+sf::Vector2f Room::getTransitionSpawn(DoorSide enteredFrom) const {
     float ts = static_cast<float>(Constants::TILE_SIZE);
 
-    switch (enteredFrom)
-    {
+    switch (enteredFrom) {
         case DoorSide::North:
             return {
                 (map.getWidth() / 2.f) * ts,
                 (map.getHeight() - 3.f) * ts
             };
-
         case DoorSide::South:
             return {
                 (map.getWidth() / 2.f) * ts,
                 2.f * ts
             };
-
         case DoorSide::East:
             return {
                 2.f * ts,
                 (map.getHeight() / 2.f) * ts
             };
-
         case DoorSide::West:
             return {
                 (map.getWidth() - 3.f) * ts,
                 (map.getHeight() / 2.f) * ts
             };
-
         default:
-            break;
+            return getPlayerSpawn();
     }
 }
-
 
 TileType Room::charToTile(char c) {
-
     switch (c) {
-
-        case '#':
-            return TileType::WALL;
-
-        case '.':
-            return TileType::FLOOR;
-
-        case 'D':
-            return TileType::DOOR;
-
-        case 'L':
-            return TileType::LOCKED_DOOR;
-
-        case 'T':
-            return TileType::TREE;
-
-        case 'W':
-            return TileType::WATER;
-
-        case 'R':
-            return TileType::ROCK;
-
-        case 'B':
-            return TileType::BUSH;
-
-        case 'P':
-            return TileType::PIT;
-
-        case 'S':
-            return TileType::STATUE;
-
-        default:
-            return TileType::FLOOR;
+        case '#': return TileType::WALL;
+        case '.': return TileType::FLOOR;
+        case 'D': return TileType::DOOR;
+        case 'L': return TileType::LOCKED_DOOR;
+        case 'T': return TileType::TREE;
+        case 'W': return TileType::WATER;
+        case 'R': return TileType::ROCK;
+        case 'B': return TileType::BUSH;
+        case 'P': return TileType::PIT;
+        case 'S': return TileType::STATUE;
+        default: return TileType::FLOOR;
     }
 }
 
-void Room::loadTemplate(
-    const std::vector<std::string>& layout
-) {
+void Room::loadTemplate(const std::vector<std::string>& layout) {
     for (int y = 0; y < static_cast<int>(layout.size()); ++y) {
         for (int x = 0; x < static_cast<int>(layout[y].size()); ++x) {
-
-            TileType tile = charToTile(layout[y][x]);
-
-            map.setTile(x, y, tile);
+            map.setTile(x, y, charToTile(layout[y][x]));
         }
     }
 }

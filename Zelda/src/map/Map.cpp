@@ -51,6 +51,7 @@ bool Map::isWalkable(int x, int y) const {
 
         case TileType::FLOOR:
         case TileType::DOOR:
+        case TileType::OPENING:
             return true;
 
         default:
@@ -62,7 +63,8 @@ bool Map::isDoor(int x, int y) const {
     TileType tile = getTile(x, y);
 
     return tile == TileType::DOOR ||
-           tile == TileType::LOCKED_DOOR;
+           tile == TileType::LOCKED_DOOR ||
+           tile == TileType::OPENING;
 }
 
 sf::Vector2i Map::worldToTile(sf::Vector2f pos) const {

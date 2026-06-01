@@ -169,6 +169,10 @@ void TilemapRenderer::draw(sf::RenderWindow& window,
                 case TileType::LOCKED_DOOR:
                     sprite.setTexture(*doorTexture, true);
                     break;
+
+                case TileType::OPENING:
+                    sprite.setTexture(*floorTexture, true);
+                    break;
                 case TileType::TREE:
                     sprite.setTexture(*columnTexture, true);
                     break;
