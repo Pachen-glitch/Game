@@ -53,6 +53,8 @@ public:
     static std::string getShopkeeperSprite();
 
     static std::string getFontPath();
+    static std::string getMenuStartBackground();
+    static std::string getMenuFondoBackground();
     static std::string getAudioPath(const std::string& filename);
 
     static bool exists(const std::string& path);

@@ -86,6 +86,11 @@ set(SOURCES
 
     # UI
     src/ui/Menu.cpp
+    src/ui/menu/MenuScreenBase.cpp
+    src/ui/menu/MainMenu.cpp
+    src/ui/menu/ControlsScreen.cpp
+    src/ui/menu/InstructionsScreen.cpp
+    src/ui/menu/StatisticsScreen.cpp
     src/ui/HUD.cpp
     src/ui/Minimap.cpp
     src/ui/ShopUI.cpp

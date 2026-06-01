@@ -1,5 +1,27 @@
 # Assets
 
+## Ejecutar el juego
+
+Desde PowerShell:
+
+```powershell
+cd "c:\Users\Admin\Documents\Juego\Game\Zelda\build\Debug"
+.\ZeldaASCII.exe
+```
+
+Si compilaste cambios recientes, primero reconstruye (cierra el `.exe` si está abierto):
+
+```powershell
+cd "c:\Users\Admin\Documents\Juego\Game\Zelda\build"
+cmake --build . --config Debug
+cd Debug
+.\ZeldaASCII.exe
+```
+
+En el menú principal (imagen `menu/start.png`), haz clic en **Iniciar Juego** para empezar.
+
+---
+
 ## Prueba rápida (sin descargar packs)
 
 Desde PowerShell en la carpeta del proyecto:

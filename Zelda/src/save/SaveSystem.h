@@ -8,6 +8,11 @@ struct SaveData {
     PlayerStats metaStats;
     int runsCompleted = 0;
     int enemiesDefeated = 0;
+    int totalDeaths = 0;
+    int maxRoomReached = 0;
+    int totalRupeesCollected = 0;
+    float totalPlayTimeSeconds = 0.f;
+    int bestScore = 0;
     bool spinUnlocked = true;
     bool shieldUnlocked = true;
 };

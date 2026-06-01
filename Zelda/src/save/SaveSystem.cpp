@@ -14,7 +14,12 @@ bool SaveSystem::save(const SaveData& data) {
         << data.runsCompleted << " "
         << data.enemiesDefeated << " "
         << data.spinUnlocked << " "
-        << data.shieldUnlocked;
+        << data.shieldUnlocked << " "
+        << data.totalDeaths << " "
+        << data.maxRoomReached << " "
+        << data.totalRupeesCollected << " "
+        << data.totalPlayTimeSeconds << " "
+        << data.bestScore;
     return true;
 }
 
@@ -22,15 +27,26 @@ bool SaveSystem::load(SaveData& data) {
     std::ifstream in(PATH);
     if (!in) return false;
 
-    int spin, shield;
+    int spin = 0;
+    int shield = 0;
     in >> data.metaStats.maxHearts
        >> data.metaStats.swordDamage
        >> data.metaStats.moveSpeedMult
        >> data.runsCompleted
        >> data.enemiesDefeated
-       >> spin >> shield;
+       >> spin
+       >> shield;
+
     data.spinUnlocked = spin != 0;
     data.shieldUnlocked = shield != 0;
+
+    if (in >> data.totalDeaths) {
+        in >> data.maxRoomReached
+           >> data.totalRupeesCollected
+           >> data.totalPlayTimeSeconds
+           >> data.bestScore;
+    }
+
     return true;
 }
 
