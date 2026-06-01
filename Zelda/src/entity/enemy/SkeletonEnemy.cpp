@@ -9,7 +9,7 @@ SkeletonEnemy::SkeletonEnemy(sf::Vector2f pos)
     : Enemy(
         pos,
         EnemyKind::Skeleton,
-        5,
+        4,
         AssetPaths::resolveFirst({
             "sprites/enemies/skeleton/idle/idle_d1.png"
         })
@@ -61,7 +61,7 @@ void SkeletonEnemy::think(
     }
 
     // rage mode
-    if (health <= 2 &&
+    if (health <= 1 &&
         !isDead()) {
 
         chaseSpeed = 85.f;

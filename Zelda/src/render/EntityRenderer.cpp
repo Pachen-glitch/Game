@@ -21,6 +21,20 @@ void EntityRenderer::update(
         }
     }
 
+    for (auto it = summonerAnimators.begin();
+         it != summonerAnimators.end();) {
+
+        if (!it->first ||
+            !it->first->isActive()) {
+
+            it = summonerAnimators.erase(it);
+        }
+        else {
+
+            ++it;
+        }
+    }
+
     for (auto it = skeletonAnimators.begin();
          it != skeletonAnimators.end();) {
 
@@ -98,6 +112,43 @@ void EntityRenderer::update(
             iter->second.applyToEntity(
                 *slime,
                 2.f
+            );
+
+            continue;
+        }
+
+        // =====================
+        // SUMMONER
+        // =====================
+
+        auto* summoner =
+            dynamic_cast<SummonerEnemy*>(
+                ent.get()
+            );
+
+        if (summoner) {
+
+            auto [iter, inserted] =
+                summonerAnimators.try_emplace(
+                    summoner
+                );
+
+            if (inserted) {
+                iter->second.setupSummoner();
+            }
+
+            iter->second.update(
+                *summoner,
+                dt
+            );
+
+            iter->second.applyToEntity(
+                *summoner,
+                2.f
+            );
+
+            summoner->getSprite().setColor(
+                sf::Color(200, 165, 255)
             );
 
             continue;

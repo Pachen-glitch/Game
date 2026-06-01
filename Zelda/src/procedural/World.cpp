@@ -8,11 +8,9 @@
 
 #include "../core/Constants.h"
 
-#include "../entity/enemy/BatEnemy.h"
+#include "../entity/enemy/SlimeEnemy.h"
 
 #include "../entity/enemy/SkeletonEnemy.h"
-
-#include "../entity/enemy/SlimeEnemy.h"
 
 #include "../entity/enemy/SummonerEnemy.h"
 
@@ -230,31 +228,22 @@ void World::populateRoom() {
 
         case RoomType::Combat:
 
-        case RoomType::Corridor:
+        case RoomType::Corridor: {
+            const int enemyCount = 2 + std::rand() % 5;
 
-            for (int i = 0; i < 2 + std::rand() % 2; ++i) {
-
-                switch (std::rand() % 4) {
-
+            for (int i = 0; i < enemyCount; ++i) {
+                switch (std::rand() % 3) {
                     case 0: entities.spawn<SlimeEnemy>(rndPos()); break;
-
-                    case 1: entities.spawn<BatEnemy>(rndPos()); break;
-
-                    case 2: entities.spawn<SkeletonEnemy>(rndPos()); break;
-
-                    case 3: entities.spawn<SummonerEnemy>(rndPos()); break;
-
+                    case 1: entities.spawn<SkeletonEnemy>(rndPos()); break;
+                    case 2: entities.spawn<SummonerEnemy>(rndPos()); break;
                 }
-
             }
 
             if (std::rand() % 2) entities.spawn<Heart>(rndPos());
-
             if (std::rand() % 2) entities.spawn<Key>(rndPos());
-
             if (std::rand() % 2) entities.spawn<Coin>(rndPos());
-
             break;
+        }
 
 
 
@@ -293,11 +282,13 @@ void World::populateRoom() {
         case RoomType::Shop:
 
             entities.spawn<Shopkeeper>(
-
                 room.getPlayerSpawn() + sf::Vector2f(64.f, 0.f)
-
             );
-
+            entities.spawn<Chest>(
+                room.getPlayerSpawn() + sf::Vector2f(-120.f, 0.f),
+                &entities,
+                true
+            );
             break;
 
 

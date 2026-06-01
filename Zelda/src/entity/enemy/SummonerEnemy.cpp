@@ -6,7 +6,7 @@
 #include "../../utils/AssetPaths.h"
 
 SummonerEnemy::SummonerEnemy(sf::Vector2f pos)
-    : Enemy(pos, EnemyKind::Summoner, 3, AssetPaths::getEnemySprite("summoner"))
+    : Enemy(pos, EnemyKind::Summoner, 3, AssetPaths::getEnemySprite("summoner", "idle", 1))
 {
     moveSpeed = 60.f;
     aggroRadius = 220.f;

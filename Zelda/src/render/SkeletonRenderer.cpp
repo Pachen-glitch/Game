@@ -179,19 +179,14 @@ void SkeletonRenderer::registerDeathClips() {
 
     for (int d = 0; d < 4; ++d) {
 
-        std::vector<std::string> frames;
-
-        for (int i = 1; i <= 4; ++i) {
-
-            frames.push_back(
-                AssetPaths::resolveFirst({
-                    "sprites/enemies/skeleton/death/death_" +
-                    std::string(suffix[d]) +
-                    std::to_string(i) +
-                    ".png"
-                })
+        std::string pref = std::string("death_") + suffix[d];
+        std::vector<std::string> frames =
+            AssetPaths::collectFramesByPrefix(
+                "enemies/skeleton/death",
+                pref
             );
-        }
+
+        if (frames.empty()) continue;
 
         Animation death =
             AssetPaths::buildAnimation(
