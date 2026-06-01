@@ -131,6 +131,10 @@ if(WIN32)
         $<TARGET_RUNTIME_DLLS:ZeldaASCII>
         $<TARGET_FILE_DIR:ZeldaASCII>
 
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_BINARY_DIR}/_deps/sfml-src/extlibs/bin/x64/openal32.dll"
+        $<TARGET_FILE_DIR:ZeldaASCII>
+
         COMMAND_EXPAND_LISTS
     )
 endif()
