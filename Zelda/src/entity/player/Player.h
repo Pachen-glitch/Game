@@ -25,8 +25,13 @@ public:
 
     bool trySwordAttack();
     bool trySpinAttack();
+    bool tryActivateBerserk();
     void setShieldHeld(bool held);
     bool isShieldActive() const;
+    bool isBerserkActive() const;
+    void breakShieldForAttack();
+    void increaseMaxHearts(float amount = 1.f);
+    float getPersistedMaxHearts() const;
     void applyKnockback(sf::Vector2f force);
 
     void damage(float amount);
@@ -62,6 +67,8 @@ public:
 private:
     void updateStateTimers(float dt);
     void setState(PlayerState state);
+    void updateBerserk(float dt);
+    void endBerserk();
 
     PlayerStats stats;
     PlayerState state = PlayerState::Idle;
@@ -79,4 +86,9 @@ private:
     bool attacking = false;
     bool spinning = false;
     bool swordHitboxSpawned = false;
+    bool berserkActive = false;
+
+    float berserkStoredMaxHearts = 0.f;
+    Timer berserkTimer;
+    Timer berserkCooldownTimer;
 };

@@ -63,4 +63,5 @@ void SaveSystem::applyToPlayer(Player& player, const SaveData& data) {
 
 void SaveSystem::captureFromPlayer(const Player& player, SaveData& data) {
     data.metaStats = player.getStats();
+    data.metaStats.maxHearts = player.getPersistedMaxHearts();
 }

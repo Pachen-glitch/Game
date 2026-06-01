@@ -83,6 +83,25 @@ void CombatSystem::update(float dt, Player& player, EntityManager& entities) {
     resolveProjectileHits(player, entities);
 }
 
+void CombatSystem::steerNarutoProjectiles(
+    float dt,
+    Player& player,
+    EntityManager& entities
+) {
+    sf::Vector2f targetCenter =
+        player.getPosition() + player.getSize() * 0.5f;
+
+    for (auto& ent : entities.all()) {
+        if (!ent || !ent->isActive()) continue;
+        if (ent->getType() != EntityType::Projectile) continue;
+
+        auto* proj = dynamic_cast<NarutoProjectile*>(ent.get());
+        if (!proj) continue;
+
+        proj->applyHomingSteer(targetCenter, dt);
+    }
+}
+
 void CombatSystem::resolvePlayerHits(Player& player, EntityManager& entities) {
     (void)player;
     for (const auto& hb : hitboxes) {

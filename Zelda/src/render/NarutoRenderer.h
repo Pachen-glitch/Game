@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../animation/AnimationManager.h"
+#include "../entity/enemy/NarutoAttack.h"
 #include "../entity/enemy/NarutoBoss.h"
 #include "../entity/enemy/NarutoCloneEnemy.h"
 
@@ -21,13 +22,6 @@ public:
 
 private:
     void buildAnimations();
-    void registerDirectionalClip(
-        const std::string& name,
-        const std::string& prefix,
-        int frameCount,
-        float frameDuration,
-        bool loop
-    );
 
     std::string clipForBoss(NarutoBoss& boss) const;
     std::string clipForClone(NarutoCloneEnemy& clone) const;
@@ -35,4 +29,5 @@ private:
     AnimationManager anim;
     sf::Sprite sprite;
     std::string lastClip;
+    NarutoAttack lastTrackedAttack = NarutoAttack::None;
 };

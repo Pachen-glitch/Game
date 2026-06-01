@@ -45,6 +45,8 @@ void ControlsScreen::draw(sf::RenderWindow& window) const {
     drawLines(window, {
         "WASD  ->  Movimiento",
         "F     ->  Ataque",
+        "V     ->  Escudo (defensa)",
+        "X     ->  Berserk (ofensiva)",
         "ESC   ->  Pausa"
     }, 170.f, 28);
     drawBackButton(window, backHovered);

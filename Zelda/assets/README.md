@@ -32,6 +32,12 @@ cd "c:\Users\Admin\Documents\Juego\Game\Zelda"
 cmake --build build --config Debug
 ```
 
+cd "c:\Users\Admin\Documents\Juego\Game\Zelda\build"
+cmake --build . --config Debug
+cd Debug
+.\debug\ZeldaASCII.exe
+
+
 Eso copia **Arial/Segoe** y sonidos del sistema Windows a `assets/`.
 
 ---

@@ -1,8 +1,16 @@
 #include "NarutoCloneEnemy.h"
 
 #include "../player/Player.h"
+#include "../../core/CombatFeel.h"
+#include "../../interaction/EventBus.h"
 #include "../../utils/AssetPaths.h"
 #include "../../utils/MathUtils.h"
+
+namespace {
+
+constexpr float kCloneVanishDuration = 0.4f;
+
+} // namespace
 
 NarutoCloneEnemy::NarutoCloneEnemy(sf::Vector2f pos)
     : Enemy(
@@ -24,13 +32,47 @@ NarutoCloneEnemy::NarutoCloneEnemy(sf::Vector2f pos)
     maxChaseFromSpawn = 9999.f;
 }
 
+void NarutoCloneEnemy::startVanish() {
+    if (vanishTimer > 0.f || deathAnimPending) return;
+
+    setAIState(EnemyState::Dead);
+    deathAnimPending = true;
+    vanishTimer = kCloneVanishDuration;
+    velocity = {0.f, 0.f};
+    EventBus::instance().emit("enemy_died");
+}
+
+void NarutoCloneEnemy::takeHit(int damage, sf::Vector2f knockback) {
+    if (isDead() || deathAnimPending || vanishTimer > 0.f) return;
+
+    health -= damage;
+    velocity = knockback * 1.35f;
+
+    CombatFeel::instance().triggerHitPause(0.05f);
+    CombatFeel::instance().setEnemyFlashTimer(0.14f);
+    EventBus::instance().emit("enemy_hit");
+
+    if (health <= 0) {
+        startVanish();
+    } else {
+        setAIState(EnemyState::Hurt);
+        hurtAnimTimer.start(0.36f);
+    }
+}
+
 void NarutoCloneEnemy::update(float dt) {
+    if (vanishTimer > 0.f) {
+        vanishTimer -= dt;
+        velocity = {0.f, 0.f};
+        return;
+    }
+
     lifeTimer -= dt;
     if (spawnTimer > 0.f) {
         spawnTimer -= dt;
         velocity = {0.f, 0.f};
     } else if (lifeTimer <= 0.f) {
-        deactivate();
+        startVanish();
         return;
     }
 
@@ -39,11 +81,11 @@ void NarutoCloneEnemy::update(float dt) {
 
 float NarutoCloneEnemy::getSpawnProgress() const {
     if (spawnTimer <= 0.f) return 1.f;
-    return 1.f - (spawnTimer / 0.55f);
+    return 1.f - (spawnTimer / 0.72f);
 }
 
 void NarutoCloneEnemy::think(Player& player, float dt, const Map& map) {
-    if (spawnTimer > 0.f || isDead() || deathAnimPending) {
+    if (spawnTimer > 0.f || vanishTimer > 0.f || isDead() || deathAnimPending) {
         return;
     }
 

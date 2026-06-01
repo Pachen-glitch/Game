@@ -18,6 +18,7 @@ public:
     void spawnSwordHitbox(Player& player);
     void spawnSpinHitbox(Player& player);
 
+    void steerNarutoProjectiles(float dt, Player& player, EntityManager& entities);
     void update(float dt, Player& player, EntityManager& entities);
 
     const std::vector<Hitbox>& getHitboxes() const { return hitboxes; }

@@ -3,6 +3,7 @@
 // Naruto boss attack identifiers — used by AI + NarutoRenderer.
 enum class NarutoAttack {
     None,
+    Run,
     Kick,
     Dash,
     Retreat,
@@ -10,7 +11,8 @@ enum class NarutoAttack {
     CloneSummon,
     OdamaRasengan,
     RasenShuriken,
-    Substitution
+    Substitution,
+    DefensiveSubstitution
 };
 
 enum class NarutoBossPhase {

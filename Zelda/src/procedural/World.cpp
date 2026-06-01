@@ -166,6 +166,48 @@ const Room& World::currentRoom() const {
     return rooms[currentRoomId];
 }
 
+bool World::hasActiveNarutoBoss() const {
+    for (const auto& e : entities.all()) {
+        if (!e || !e->isActive()) continue;
+        if (dynamic_cast<const NarutoBoss*>(e.get())) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool World::debugSpawnNarutoNear(sf::Vector2f pos) {
+    if (hasActiveNarutoBoss()) {
+        return false;
+    }
+
+    auto* boss = entities.spawn<NarutoBoss>(pos);
+    boss->setEntityManager(&entities);
+    return true;
+}
+
+bool World::debugRemoveNaruto() {
+    bool removed = false;
+
+    for (auto& e : entities.all()) {
+        if (!e || !e->isActive()) continue;
+
+        if (auto* boss = dynamic_cast<NarutoBoss*>(e.get())) {
+            boss->despawnAllClones();
+            boss->deactivate();
+            removed = true;
+            continue;
+        }
+
+        if (dynamic_cast<NarutoCloneEnemy*>(e.get())) {
+            e->deactivate();
+        }
+    }
+
+    entities.removeInactive();
+    return removed;
+}
+
 void World::updateEnemies(Player& player, float dt, const Map& map) {
     Room& room = currentRoom();
     const bool bossRoom = room.type == RoomType::Boss;

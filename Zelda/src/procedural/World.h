@@ -20,6 +20,10 @@ public:
     EntityManager& getEntities() { return entities; }
     void updateEnemies(Player& player, float dt, const Map& map);
 
+    bool hasActiveNarutoBoss() const;
+    bool debugSpawnNarutoNear(sf::Vector2f pos);
+    bool debugRemoveNaruto();
+
     bool tryTransition(Player& player, DoorSide& outSide);
 
 private:

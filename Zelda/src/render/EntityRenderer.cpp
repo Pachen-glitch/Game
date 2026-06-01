@@ -193,6 +193,14 @@ void EntityRenderer::draw(
             !ent->isActive())
             continue;
 
+        if (auto* narutoBoss = dynamic_cast<NarutoBoss*>(ent.get())) {
+            if (narutoBoss->isHidden() &&
+                !narutoBoss->isIntroSmokeActive() &&
+                !narutoBoss->isSubstitutionReappearSmoke()) {
+                continue;
+            }
+        }
+
         window.draw(
             ent->getSprite()
         );
