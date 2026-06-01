@@ -596,13 +596,25 @@ bool World::tryTransition(Player& player, DoorSide& outSide) {
 
     Room& room = currentRoom();
 
+    const int fromRoomId = currentRoomId;
+
 
 
     for (const auto& conn : room.connections) {
 
         if (!canTraverseConnection(room, conn)) continue;
 
-        if (!playerAtOpening(player, room, conn.side)) continue;
+
+
+        DoorSide openingSide = conn.side;
+
+        if (room.type == RoomType::BossAntechamber && conn.isBossGate) {
+
+            openingSide = Room::AntechamberSecretPassageSide;
+
+        }
+
+        if (!playerAtOpening(player, room, openingSide)) continue;
 
 
 
@@ -610,7 +622,29 @@ bool World::tryTransition(Player& player, DoorSide& outSide) {
 
         transitionCooldown = 0.5f;
 
-        player.setPosition(currentRoom().getTransitionSpawn(conn.side));
+
+
+        DoorSide spawnSide = conn.side;
+
+        if (rooms[fromRoomId].type == RoomType::BossAntechamber && conn.isBossGate) {
+
+            for (const auto& backConn : currentRoom().connections) {
+
+                if (backConn.targetRoomId == fromRoomId && backConn.isBossGate) {
+
+                    spawnSide = backConn.side;
+
+                    break;
+
+                }
+
+            }
+
+        }
+
+
+
+        player.setPosition(currentRoom().getTransitionSpawn(spawnSide));
 
         outSide = conn.side;
 

@@ -166,6 +166,11 @@ void Room::buildLayout(int layoutSalt) {
 }
 
 void Room::applyConnectionTiles(bool bossGateUnlocked) {
+    if (type == RoomType::BossAntechamber) {
+        applyAntechamberConnectionTiles(bossGateUnlocked);
+        return;
+    }
+
     for (const auto& conn : connections) {
         if (conn.isBossGate) {
             if (bossGateUnlocked) {
@@ -177,6 +182,37 @@ void Room::applyConnectionTiles(bool bossGateUnlocked) {
             carveEdge(conn.side, TileType::OPENING);
         }
     }
+}
+
+void Room::applyAntechamberConnectionTiles(bool bossGateUnlocked) {
+    int primaryEntranceTarget = -1;
+    for (const auto& conn : connections) {
+        if (conn.isBossGate) continue;
+        if (primaryEntranceTarget < 0 ||
+            conn.targetRoomId < primaryEntranceTarget) {
+            primaryEntranceTarget = conn.targetRoomId;
+        }
+    }
+
+    for (const auto& conn : connections) {
+        if (conn.isBossGate) {
+            if (conn.side != AntechamberSecretPassageSide) {
+                carveEdge(conn.side, TileType::WALL);
+            }
+            continue;
+        }
+
+        if (conn.targetRoomId == primaryEntranceTarget) {
+            carveEdge(conn.side, TileType::OPENING);
+        } else {
+            carveEdge(conn.side, TileType::WALL);
+        }
+    }
+
+    carveEdge(
+        AntechamberSecretPassageSide,
+        bossGateUnlocked ? TileType::OPENING : TileType::WALL
+    );
 }
 
 void Room::carveEdge(DoorSide side, TileType tile) {
@@ -192,9 +228,11 @@ bool Room::exitsAreOpen() const {
 
 sf::Vector2f Room::getBossGateWorldPos() const {
     const float ts = static_cast<float>(Constants::TILE_SIZE);
-    const float cx = (map.getWidth() / 2.f) * ts;
-    const float cy = (map.getHeight() / 2.f) * ts;
-    return {cx - 32.f, cy - 40.f};
+    const float roomW = static_cast<float>(map.getWidth()) * ts;
+    const float roomH = static_cast<float>(map.getHeight()) * ts;
+    constexpr float kGateW = 64.f;
+    constexpr float kGateH = 80.f;
+    return {(roomW - kGateW) * 0.5f, (roomH - kGateH) * 0.5f};
 }
 
 sf::Vector2f Room::getPlayerSpawn() const {
