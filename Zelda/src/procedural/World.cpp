@@ -7,11 +7,15 @@
 #include "../entity/enemy/SkeletonEnemy.h"
 #include "../entity/enemy/SlimeEnemy.h"
 #include "../entity/enemy/SummonerEnemy.h"
+#include "../entity/enemy/NarutoBoss.h"
+#include "../entity/enemy/NarutoCloneEnemy.h"
+#include "../entity/enemy/Enemy.h"
 #include "../entity/items/Coin.h"
 #include "../entity/items/Door.h"
 #include "../entity/items/Heart.h"
 #include "../entity/items/Key.h"
 #include "../entity/npc/Shopkeeper.h"
+#include "../entity/items/Chest.h"
 
 #include <cstdlib>
 
@@ -23,15 +27,24 @@ void World::newRun(int seed) {
 }
 
 void World::loadRoom(int roomId) {
-    if (roomId < 0 || roomId >= static_cast<int>(rooms.size())) return;
+
+    if (roomId < 0 ||
+        roomId >= static_cast<int>(rooms.size()))
+        return;
+
     currentRoomId = roomId;
+
     entities.clear();
+
     rooms[roomId].visited = true;
+
     populateRoom();
 }
 
 void World::populateRoom() {
+
     Room& room = currentRoom();
+
     int w = room.map.getWidth();
     int h = room.map.getHeight();
 
@@ -53,6 +66,7 @@ void World::populateRoom() {
     };
 
     switch (room.type) {
+
         case RoomType::Start:
             entities.spawn<SlimeEnemy>(rndPos());
             entities.spawn<SlimeEnemy>(rndPos());
@@ -90,33 +104,167 @@ void World::populateRoom() {
             if (std::rand() % 2) entities.spawn<Key>(rndPos());
             if (std::rand() % 2) entities.spawn<Coin>(rndPos());
             break;
+
+        case RoomType::Boss: {
+            sf::Vector2f center(
+                static_cast<float>(w * Constants::TILE_SIZE) * 0.5f - 24.f,
+                static_cast<float>(h * Constants::TILE_SIZE) * 0.5f - 24.f
+            );
+            auto* boss = entities.spawn<NarutoBoss>(center);
+            boss->setEntityManager(&entities);
+            break;
+        }
+
         case RoomType::Treasure:
+
             entities.spawn<Key>(rndPos());
+
             entities.spawn<Heart>(rndPos());
             for (int i = 0; i < 3; ++i) entities.spawn<Coin>(rndPos());
             break;
+
         case RoomType::Shop:
             entities.spawn<Shopkeeper>(room.getPlayerSpawn() + sf::Vector2f(64.f, 0.f));
             break;
+
         default:
             break;
     }
+
+        if (
+        room.cleared ||
+        room.type == RoomType::Start ||
+        room.type == RoomType::Shop
+    ) {
 
     for (const auto& conn : room.connections) {
         entities.spawn<Door>(room.getDoorWorldPos(conn.side), conn.locked);
     }
 }
+}
 
-Room& World::currentRoom() { return rooms[currentRoomId]; }
-const Room& World::currentRoom() const { return rooms[currentRoomId]; }
+Room& World::currentRoom() {
+    return rooms[currentRoomId];
+}
+
+const Room& World::currentRoom() const {
+    return rooms[currentRoomId];
+}
+
+bool World::hasActiveNarutoBoss() const {
+    for (const auto& e : entities.all()) {
+        if (!e || !e->isActive()) continue;
+        if (dynamic_cast<const NarutoBoss*>(e.get())) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool World::debugSpawnNarutoNear(sf::Vector2f pos) {
+    if (hasActiveNarutoBoss()) {
+        return false;
+    }
+
+    auto* boss = entities.spawn<NarutoBoss>(pos);
+    boss->setEntityManager(&entities);
+    return true;
+}
+
+bool World::debugRemoveNaruto() {
+    bool removed = false;
+
+    for (auto& e : entities.all()) {
+        if (!e || !e->isActive()) continue;
+
+        if (auto* boss = dynamic_cast<NarutoBoss*>(e.get())) {
+            boss->despawnAllClones();
+            boss->deactivate();
+            removed = true;
+            continue;
+        }
+
+        if (dynamic_cast<NarutoCloneEnemy*>(e.get())) {
+            e->deactivate();
+        }
+    }
+
+    entities.removeInactive();
+    return removed;
+}
 
 void World::updateEnemies(Player& player, float dt, const Map& map) {
+    Room& room = currentRoom();
+    const bool bossRoom = room.type == RoomType::Boss;
+
     for (auto& e : entities.all()) {
         if (!e || !e->isActive() || e->getType() != EntityType::Enemy) continue;
+
+        if (auto* boss = dynamic_cast<NarutoBoss*>(e.get())) {
+            boss->setEntityManager(&entities);
+            boss->think(player, dt, map);
+            continue;
+        }
+
+        if (auto* clone = dynamic_cast<NarutoCloneEnemy*>(e.get())) {
+            clone->think(player, dt, map);
+            continue;
+        }
+
         auto* enemy = dynamic_cast<Enemy*>(e.get());
-        if (enemy) enemy->think(player, dt, map);
+        if (enemy) {
+            enemy->think(player, dt, map);
+        }
     }
+
     entities.removeInactive();
+
+    bool roomClearedNow = false;
+
+    if (bossRoom) {
+        bool bossAlive = false;
+        for (auto& e : entities.all()) {
+            if (!e || !e->isActive()) continue;
+            if (dynamic_cast<NarutoBoss*>(e.get())) {
+                bossAlive = true;
+                break;
+            }
+        }
+        roomClearedNow = !bossAlive;
+    } else {
+        bool hasEnemies = false;
+        for (auto& e : entities.all()) {
+            if (!e || !e->isActive() || e->getType() != EntityType::Enemy) continue;
+            hasEnemies = true;
+            break;
+        }
+        roomClearedNow = !hasEnemies;
+    }
+
+    if (roomClearedNow && !room.cleared) {
+
+        room.cleared = true;
+        for (const auto& conn : room.connections) {
+            entities.spawn<Door>(
+                room.getDoorWorldPos(conn.side),
+                conn.locked
+            );
+        }
+        // NO poner cofres en tienda
+        if (
+            room.type != RoomType::Shop &&
+            room.type != RoomType::Start
+        ) {
+
+            entities.spawn<Chest>(
+
+                room.getPlayerSpawn()
+                    + sf::Vector2f(180.f, 0.f),
+
+                &entities
+            );
+        }
+    }
 }
 
 

@@ -8,16 +8,30 @@
 
 class EnemyAnimator {
 public:
-    void setupSlime();
-    void update(Enemy& enemy, float dt);
-    void applyToEntity(Entity& entity, float scale = 2.f);
 
-    bool isDeathFinished() const { return deathFinished; }
+    void setupSlime();
+    void setupSkeleton();
+
+    void update(Enemy& enemy, float dt);
+
+    void applyToEntity(
+        Entity& entity,
+        float scale = 2.f
+    );
+
+    bool isDeathFinished() const {
+        return deathFinished;
+    }
 
 private:
-    std::string pickClip(const Enemy& enemy) const;
+
+    std::string pickClip(
+        const Enemy& enemy
+    ) const;
 
     AnimationManager anim;
+
     std::string lastClip;
+
     bool deathFinished = false;
 };

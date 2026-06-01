@@ -11,7 +11,7 @@ namespace Constants {
     constexpr float BAT_SPEED = 140.f;
 
     constexpr float ATTACK_DURATION = 0.32f;
-    constexpr float SWORD_COOLDOWN = 0.42f;
+    constexpr float SWORD_COOLDOWN = 0.35f;
     constexpr float ATTACK_HIT_FRAME_TIME = 0.09f;
     constexpr float HIT_PAUSE_DURATION = 0.05f;
     constexpr float SPIN_DURATION = 0.6f;
@@ -24,9 +24,20 @@ namespace Constants {
     constexpr float DEAGGRO_RADIUS = 240.f;
     constexpr float ENEMY_ATTACK_RANGE = 40.f;
 
-    constexpr int STARTING_HEARTS = 3;
+    constexpr int STARTING_HEARTS = 7;
     constexpr int MAX_HEARTS = 20;
     constexpr int STARTING_RUPEES = 0;
+
+    constexpr float SHIELD_DAMAGE_MULT = 0.3f;
+    constexpr float SHIELD_MOVE_MULT = 0.55f;
+
+    constexpr float BERSERK_DURATION = 10.f;
+    constexpr float BERSERK_COOLDOWN = 12.f;
+    constexpr float BERSERK_DAMAGE_MULT = 1.5f;
+    constexpr float BERSERK_MOVE_MULT = 1.25f;
+    constexpr float BERSERK_ATTACK_SPEED_MULT = 1.35f;
+
+    constexpr float SHOP_EXIT_COOLDOWN = 3.f;
 
     constexpr int MIN_ROOMS = 8;
     constexpr int MAX_ROOMS = 14;

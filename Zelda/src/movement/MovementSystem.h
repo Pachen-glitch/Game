@@ -10,5 +10,5 @@ public:
 
 private:
     bool attackPressed = false;
-    bool spinPressed = false;
+    bool berserkPressed = false;
 };

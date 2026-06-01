@@ -16,6 +16,7 @@ private:
     sf::Sprite sprite;
     AnimationManager anim;
     std::string lastClip;
+    float effectTime = 0.f;
 
     void buildAnimations();
     std::string clipForState(Player& player) const;

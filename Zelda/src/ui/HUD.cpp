@@ -11,11 +11,6 @@ HUD::HUD() {
 void HUD::draw(sf::RenderWindow& window, const Player& player) {
     if (!fontLoaded) return;
 
-    sf::Text hearts;
-    hearts.setFont(font);
-    hearts.setCharacterSize(22);
-    hearts.setFillColor(sf::Color::Red);
-    hearts.setPosition(16.f, 12.f);
     auto fmt = [](float v) {
         std::string s = std::to_string(v);
         auto dot = s.find('.');
@@ -24,9 +19,15 @@ void HUD::draw(sf::RenderWindow& window, const Player& player) {
         }
         return s;
     };
+
+    sf::Text hearts;
+    hearts.setFont(font);
+    hearts.setCharacterSize(22);
+    hearts.setFillColor(sf::Color::Red);
+    hearts.setPosition(16.f, 12.f);
     hearts.setString(
         "Hearts: " + fmt(player.getStats().hearts) +
-        "/" + fmt(player.getStats().maxHearts)
+        "/" + fmt(player.getPersistedMaxHearts())
     );
 
     sf::Text rupees;
@@ -47,4 +48,25 @@ void HUD::draw(sf::RenderWindow& window, const Player& player) {
     window.draw(hearts);
     window.draw(rupees);
     window.draw(keys);
+
+    float statusY = 96.f;
+    if (player.isShieldActive()) {
+        sf::Text shield;
+        shield.setFont(font);
+        shield.setCharacterSize(18);
+        shield.setFillColor(sf::Color(120, 190, 255));
+        shield.setPosition(16.f, statusY);
+        shield.setString("[SHIELD]");
+        window.draw(shield);
+        statusY += 24.f;
+    }
+    if (player.isBerserkActive()) {
+        sf::Text berserk;
+        berserk.setFont(font);
+        berserk.setCharacterSize(18);
+        berserk.setFillColor(sf::Color(255, 120, 60));
+        berserk.setPosition(16.f, statusY);
+        berserk.setString("[BERSERK]");
+        window.draw(berserk);
+    }
 }

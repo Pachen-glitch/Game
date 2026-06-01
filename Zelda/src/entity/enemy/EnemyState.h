@@ -15,5 +15,7 @@ enum class EnemyKind {
     Slime,
     Bat,
     Skeleton,
-    Summoner
+    Summoner,
+    Naruto,
+    NarutoClone
 };

@@ -264,6 +264,7 @@ sf::Vector2f Room::getDoorWorldPos(DoorSide side) const {
     float ts = static_cast<float>(Constants::TILE_SIZE);
 
     switch (side) {
+
         case DoorSide::North:
             return {midX * ts, ts};
 
@@ -312,7 +313,7 @@ sf::Vector2f Room::getTransitionSpawn(DoorSide enteredFrom) const
             };
 
         default:
-            return getPlayerSpawn();
+            break;
     }
 }
 

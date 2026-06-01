@@ -2,6 +2,8 @@
 #include "../entity/player/PlayerState.h"
 #include "../utils/AssetPaths.h"
 
+#include <cmath>
+
 PlayerRenderer::PlayerRenderer() {
     buildAnimations();
     anim.play("idle_down");
@@ -81,6 +83,9 @@ std::string PlayerRenderer::clipForState(Player& player) const {
     if (player.getState() == PlayerState::Spin) {
         return "walk_" + dir;
     }
+    if (player.getState() == PlayerState::Shield) {
+        return "idle_" + dir;
+    }
     if (player.getState() == PlayerState::Walk || player.isMoving()) {
         return "walk_" + dir;
     }
@@ -104,8 +109,19 @@ void PlayerRenderer::update(Player& player, float deltaTime) {
     anim.update(deltaTime);
     anim.applyToSprite(sprite, 2.f);
 
+    effectTime += deltaTime;
+
     if (player.getState() == PlayerState::Hurt) {
         sprite.setColor(sf::Color(255, 120, 120));
+    } else if (player.isShieldActive()) {
+        float pulse = 0.75f + 0.25f * std::sin(effectTime * 6.f);
+        auto tint = static_cast<sf::Uint8>(120.f + pulse * 80.f);
+        sprite.setColor(sf::Color(90, tint, 255));
+    } else if (player.isBerserkActive()) {
+        float pulse = 0.85f + 0.15f * std::sin(effectTime * 8.f);
+        auto r = static_cast<sf::Uint8>(220.f + pulse * 35.f);
+        auto g = static_cast<sf::Uint8>(100.f + pulse * 40.f);
+        sprite.setColor(sf::Color(r, g, 90));
     } else {
         sprite.setColor(sf::Color::White);
     }

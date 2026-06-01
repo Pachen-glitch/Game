@@ -8,17 +8,18 @@ Player::Player(sf::Vector2f startPos)
     : Entity(
         startPos,
         {static_cast<float>(Constants::TILE_SIZE), static_cast<float>(Constants::TILE_SIZE)},
-        AssetPaths::getPlayerIdleSprite(Direction::DOWN), // first idle_d frame
+        AssetPaths::getPlayerIdleSprite(Direction::DOWN),
         EntityType::Player
     )
 {
-    stats.maxHearts = Constants::STARTING_HEARTS;
-    stats.hearts = Constants::STARTING_HEARTS;
+    stats.maxHearts = static_cast<float>(Constants::STARTING_HEARTS);
+    stats.hearts = stats.maxHearts;
     stats.rupees = Constants::STARTING_RUPEES;
 }
 
 void Player::update(float deltaTime) {
     updateStateTimers(deltaTime);
+    updateBerserk(deltaTime);
 
     if (stats.isDead()) {
         setState(PlayerState::Dead);
@@ -83,7 +84,8 @@ void Player::updateLocomotionState(bool isMovingInput) {
 bool Player::trySwordAttack() {
     if (!swordCooldown.finished()) return false;
     if (state == PlayerState::Attack || state == PlayerState::Spin ||
-        state == PlayerState::Hurt || state == PlayerState::Dead) {
+        state == PlayerState::Hurt || state == PlayerState::Dead ||
+        state == PlayerState::Shield) {
         return false;
     }
     swordAttack();
@@ -93,24 +95,101 @@ bool Player::trySwordAttack() {
 bool Player::trySpinAttack() {
     if (!stats.hasSpinAttack) return false;
     if (state == PlayerState::Attack || state == PlayerState::Spin ||
-        state == PlayerState::Hurt || state == PlayerState::Dead) {
+        state == PlayerState::Hurt || state == PlayerState::Dead ||
+        state == PlayerState::Shield) {
         return false;
     }
     spinAttack();
     return true;
 }
 
+bool Player::tryActivateBerserk() {
+    if (berserkActive || !berserkCooldownTimer.finished()) return false;
+    if (state == PlayerState::Attack || state == PlayerState::Spin ||
+        state == PlayerState::Hurt || state == PlayerState::Dead) {
+        return false;
+    }
+
+    float ratio = healthRatio(stats.hearts, stats.maxHearts);
+    berserkStoredMaxHearts = stats.maxHearts;
+    stats.maxHearts *= 0.5f;
+    stats.hearts = ratio * stats.maxHearts;
+
+    stats.swordDamage *= Constants::BERSERK_DAMAGE_MULT;
+    stats.moveSpeedMult *= Constants::BERSERK_MOVE_MULT;
+    stats.attackSpeedMult *= Constants::BERSERK_ATTACK_SPEED_MULT;
+
+    berserkActive = true;
+    berserkTimer.start(Constants::BERSERK_DURATION);
+    deactivateShield();
+    shieldHeld = false;
+    return true;
+}
+
+void Player::updateBerserk(float dt) {
+    berserkCooldownTimer.tick(dt);
+    if (!berserkActive) return;
+
+    berserkTimer.tick(dt);
+    if (berserkTimer.finished()) {
+        endBerserk();
+    }
+}
+
+void Player::endBerserk() {
+    if (!berserkActive) return;
+
+    float ratio = healthRatio(stats.hearts, stats.maxHearts);
+    stats.maxHearts = berserkStoredMaxHearts;
+    stats.hearts = ratio * stats.maxHearts;
+
+    stats.swordDamage /= Constants::BERSERK_DAMAGE_MULT;
+    stats.moveSpeedMult /= Constants::BERSERK_MOVE_MULT;
+    stats.attackSpeedMult /= Constants::BERSERK_ATTACK_SPEED_MULT;
+
+    berserkActive = false;
+    berserkCooldownTimer.start(Constants::BERSERK_COOLDOWN);
+}
+
 void Player::setShieldHeld(bool held) {
     shieldHeld = held;
-    if (held && stats.hasShield) {
+    if (held && stats.hasShield && state != PlayerState::Attack &&
+        state != PlayerState::Spin && state != PlayerState::Hurt &&
+        state != PlayerState::Dead) {
         activateShield();
-    } else {
+    } else if (!held) {
         deactivateShield();
     }
 }
 
+void Player::breakShieldForAttack() {
+    shieldHeld = false;
+    deactivateShield();
+}
+
 bool Player::isShieldActive() const {
     return shieldHeld && stats.hasShield && state == PlayerState::Shield;
+}
+
+bool Player::isBerserkActive() const {
+    return berserkActive;
+}
+
+void Player::increaseMaxHearts(float amount) {
+    if (berserkActive) {
+        berserkStoredMaxHearts += amount;
+        stats.maxHearts += amount * 0.5f;
+    } else {
+        stats.maxHearts += amount;
+    }
+    stats.heal(amount);
+}
+
+float Player::getPersistedMaxHearts() const {
+    if (berserkActive) {
+        return berserkStoredMaxHearts;
+    }
+    return stats.maxHearts;
 }
 
 void Player::applyKnockback(sf::Vector2f force) {
@@ -121,13 +200,19 @@ void Player::applyKnockback(sf::Vector2f force) {
 
 void Player::damage(float amount) {
     if (!canTakeDamage()) return;
-    if (isShieldActive()) return;
+
+    if (isShieldActive()) {
+        amount *= Constants::SHIELD_DAMAGE_MULT;
+    }
 
     stats.takeDamage(amount);
     invulnTimer.start(Constants::INVULN_DURATION);
     EventBus::instance().emit("player_damaged");
 
     if (stats.isDead()) {
+        if (berserkActive) {
+            endBerserk();
+        }
         setState(PlayerState::Dead);
         EventBus::instance().emit("player_died");
     } else {
@@ -174,13 +259,13 @@ int Player::getCoins() const { return stats.rupees; }
 int Player::getKeys() const { return stats.keys; }
 
 void Player::swordAttack() {
+    deactivateShield();
     attacking = true;
     swordHitboxSpawned = false;
     lockedAttackDirection = direction;
     setState(PlayerState::Attack);
     float duration = Constants::ATTACK_DURATION / stats.attackSpeedMult;
     attackTimer.start(duration);
-    swordCooldown.start(Constants::SWORD_COOLDOWN / stats.attackSpeedMult);
     EventBus::instance().emit("player_attack");
 }
 
@@ -225,6 +310,7 @@ void Player::updateStateTimers(float dt) {
     if (attackTimer.finished() && state == PlayerState::Attack) {
         attacking = false;
         setState(PlayerState::Idle);
+        swordCooldown.start(Constants::SWORD_COOLDOWN / stats.attackSpeedMult);
     }
     if (spinTimer.finished() && state == PlayerState::Spin) {
         spinning = false;

@@ -13,20 +13,24 @@ void MovementSystem::update(float dt, Player& player, const Map& map) {
 
     if (player.getState() == PlayerState::Dead) return;
 
-    bool shield = Keyboard::isKeyPressed(Keyboard::V);
-    player.setShieldHeld(shield);
-
     if (Keyboard::isKeyPressed(Keyboard::F) && !attackPressed) {
+        if (player.isShieldActive()) {
+            player.breakShieldForAttack();
+        }
         player.trySwordAttack();
         attackPressed = true;
     }
     if (!Keyboard::isKeyPressed(Keyboard::F)) attackPressed = false;
 
-    if (Keyboard::isKeyPressed(Keyboard::X) && !spinPressed) {
-        player.trySpinAttack();
-        spinPressed = true;
+    if (Keyboard::isKeyPressed(Keyboard::X) && !berserkPressed) {
+        player.tryActivateBerserk();
+        berserkPressed = true;
     }
-    if (!Keyboard::isKeyPressed(Keyboard::X)) spinPressed = false;
+    if (!Keyboard::isKeyPressed(Keyboard::X)) berserkPressed = false;
+
+    bool shield = Keyboard::isKeyPressed(Keyboard::V) &&
+                  player.getState() != PlayerState::Attack;
+    player.setShieldHeld(shield);
 
     if (!player.canMove()) {
         player.moving = false;

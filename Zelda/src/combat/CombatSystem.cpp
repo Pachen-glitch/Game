@@ -6,6 +6,7 @@
 
 #include "../core/Constants.h"
 #include "../entity/enemy/Enemy.h"
+#include "../entity/enemy/NarutoProjectile.h"
 #include "../entity/player/Direction.h"
 #include "../interaction/EventBus.h"
 #include "../utils/MathUtils.h"
@@ -79,6 +80,26 @@ void CombatSystem::update(float dt, Player& player, EntityManager& entities) {
 
     resolvePlayerHits(player, entities);
     resolveEnemyHits(player, entities);
+    resolveProjectileHits(player, entities);
+}
+
+void CombatSystem::steerNarutoProjectiles(
+    float dt,
+    Player& player,
+    EntityManager& entities
+) {
+    sf::Vector2f targetCenter =
+        player.getPosition() + player.getSize() * 0.5f;
+
+    for (auto& ent : entities.all()) {
+        if (!ent || !ent->isActive()) continue;
+        if (ent->getType() != EntityType::Projectile) continue;
+
+        auto* proj = dynamic_cast<NarutoProjectile*>(ent.get());
+        if (!proj) continue;
+
+        proj->applyHomingSteer(targetCenter, dt);
+    }
 }
 
 void CombatSystem::resolvePlayerHits(Player& player, EntityManager& entities) {
@@ -123,5 +144,28 @@ void CombatSystem::resolveEnemyHits(Player& player, EntityManager& entities) {
         player.applyKnockback(kb);
 
         enemy->resetContactCooldown(0.85f);
+    }
+}
+
+void CombatSystem::resolveProjectileHits(Player& player, EntityManager& entities) {
+    if (!player.canTakeDamage()) return;
+
+    for (auto& ent : entities.all()) {
+        if (!ent || !ent->isActive()) continue;
+        if (ent->getType() != EntityType::Projectile) continue;
+
+        auto* proj = dynamic_cast<NarutoProjectile*>(ent.get());
+        if (!proj) continue;
+        if (!proj->getBounds().intersects(player.getBounds())) continue;
+
+        player.damage(proj->getDamage());
+
+        sf::Vector2f kb = MathUtils::normalize(
+            player.getPosition() - proj->getPosition()
+        ) * proj->getKnockback();
+        player.applyKnockback(kb);
+
+        EventBus::instance().emit("player_damaged");
+        proj->deactivate();
     }
 }
