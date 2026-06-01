@@ -18,6 +18,7 @@
 #include "../render/PlayerRenderer.h"
 #include "../render/TilemapRenderer.h"
 #include "../save/SaveSystem.h"
+#include "../save/HighScore.h"
 #include "../ui/DamageNumbers.h"
 #include "../ui/GameScreens.h"
 #include "../ui/HUD.h"
@@ -26,6 +27,7 @@
 #include "../ui/menu/ControlsScreen.h"
 #include "../ui/menu/InstructionsScreen.h"
 #include "../ui/menu/MainMenu.h"
+#include "../ui/menu/NameEntryScreen.h"
 #include "../ui/menu/StatisticsScreen.h"
 #include "../utils/AssetPaths.h"
 
@@ -36,10 +38,6 @@
 #include <iostream>
 
 namespace {
-
-int computeRunScore(int roomId, int enemiesDefeated, int rupees) {
-    return roomId * 100 + enemiesDefeated * 25 + rupees * 2;
-}
 
 void startNewRun(
     World& world,
@@ -55,7 +53,42 @@ void startNewRun(
 
 } // namespace
 
-void GameSession::setupEvents(SaveData& saveData) {
+struct RunTracker {
+    std::string playerName = "Aventurero";
+    int enemiesDefeated = 0;
+    int maxRoomReached = 0;
+    bool narutoDefeated = false;
+    bool scoreSubmitted = false;
+
+    void beginRun(const std::string& name) {
+        playerName = normalizePlayerName(name);
+        enemiesDefeated = 0;
+        maxRoomReached = 0;
+        narutoDefeated = false;
+        scoreSubmitted = false;
+    }
+
+    void submitScore(SaveData& saveData, int rupeesCollected) {
+        if (scoreSubmitted) return;
+        scoreSubmitted = true;
+
+        const int score = computeRunScore(
+            rupeesCollected,
+            enemiesDefeated,
+            maxRoomReached,
+            narutoDefeated
+        );
+        submitHighScore(
+            saveData.highScores,
+            saveData.bestScore,
+            saveData.bestScoreHolder,
+            playerName,
+            score
+        );
+    }
+};
+
+void GameSession::setupEvents(SaveData& saveData, RunTracker* runTracker) {
     EventBus& bus = EventBus::instance();
 
     bus.subscribe("player_attack", []() {
@@ -68,15 +101,21 @@ void GameSession::setupEvents(SaveData& saveData) {
     bus.subscribe("enemy_hit", []() {
         CombatFeel::instance().triggerHitPause(Constants::HIT_PAUSE_DURATION);
     });
-    bus.subscribe("enemy_died", [&saveData]() {
+    bus.subscribe("enemy_died", [&saveData, runTracker]() {
         AudioManager::instance().playSound("enemy_death");
         saveData.enemiesDefeated++;
+        if (runTracker) {
+            runTracker->enemiesDefeated++;
+        }
     });
     bus.subscribe("player_damaged", []() {
         AudioManager::instance().playSound("hurt");
     });
-    bus.subscribe("naruto_boss_defeated", []() {
+    bus.subscribe("naruto_boss_defeated", [runTracker]() {
         AudioManager::instance().playBossDeathMusic();
+        if (runTracker) {
+            runTracker->narutoDefeated = true;
+        }
     });
 }
 
@@ -94,7 +133,8 @@ void GameSession::run() {
     SaveSystem saveSystem;
     saveSystem.load(saveData);
 
-    setupEvents(saveData);
+    RunTracker runTracker;
+    setupEvents(saveData, &runTracker);
     AudioManager::instance().load();
     AudioManager::instance().playMenuMusic();
 
@@ -121,18 +161,19 @@ void GameSession::run() {
     DamageNumbers damageNumbers;
 
     MainMenu mainMenu;
+    NameEntryScreen nameEntryScreen;
     ControlsScreen controlsScreen;
     InstructionsScreen instructionsScreen;
     StatisticsScreen statisticsScreen;
 
     sf::Vector2u winSize = window.getSize();
     mainMenu.layoutForWindow(winSize);
+    nameEntryScreen.prepare(winSize);
     controlsScreen.prepare(winSize);
     instructionsScreen.prepare(winSize);
     statisticsScreen.prepare(winSize, saveData);
 
     GameState state = GameState::MainMenu;
-    bool gameStarted = false;
     sf::Clock clock;
 
     EventBus::instance().subscribe("open_shop", [&]() {
@@ -160,17 +201,24 @@ void GameSession::run() {
                     continue;
                 }
                 if (result.nextState != GameState::MainMenu) {
-                    if (result.nextState == GameState::Playing) {
-                        if (!gameStarted) {
-                            startNewRun(world, player, saveSystem, saveData);
-                            gameStarted = true;
-                        }
-                        AudioManager::instance().startGameplayMusic();
+                    if (result.nextState == GameState::NameEntry) {
+                        nameEntryScreen.resetInput();
+                        nameEntryScreen.prepare(window.getSize());
                     } else if (result.nextState == GameState::Statistics) {
                         statisticsScreen.prepare(window.getSize(), saveData);
                     }
                     state = result.nextState;
                 }
+            } else if (state == GameState::NameEntry) {
+                GameState next = nameEntryScreen.handleEvent(ev, window);
+                if (next == GameState::Playing) {
+                    runTracker.beginRun(nameEntryScreen.getEnteredName());
+                    startNewRun(world, player, saveSystem, saveData);
+                    AudioManager::instance().startGameplayMusic();
+                } else if (next == GameState::MainMenu) {
+                    AudioManager::instance().playMenuMusic();
+                }
+                state = next;
             } else if (state == GameState::Controls) {
                 GameState next = controlsScreen.handleEvent(ev, window);
                 if (next == GameState::MainMenu) {
@@ -207,6 +255,7 @@ void GameSession::run() {
                 }
                 if (ev.key.code == sf::Keyboard::R &&
                     state == GameState::GameOver) {
+                    runTracker.beginRun(runTracker.playerName);
                     startNewRun(world, player, saveSystem, saveData);
                     AudioManager::instance().startGameplayMusic();
                     state = GameState::Playing;
@@ -247,6 +296,12 @@ void GameSession::run() {
                     static_cast<float>(ev.mouseMove.y)
                 ));
             } else if (ev.type == sf::Event::MouseMoved &&
+                       state == GameState::NameEntry) {
+                nameEntryScreen.update(sf::Vector2f(
+                    static_cast<float>(ev.mouseMove.x),
+                    static_cast<float>(ev.mouseMove.y)
+                ));
+            } else if (ev.type == sf::Event::MouseMoved &&
                        state == GameState::Statistics) {
                 statisticsScreen.update(sf::Vector2f(
                     static_cast<float>(ev.mouseMove.x),
@@ -261,6 +316,10 @@ void GameSession::run() {
             switch (state) {
                 case GameState::MainMenu:
                     mainMenu.draw(window);
+                    break;
+                case GameState::NameEntry:
+                    mainMenu.draw(window);
+                    nameEntryScreen.draw(window);
                     break;
                 case GameState::Controls:
                     controlsScreen.draw(window);
@@ -288,6 +347,10 @@ void GameSession::run() {
                 saveData.maxRoomReached,
                 world.getCurrentRoomId()
             );
+            runTracker.maxRoomReached = std::max(
+                runTracker.maxRoomReached,
+                world.getCurrentRoomId()
+            );
 
             PlayerState prevState = player.getState();
             movement.update(gameDt, player, world.currentRoom().map);
@@ -312,20 +375,15 @@ void GameSession::run() {
             DoorSide side;
             world.tryTransition(player, side);
 
-            int score = computeRunScore(
-                world.getCurrentRoomId(),
-                saveData.enemiesDefeated,
-                player.getCoins()
-            );
-            saveData.bestScore = std::max(saveData.bestScore, score);
-
             if (player.getStats().isDead()) {
                 saveData.totalDeaths++;
+                runTracker.submitScore(saveData, player.getCoins());
                 state = GameState::GameOver;
                 AudioManager::instance().playGameOverMusic();
             }
             if (world.currentRoom().type == RoomType::Boss &&
                 world.currentRoom().cleared) {
+                runTracker.submitScore(saveData, player.getCoins());
                 state = GameState::Victory;
             }
         }

@@ -31,7 +31,7 @@ void MainMenu::buildHitAreas(sf::Vector2u windowSize) {
         top += step;
     };
 
-    add(GameState::Playing, false);
+    add(GameState::NameEntry, false);
     add(GameState::Controls, false);
     add(GameState::Instructions, false);
     add(GameState::Statistics, false);

@@ -22,7 +22,8 @@ public:
         sf::RenderWindow& window,
         const std::vector<std::string>& lines,
         float startY,
-        unsigned charSize = 24
+        unsigned charSize = 24,
+        float startX = 120.f
     ) const;
 
     // Returns true if Volver was clicked.

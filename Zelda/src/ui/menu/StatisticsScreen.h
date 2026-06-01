@@ -20,4 +20,6 @@ public:
 private:
     bool backHovered = false;
     std::vector<std::string> statLines;
+    std::vector<std::string> leaderboardLines;
+    float leaderboardStartX = 720.f;
 };

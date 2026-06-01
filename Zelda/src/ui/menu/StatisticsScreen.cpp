@@ -1,5 +1,6 @@
 #include "StatisticsScreen.h"
 
+#include "../../save/HighScore.h"
 #include "../../utils/AssetPaths.h"
 
 #include <cmath>
@@ -23,11 +24,27 @@ static std::string formatPlayTime(float seconds) {
     return oss.str();
 }
 
+static std::string formatLeaderboardLine(int rank, const HighScoreEntry& entry) {
+    std::ostringstream oss;
+    oss << "#" << rank << " " << entry.name;
+
+    const size_t targetWidth = 18;
+    if (entry.name.size() < targetWidth) {
+        oss << std::string(targetWidth - entry.name.size(), '.');
+    } else {
+        oss << " ";
+    }
+
+    oss << " " << entry.score;
+    return oss.str();
+}
+
 void StatisticsScreen::prepare(sf::Vector2u windowSize, const SaveData& data) {
     layoutForWindow(windowSize);
 
     statLines = {
         "Mejor puntuacion: " + std::to_string(data.bestScore),
+        "Record de: " + data.bestScoreHolder,
         "Partidas jugadas: " + std::to_string(data.runsCompleted),
         "Muertes totales: " + std::to_string(data.totalDeaths),
         "Sala maxima alcanzada: " + std::to_string(data.maxRoomReached),
@@ -35,6 +52,19 @@ void StatisticsScreen::prepare(sf::Vector2u windowSize, const SaveData& data) {
         "Tiempo jugado: " + formatPlayTime(data.totalPlayTimeSeconds),
         "Enemigos derrotados: " + std::to_string(data.enemiesDefeated)
     };
+
+    leaderboardLines = {"TOP 5 AVENTUREROS"};
+    for (int i = 0; i < kMaxHighScores; ++i) {
+        if (i < static_cast<int>(data.highScores.size())) {
+            leaderboardLines.push_back(
+                formatLeaderboardLine(i + 1, data.highScores[static_cast<size_t>(i)])
+            );
+        } else {
+            leaderboardLines.push_back("#" + std::to_string(i + 1) + " ---");
+        }
+    }
+
+    leaderboardStartX = windowSize.x * 0.56f;
 }
 
 GameState StatisticsScreen::handleEvent(
@@ -69,6 +99,7 @@ void StatisticsScreen::update(sf::Vector2f mousePos) {
 void StatisticsScreen::draw(sf::RenderWindow& window) const {
     drawBackground(window);
     drawTitle(window, "Estadisticas", 80.f);
-    drawLines(window, statLines, 160.f, 26);
+    drawLines(window, statLines, 160.f, 26, 120.f);
+    drawLines(window, leaderboardLines, 160.f, 26, leaderboardStartX);
     drawBackButton(window, backHovered);
 }
