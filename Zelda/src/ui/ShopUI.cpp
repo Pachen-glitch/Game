@@ -25,6 +25,15 @@ void ShopUI::draw(sf::RenderWindow& window, const Shop& shop, const Player& play
     title.setCharacterSize(28);
     title.setPosition(560.f, 220.f);
     window.draw(title);
+    sf::Text money;
+    money.setFont(font);
+    money.setCharacterSize(20);
+    money.setPosition(460.f, 245.f);
+    money.setString(
+        "Rupees: " +
+        std::to_string(player.getCoins())
+    );
+    window.draw(money);
 
     int y = 270;
     int i = 0;
@@ -34,7 +43,7 @@ void ShopUI::draw(sf::RenderWindow& window, const Shop& shop, const Player& play
         line.setCharacterSize(18);
         line.setPosition(460.f, static_cast<float>(y));
         line.setString(
-            std::to_string(i) + ": " + item.name +
+            std::to_string(i + 1) + ": " + item.name +
             " - " + std::to_string(item.cost) + " R"
         );
         window.draw(line);
@@ -43,11 +52,47 @@ void ShopUI::draw(sf::RenderWindow& window, const Shop& shop, const Player& play
     }
 
     (void)player;
+
+    sf::Text controls;
+    controls.setFont(font);
+    controls.setCharacterSize(18);
+    controls.setString(
+        "1-5 Buy   |   ESC Exit"
+    );
+    controls.setPosition(430.f, 620.f);
+    controls.setFillColor(sf::Color::White);
+    window.draw(controls);
 }
 
-void ShopUI::handleInput(Shop& shop, Player& player) {
-    using namespace sf;
-    if (Keyboard::isKeyPressed(Keyboard::Num1)) shop.buy(player, 0);
-    if (Keyboard::isKeyPressed(Keyboard::Num2)) shop.buy(player, 1);
-    if (Keyboard::isKeyPressed(Keyboard::Num3)) shop.buy(player, 2);
+void ShopUI::handleInput(Shop& shop,Player& player) {
+    static bool pressed = false;
+    if (!pressed) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1)) {
+            shop.buy(player, 0);
+            pressed = true;
+        }
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2)) {
+            shop.buy(player, 1);
+            pressed = true;
+        }
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3)) {
+            shop.buy(player, 2);
+            pressed = true;
+        }
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4)) {
+            shop.buy(player, 3);
+            pressed = true;
+        }
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num5)) {
+            shop.buy(player, 4);
+            pressed = true;
+        }
+    }
+    if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Num1) &&
+        !sf::Keyboard::isKeyPressed(sf::Keyboard::Num2) &&
+        !sf::Keyboard::isKeyPressed(sf::Keyboard::Num3) &&
+        !sf::Keyboard::isKeyPressed(sf::Keyboard::Num4) &&
+        !sf::Keyboard::isKeyPressed(sf::Keyboard::Num5))
+         {pressed = false;
+        }
 }

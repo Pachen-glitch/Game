@@ -1,5 +1,6 @@
 #include <iostream>
-#include <windows.h>
+//#include <windows.h>
+#include <SFML/System.hpp>
 
 using namespace std;
 
@@ -76,7 +77,7 @@ void showMenu() {
         default:
             cout << endl;
             cout << "Opcion invalida." << endl;
-            Sleep(1000);
+            sf::sleep(sf::milliseconds(1000));
         }
     }
 }

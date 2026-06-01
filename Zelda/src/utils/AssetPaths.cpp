@@ -381,8 +381,9 @@ std::string AssetPaths::getDoorSprite() {
 }
 
 std::string AssetPaths::getShopkeeperSprite() {
-    std::string found = findPngInFolder("ui/menu", {"shopkeeper.png"});
-    if (!found.empty()) return found;
+    std::string found =findPngInFolder("npc",{"shopkeeper.png"});
+    if (!found.empty())
+        return found;
     return resolveFirst({"sprites/npc/shopkeeper.png"});
 }
 
@@ -411,4 +412,26 @@ void AssetPaths::validateCriticalAssets() {
     logClip("slime_walk", getEnemyAnimFrames("slime", "walk"));
     logClip("slime_hurt", getEnemyAnimFrames("slime", "hurt"));
     logClip("slime_death", getEnemyAnimFrames("slime", "death"));
+}
+
+std::string AssetPaths::getChestClosedSprite() {
+    std::string found = findPngInFolder("objects/chess",{"chess_close.png"});
+    if (!found.empty())
+        return found;
+    return resolveFirst({"sprites/objects/chess/chess_close.png"});
+}
+
+std::string AssetPaths::getChestOpenSprite() {
+    std::string found = findPngInFolder("objects/chess",{"chess_open.png"});
+    if (!found.empty())
+        return found;
+    return resolveFirst({"sprites/objects/chess/chess_open.png"});
+}
+
+std::string AssetPaths::getRandomRupeeSprite() {
+    static std::vector<std::string> rupees = {
+        resolveFirst({"sprites/objects/coins/gema_azul.png"}),
+        resolveFirst({"sprites/objects/coins/gema_diamond.png"}),
+        resolveFirst({"sprites/objects/coins/gema_roja.png"})};
+    return rupees[rand() % rupees.size()];
 }

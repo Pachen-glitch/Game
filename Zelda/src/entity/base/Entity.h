@@ -11,6 +11,7 @@ enum class EntityType {
     Player,
     Enemy,
     Coin,
+    Chest,
     Key,
     Heart,
     Door,
