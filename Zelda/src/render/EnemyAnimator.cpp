@@ -11,18 +11,18 @@ void EnemyAnimator::setupSlime() {
                       float dur,
                       bool loop) {
 
-        auto frames =
+        auto frames =// Colecciona los frames por prefijo
             AssetPaths::getEnemyAnimFrames("slime", state);
 
-        Animation clip =
+        Animation clip =// Construye la animacion
             AssetPaths::buildAnimation(frames, dur, loop);
-
+// Registra la animacion
         if (!clip.getCurrentFramePath().empty()) {
             anim.registerAnimation(name, clip);
         }
     };
 
-    reg("idle", "idle", 0.14f, true);
+    reg("idle", "idle", 0.14f, true);// Idle
     reg("walk", "walk", 0.10f, true);
     reg("hurt", "hurt", 0.12f, false);
     reg("death", "death", 0.14f, false);
@@ -38,10 +38,10 @@ void EnemyAnimator::setupSkeleton() {
                       float dur,
                       bool loop) {
 
-        auto frames =
+        auto frames =// Colecciona los frames por prefijo
             AssetPaths::getEnemyAnimFrames("skeleton", state);
 
-        Animation clip =
+        Animation clip =// Construye la animacion
             AssetPaths::buildAnimation(frames, dur, loop);
 
         if (!clip.getCurrentFramePath().empty()) {
@@ -66,9 +66,9 @@ void EnemyAnimator::setupSummoner() {
                       bool loop) {
 
         auto frames =
-            AssetPaths::getEnemyAnimFrames("summoner", state);
+            AssetPaths::getEnemyAnimFrames("summoner", state);// Colecciona los frames por prefijo
 
-        Animation clip =
+        Animation clip =// Construye la animacion
             AssetPaths::buildAnimation(frames, dur, loop);
 
         if (!clip.getCurrentFramePath().empty()) {
@@ -89,7 +89,7 @@ void EnemyAnimator::update(Enemy& enemy, float dt) {
 
     if (enemy.isDeathAnimPending()) {
 
-        if (lastClip != "death") {
+        if (lastClip != "death") {// Si el ultimo clip no es death
 
             anim.play("death", true);
 

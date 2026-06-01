@@ -10,31 +10,31 @@
 
 namespace {
 
-void carveTiles(Map& map, DoorSide side, TileType tile) {
-    const int midX = map.getWidth() / 2;
-    const int midY = map.getHeight() / 2;
-    const int w = map.getWidth();
-    const int h = map.getHeight();
+void carveTiles(Map& map, DoorSide side, TileType tile) {// Carva los tiles
+    const int midX = map.getWidth() / 2; // Mitad del ancho del mapa
+    const int midY = map.getHeight() / 2; // Mitad del alto del mapa
+    const int w = map.getWidth(); // Ancho del mapa
+    const int h = map.getHeight(); // Alto del mapa
 
-    switch (side) {
+    switch (side) { // Switch para el lado de la puerta
         case DoorSide::North:
-            for (int dx = -1; dx <= 1; ++dx) {
+            for (int dx = -1; dx <= 1; ++dx) { // Carva los tiles del norte
                 map.setTile(midX + dx, 0, tile);
             }
             break;
         case DoorSide::South:
             for (int dx = -1; dx <= 1; ++dx) {
-                map.setTile(midX + dx, h - 1, tile);
+                map.setTile(midX + dx, h - 1, tile); // Carva los tiles del sur
             }
             break;
         case DoorSide::East:
             for (int dy = -1; dy <= 1; ++dy) {
-                map.setTile(w - 1, midY + dy, tile);
+                map.setTile(w - 1, midY + dy, tile); // Carva los tiles del este
             }
             break;
         case DoorSide::West:
             for (int dy = -1; dy <= 1; ++dy) {
-                map.setTile(0, midY + dy, tile);
+                map.setTile(0, midY + dy, tile); // Carva los tiles del oeste
             }
             break;
         default:
@@ -42,7 +42,7 @@ void carveTiles(Map& map, DoorSide side, TileType tile) {
     }
 }
 
-DoorSide oppositeSide(DoorSide side) {
+DoorSide oppositeSide(DoorSide side) {// Devuelve el lado opuesto
     switch (side) {
         case DoorSide::North: return DoorSide::South;
         case DoorSide::South: return DoorSide::North;
@@ -52,7 +52,7 @@ DoorSide oppositeSide(DoorSide side) {
     }
 }
 
-sf::Vector2i openingCenterTile(const Map& map, DoorSide side) {
+sf::Vector2i openingCenterTile(const Map& map, DoorSide side) {// Devuelve el centro de la puerta
     const int midX = map.getWidth() / 2;
     const int midY = map.getHeight() / 2;
 
@@ -65,7 +65,7 @@ sf::Vector2i openingCenterTile(const Map& map, DoorSide side) {
     }
 }
 
-sf::Vector2i inwardDelta(DoorSide openingSide) {
+sf::Vector2i inwardDelta(DoorSide openingSide) {// Devuelve el delta hacia adentro
     switch (openingSide) {
         case DoorSide::North: return {0, 1};
         case DoorSide::South: return {0, -1};
@@ -75,45 +75,45 @@ sf::Vector2i inwardDelta(DoorSide openingSide) {
     }
 }
 
-bool isValidPlayerSpawn(const Map& map, sf::Vector2f worldPos) {
+bool isValidPlayerSpawn(const Map& map, sf::Vector2f worldPos) {// Devuelve si la posicion del jugador es valida
     const float size = static_cast<float>(Constants::TILE_SIZE);
     const sf::FloatRect box(worldPos.x, worldPos.y, size, size);
 
-    auto cornerWalkable = [&](float x, float y) {
+    auto cornerWalkable = [&](float x, float y) {// Devuelve si la posicion del jugador es valida           
         sf::Vector2i tile = map.worldToTile({x, y});
         return map.isWalkable(tile.x, tile.y);
     };
 
     return cornerWalkable(box.left, box.top)
-        && cornerWalkable(box.left + box.width - 1.f, box.top)
-        && cornerWalkable(box.left, box.top + box.height - 1.f)
-        && cornerWalkable(box.left + box.width - 1.f, box.top + box.height - 1.f);
+        && cornerWalkable(box.left + box.width - 1.f, box.top)// Devuelve si la posicion del jugador es valida           
+        && cornerWalkable(box.left, box.top + box.height - 1.f)// Devuelve si la posicion del jugador es valida           
+        && cornerWalkable(box.left + box.width - 1.f, box.top + box.height - 1.f)// Devuelve si la posicion del jugador es valida           
 }
 
-sf::Vector2f trySpawnTile(const Map& map, int tx, int ty) {
+sf::Vector2f trySpawnTile(const Map& map, int tx, int ty) {// Intenta spawnar un tile
     if (tx < 0 || ty < 0 ||
         tx >= map.getWidth() || ty >= map.getHeight()) {
         return {-1.f, -1.f};
     }
 
-    sf::Vector2f pos = map.tileToWorld(tx, ty);
+    sf::Vector2f pos = map.tileToWorld(tx, ty); // Convierte la posicion de la grid a la posicion del mundo
     return isValidPlayerSpawn(map, pos) ? pos : sf::Vector2f{-1.f, -1.f};
 }
 
-sf::Vector2f findOpeningAwareSpawn(const Map& map, DoorSide enteredFrom) {
+sf::Vector2f findOpeningAwareSpawn(const Map& map, DoorSide enteredFrom) {// Encuentra la posicion de spawn para la puerta
     const DoorSide openingSide = oppositeSide(enteredFrom);
-    const sf::Vector2i center = openingCenterTile(map, openingSide);
-    const sf::Vector2i inward = inwardDelta(openingSide);
+    const sf::Vector2i center = openingCenterTile(map, openingSide); // Centro de la puerta
+    const sf::Vector2i inward = inwardDelta(openingSide); // Delta hacia adentro
 
     const bool horizontalOpening =
         openingSide == DoorSide::North ||
         openingSide == DoorSide::South;
 
-    for (int depth = 1; depth <= 8; ++depth) {
+    for (int depth = 1; depth <= 8; ++depth) {// Intenta spawnar un tile
         const int bx = center.x + inward.x * depth;
         const int by = center.y + inward.y * depth;
 
-        if (sf::Vector2f pos = trySpawnTile(map, bx, by); pos.x >= 0.f) {
+        if (sf::Vector2f pos = trySpawnTile(map, bx, by); pos.x >= 0.f) {// Intenta spawnar un tile     
             return pos;
         }
 
@@ -138,7 +138,7 @@ sf::Vector2f findOpeningAwareSpawn(const Map& map, DoorSide enteredFrom) {
 
     const int midX = map.getWidth() / 2;
     const int midY = map.getHeight() / 2;
-
+// Intenta spawnar un tile en un radio de 10
     for (int radius = 0; radius <= 10; ++radius) {
         for (int dy = -radius; dy <= radius; ++dy) {
             for (int dx = -radius; dx <= radius; ++dx) {

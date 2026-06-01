@@ -1,11 +1,11 @@
 #include "HighScore.h"
 
 #include <cctype>
-
+// Normaliza el nombre del jugador
 std::string normalizePlayerName(const std::string& raw) {
     std::string trimmed;
     trimmed.reserve(kMaxPlayerNameLength);
-
+// Recorre el nombre del jugador
     for (char c : raw) {
         if (c == '\n' || c == '\r' || c == '\t') continue;
         if (static_cast<unsigned char>(c) < 32) continue;
@@ -17,7 +17,7 @@ std::string normalizePlayerName(const std::string& raw) {
         trimmed.pop_back();
     }
 
-    size_t start = 0;
+    size_t start = 0;// Inicia el indice del nombre del jugador
     while (start < trimmed.size() &&
            std::isspace(static_cast<unsigned char>(trimmed[start]))) {
         ++start;
@@ -27,7 +27,7 @@ std::string normalizePlayerName(const std::string& raw) {
     return trimmed.empty() ? "Aventurero" : trimmed;
 }
 
-void submitHighScore(
+void submitHighScore(// Envia el puntaje del jugador
     std::vector<HighScoreEntry>& scores,
     int& bestScore,
     std::string& bestScoreHolder,

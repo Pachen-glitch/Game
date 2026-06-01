@@ -4,7 +4,7 @@
 #include <cstdlib>
 
 namespace {
-
+// Arena template
 const std::vector<std::string> kArena = {
     "####################",
     "#..................#",

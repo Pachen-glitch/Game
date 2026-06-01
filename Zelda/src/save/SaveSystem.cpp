@@ -19,7 +19,7 @@ std::string sanitizeStoredName(const std::string& name) {
 
 } // namespace
 
-bool SaveSystem::save(const SaveData& data) {
+bool SaveSystem::save(const SaveData& data) {// Guarda el save data
     std::ofstream out(PATH);
     if (!out) return false;
 
@@ -31,10 +31,10 @@ bool SaveSystem::save(const SaveData& data) {
         << data.spinUnlocked << " "
         << data.shieldUnlocked << " "
         << data.totalDeaths << " "
-        << data.maxRoomReached << " "
-        << data.totalRupeesCollected << " "
-        << data.totalPlayTimeSeconds << " "
-        << data.bestScore << "\n";
+        << data.maxRoomReached << " " // Habitación más alta alcanzada
+        << data.totalRupeesCollected << " " // Total de rupias recogidas
+        << data.totalPlayTimeSeconds << " " // Tiempo total de juego
+        << data.bestScore << "\n"; // Mejor puntaje
 
     out << sanitizeStoredName(data.bestScoreHolder) << "\n";
     out << data.highScores.size() << "\n";
@@ -44,7 +44,7 @@ bool SaveSystem::save(const SaveData& data) {
 
     return true;
 }
-
+// Carga el save data
 bool SaveSystem::load(SaveData& data) {
     std::ifstream in(PATH);
     if (!in) return false;

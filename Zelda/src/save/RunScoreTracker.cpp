@@ -2,16 +2,16 @@
 
 #include <iostream>
 
-RunScoreTracker* RunScoreTracker::active_ = nullptr;
+RunScoreTracker* RunScoreTracker::active_ = nullptr;// Inicia el tracker como null
 
-void RunScoreTracker::reset() {
-    currentRunScore = 0;
-    survivalSeconds = 0.f;
-    visitedRooms_.clear();
-    clearedRooms_.clear();
+void RunScoreTracker::reset() {// Resetea el tracker
+    currentRunScore = 0;// Resetea el puntaje actual
+    survivalSeconds = 0.f;// Resetea el tiempo de supervivencia
+    visitedRooms_.clear();// Resetea las habitaciones visitadas
+    clearedRooms_.clear();// Resetea las habitaciones limpiadas
 }
 
-RunScoreTracker* RunScoreTracker::active() {
+RunScoreTracker* RunScoreTracker::active() {// Devuelve el tracker activo
     return active_;
 }
 
@@ -39,7 +39,7 @@ void RunScoreTracker::addSurvivalTime(float seconds) {
 void RunScoreTracker::onRupeeCollected(int value) {
     addScore(value, "Rupee");
 }
-
+// Añade el puntaje para el enemigo derrotado
 void RunScoreTracker::onEnemyDefeated(EnemyKind kind) {
     switch (kind) {
         case EnemyKind::Slime:

@@ -4,11 +4,11 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Text.hpp>
 
-GameScreens::GameScreens() {
+GameScreens::GameScreens() {// Constructor
     fontLoaded = FontLoader::load(font);
 }
 
-static void drawCenteredText(
+static void drawCenteredText(// Dibuja un texto centrado
     sf::RenderWindow& window,
     sf::Font& font,
     const std::string& msg,
@@ -27,7 +27,7 @@ static void drawCenteredText(
     window.draw(t);
 }
 
-void GameScreens::drawPause(sf::RenderWindow& window) {
+void GameScreens::drawPause(sf::RenderWindow& window) {// Dibuja la pantalla de pausa
     if (!fontLoaded) return;
     sf::RectangleShape overlay;
     overlay.setSize(sf::Vector2f(window.getSize()));
@@ -36,8 +36,8 @@ void GameScreens::drawPause(sf::RenderWindow& window) {
     drawCenteredText(window, font, "PAUSED", 300.f, 48, sf::Color::White);
     drawCenteredText(window, font, "ESC to resume", 360.f, 22, sf::Color(200, 200, 200));
 }
-
-void GameScreens::drawGameOver(sf::RenderWindow& window) {
+// Dibuja la pantalla de game over
+void GameScreens::drawGameOver(sf::RenderWindow& window) {// Dibuja la pantalla de game over
     if (!fontLoaded) return;
     sf::RectangleShape overlay;
     overlay.setSize(sf::Vector2f(window.getSize()));
@@ -47,7 +47,7 @@ void GameScreens::drawGameOver(sf::RenderWindow& window) {
     drawCenteredText(window, font, "Press R to retry", 370.f, 22, sf::Color::White);
 }
 
-void GameScreens::drawVictory(sf::RenderWindow& window) {
+void GameScreens::drawVictory(sf::RenderWindow& window) {// Dibuja la pantalla de victoria
     if (!fontLoaded) return;
     sf::RectangleShape overlay;
     overlay.setSize(sf::Vector2f(window.getSize()));

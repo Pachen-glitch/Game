@@ -12,7 +12,7 @@ constexpr float kCloneVanishDuration = 0.4f;
 
 } // namespace
 
-NarutoCloneEnemy::NarutoCloneEnemy(sf::Vector2f pos)
+NarutoCloneEnemy::NarutoCloneEnemy(sf::Vector2f pos) // Constructor de NarutoCloneEnemy
     : Enemy(
         pos,
         EnemyKind::NarutoClone,
@@ -32,7 +32,7 @@ NarutoCloneEnemy::NarutoCloneEnemy(sf::Vector2f pos)
     maxChaseFromSpawn = 9999.f;
 }
 
-void NarutoCloneEnemy::startVanish() {
+void NarutoCloneEnemy::startVanish() { // Activa el vanish
     if (vanishTimer > 0.f || deathAnimPending) return;
 
     setAIState(EnemyState::Dead);
@@ -42,7 +42,7 @@ void NarutoCloneEnemy::startVanish() {
     EventBus::instance().emit("enemy_died");
 }
 
-void NarutoCloneEnemy::takeHit(int damage, sf::Vector2f knockback) {
+void NarutoCloneEnemy::takeHit(int damage, sf::Vector2f knockback) { // Recibe un hit
     if (isDead() || deathAnimPending || vanishTimer > 0.f) return;
 
     health -= damage;
@@ -60,7 +60,7 @@ void NarutoCloneEnemy::takeHit(int damage, sf::Vector2f knockback) {
     }
 }
 
-void NarutoCloneEnemy::update(float dt) {
+void NarutoCloneEnemy::update(float dt) { // Actualiza el enemigo
     if (vanishTimer > 0.f) {
         vanishTimer -= dt;
         velocity = {0.f, 0.f};
@@ -79,12 +79,12 @@ void NarutoCloneEnemy::update(float dt) {
     Enemy::update(dt);
 }
 
-float NarutoCloneEnemy::getSpawnProgress() const {
+float NarutoCloneEnemy::getSpawnProgress() const { // Devuelve el progreso de spawn
     if (spawnTimer <= 0.f) return 1.f;
     return 1.f - (spawnTimer / 0.72f);
 }
 
-void NarutoCloneEnemy::think(Player& player, float dt, const Map& map) {
+void NarutoCloneEnemy::think(Player& player, float dt, const Map& map) { // Piensa el enemigo
     if (spawnTimer > 0.f || vanishTimer > 0.f || isDead() || deathAnimPending) {
         return;
     }

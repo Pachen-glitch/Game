@@ -3,19 +3,19 @@
 void Animation::addFrame(const std::string& texturePath, float duration) {
     frames.push_back({texturePath, duration});
 }
-
+//Devuelve el path del frame actual
 const std::string& Animation::getCurrentFramePath() const {
     static const std::string empty;
     if (frames.empty()) return empty;
     return frames[currentIndex].path;
 }
-
+//Resetea la animacion
 void Animation::reset() {
     currentIndex = 0;
     timer = 0.f;
     finished = false;
 }
-
+//Carga el siguiente frame de la animacion
 void Animation::advanceFrame() {
     if (frames.empty()) return;
 
@@ -30,7 +30,7 @@ void Animation::advanceFrame() {
     }
     timer = 0.f;
 }
-
+// Actualiza la animacion
 void Animation::update(float dt) {
     if (frames.empty() || finished) return;
 

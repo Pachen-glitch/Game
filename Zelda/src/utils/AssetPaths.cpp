@@ -12,25 +12,25 @@
 #ifdef _WIN32
 #include <windows.h>
 #endif
-
+// Namespace para el filesystem
 namespace fs = std::filesystem;
 
 namespace {
 
-std::string gAssetsRoot;
-std::string gSpritesRoot;
+std::string gAssetsRoot;// Ruta de las assets
+std::string gSpritesRoot;// Ruta de los sprites
 std::unordered_set<std::string> gKnownRelative;
 std::unordered_map<std::string, std::string> gRelToAbs;
 std::unordered_set<std::string> gMissingLogged;
 std::unordered_map<std::string, std::string> gResolveCache;
-
+// Convierte una cadena a minusculas
 std::string toLower(std::string s) {
     for (char& c : s) {
         if (c >= 'A' && c <= 'Z') c = static_cast<char>(c - 'A' + 'a');
     }
     return s;
 }
-
+// Normaliza una ruta
 std::string normalizeRel(std::string rel) {
     for (char& c : rel) {
         if (c == '\\') c = '/';
@@ -38,7 +38,7 @@ std::string normalizeRel(std::string rel) {
     if (!rel.empty() && rel.front() == '/') rel.erase(rel.begin());
     return toLower(rel);
 }
-
+// Obtiene la ruta del directorio ejecutable
 fs::path getExecutableDirectory() {
 #ifdef _WIN32
     wchar_t buffer[MAX_PATH];

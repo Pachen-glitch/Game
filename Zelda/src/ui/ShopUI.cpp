@@ -13,25 +13,25 @@ ShopUI::ShopUI() {
 void ShopUI::draw(sf::RenderWindow& window, const Shop& shop, const Player& player) {
     if (!fontLoaded) return;
 
-    sf::RectangleShape panel;
+    sf::RectangleShape panel;// Rectangulo para el panel
     panel.setSize({400.f, 300.f});
-    panel.setPosition(440.f, 210.f);
-    panel.setFillColor(sf::Color(20, 20, 40, 230));
-    window.draw(panel);
+    panel.setPosition(440.f, 210.f);// Posicion del panel
+    panel.setFillColor(sf::Color(20, 20, 40, 230));// Color del panel
+    window.draw(panel);// Dibuja el panel
 
-    sf::Text title;
-    title.setFont(font);
+    sf::Text title;// Texto para el titulo
+    title.setFont(font);// Fuente del titulo
     title.setString("SHOP");
-    title.setCharacterSize(28);
-    title.setPosition(560.f, 220.f);
-    window.draw(title);
-    sf::Text money;
-    money.setFont(font);
-    money.setCharacterSize(20);
+    title.setCharacterSize(28);// Tamaño del titulo
+    title.setPosition(560.f, 220.f);// Posicion del titulo
+    window.draw(title);// Dibuja el titulo
+    sf::Text money;// Texto para el dinero
+    money.setFont(font);// Fuente del dinero
+    money.setCharacterSize(20);// Tamaño del dinero
     money.setPosition(460.f, 245.f);
     money.setString(
         "Rupees: " +
-        std::to_string(player.getCoins())
+        std::to_string(player.getCoins())// String del dinero
     );
     window.draw(money);
 
@@ -47,13 +47,13 @@ void ShopUI::draw(sf::RenderWindow& window, const Shop& shop, const Player& play
             " - " + std::to_string(item.cost) + " R"
         );
         window.draw(line);
-        y += 28;
+        y += 28;// Incrementa la posicion y
         if (++i >= 5) break;
     }
 
     (void)player;
 
-    sf::Text controls;
+    sf::Text controls;// Texto para los controles
     controls.setFont(font);
     controls.setCharacterSize(18);
     controls.setString(

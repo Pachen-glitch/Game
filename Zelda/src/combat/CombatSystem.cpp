@@ -28,15 +28,15 @@ bool dropsHeartOnDeath(const Enemy& enemy) {
 }
 
 } // namespace
-
+// Limpia los hitboxes
 void CombatSystem::clear() {
     hitboxes.clear();
 }
-
+// Añade un hitbox
 void CombatSystem::addHitbox(const Hitbox& box) {
     hitboxes.push_back(box);
 }
-
+// Devuelve el rectangulo de offset
 sf::FloatRect CombatSystem::offsetRect(
     sf::Vector2f pos, sf::Vector2f size, sf::Vector2f offset
 ) {
@@ -47,7 +47,7 @@ sf::FloatRect CombatSystem::offsetRect(
         size.y
     );
 }
-
+// Spawns un hitbox de espada
 void CombatSystem::spawnSwordHitbox(Player& player) {
     sf::Vector2f offset;
     sf::Vector2f hbSize(36.f, 28.f);
@@ -58,7 +58,7 @@ void CombatSystem::spawnSwordHitbox(Player& player) {
         case Direction::LEFT:  offset = {-32.f, 8.f}; break;
         case Direction::RIGHT: offset = {40.f, 8.f}; break;
     }
-
+// Crea un hitbox de espada
     Hitbox hb;
     hb.rect = offsetRect(player.getPosition(), hbSize, offset);
     hb.damage = player.getSwordDamage();
@@ -72,7 +72,7 @@ void CombatSystem::spawnSwordHitbox(Player& player) {
     hb.ownerId = nextOwnerId++;
     addHitbox(hb);
 }
-
+// Spawns un hitbox de spin
 void CombatSystem::spawnSpinHitbox(Player& player) {
     sf::Vector2f center = player.getPosition() + player.getSize() * 0.5f;
     float r = 56.f;
@@ -85,7 +85,7 @@ void CombatSystem::spawnSpinHitbox(Player& player) {
     hb.ownerId = nextOwnerId++;
     addHitbox(hb);
 }
-
+// Actualiza los hitboxes
 void CombatSystem::update(float dt, Player& player, EntityManager& entities) {
     for (auto& hb : hitboxes) {
         hb.tick(dt);
@@ -100,7 +100,7 @@ void CombatSystem::update(float dt, Player& player, EntityManager& entities) {
     resolveEnemyHits(player, entities);
     resolveProjectileHits(player, entities);
 }
-
+// Orienta los proyectiles de Naruto
 void CombatSystem::steerNarutoProjectiles(
     float dt,
     Player& player,
@@ -109,17 +109,17 @@ void CombatSystem::steerNarutoProjectiles(
     sf::Vector2f targetCenter =
         player.getPosition() + player.getSize() * 0.5f;
 
-    for (auto& ent : entities.all()) {
+    for (auto& ent : entities.all()) { // Itera sobre todos los proyectiles
         if (!ent || !ent->isActive()) continue;
         if (ent->getType() != EntityType::Projectile) continue;
 
-        auto* proj = dynamic_cast<NarutoProjectile*>(ent.get());
+        auto* proj = dynamic_cast<NarutoProjectile*>(ent.get()); // Convierte el ent a NarutoProjectile
         if (!proj) continue;
 
-        proj->applyHomingSteer(targetCenter, dt);
+        proj->applyHomingSteer(targetCenter, dt); // Orienta el proyectil
     }
 }
-
+// Resuelve los hits del jugador
 void CombatSystem::resolvePlayerHits(Player& player, EntityManager& entities) {
     (void)player;
     std::vector<sf::Vector2f> pendingHearts;
@@ -154,7 +154,7 @@ void CombatSystem::resolvePlayerHits(Player& player, EntityManager& entities) {
         entities.spawn<Heart>(pos);
     }
 }
-
+// Resuelve los hits del enemigo
 void CombatSystem::resolveEnemyHits(Player& player, EntityManager& entities) {
     if (!player.canTakeDamage()) return;
 
@@ -162,11 +162,11 @@ void CombatSystem::resolveEnemyHits(Player& player, EntityManager& entities) {
         if (!ent || !ent->isActive()) continue;
         if (ent->getType() != EntityType::Enemy) continue;
 
-        auto* enemy = dynamic_cast<Enemy*>(ent.get());
-        if (!enemy || enemy->isDead()) continue;
+        auto* enemy = dynamic_cast<Enemy*>(ent.get()); // Convierte el ent a Enemy
+        if (!enemy || enemy->isDead()) continue; // Si el enemigo esta muerto, no se resuelve el hit
         if (!enemy->canDealContactDamage()) continue;
 
-        if (!enemy->getContactBounds().intersects(player.getBounds())) continue;
+        if (!enemy->getContactBounds().intersects(player.getBounds())) continue; // Si el hitbox del enemigo no intersecta con el hitbox del jugador, no se resuelve el hit
 
         player.damage(enemy->getContactDamage());
 
@@ -189,9 +189,9 @@ void CombatSystem::resolveProjectileHits(Player& player, EntityManager& entities
 
         auto* proj = dynamic_cast<NarutoProjectile*>(ent.get());
         if (!proj) continue;
-        if (!proj->getBounds().intersects(player.getBounds())) continue;
+        if (!proj->getBounds().intersects(player.getBounds())) continue; // Si el hitbox del proyectil no intersecta con el hitbox del jugador, no se resuelve el hit
 
-        player.damage(proj->getDamage());
+        player.damage(proj->getDamage()); // Hace daño al jugador
 
         sf::Vector2f kb = MathUtils::normalize(
             player.getPosition() - proj->getPosition()

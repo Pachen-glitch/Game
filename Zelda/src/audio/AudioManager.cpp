@@ -41,7 +41,7 @@ void AudioManager::load() {
         "music/Game_2.mp3",
         "music/Game_3.mp3"
     };
-
+// Carga los SFX
     auto loadSfx = [this](const std::string& name, const std::string& file) {
         std::string path = AssetPaths::getAudioPath(file);
         if (path.empty()) return;
@@ -79,7 +79,7 @@ void AudioManager::load() {
             rasenganSfx.setVolume(sfxVolume);
         }
     }
-
+// Carga el SFX de Odama
     if (!odamaPath.empty()) {
         odamaSfxReady = odamaSfx.openFromFile(odamaPath);
         if (odamaSfxReady) {
@@ -97,7 +97,7 @@ void AudioManager::load() {
             rasenShurikenSfx.setVolume(sfxVolume);
         }
     }
-
+// Configura el volumen de la musica y los SFX
     music.setVolume(musicVolume);
     sfx.setVolume(sfxVolume);
 
@@ -142,7 +142,7 @@ void AudioManager::update(float dt) {
 
     advanceGameplayTrack();
 }
-
+// Reproduce la musica
 bool AudioManager::playMusicFile(const std::string& relativeFromAudio, bool loop) {
     std::string path = AssetPaths::getAudioPath(relativeFromAudio);
     if (!openMusic(music, path, loop, musicVolume)) {
@@ -150,7 +150,7 @@ bool AudioManager::playMusicFile(const std::string& relativeFromAudio, bool loop
     }
     return true;
 }
-
+// Mezcla la playlist de la musica
 void AudioManager::reshuffleGameplayPlaylist() {
     shuffledPlaylist = gameplayTracks;
     if (shuffledPlaylist.empty()) return;
@@ -174,7 +174,7 @@ void AudioManager::playCurrentGameplayTrack() {
         lastGameplayTrack = track;
     }
 }
-
+// Reproduce la siguiente pista de la playlist
 void AudioManager::advanceGameplayTrack() {
     if (gameplayTracks.empty()) return;
 
@@ -189,7 +189,7 @@ void AudioManager::playMenuMusic() {
     context = MusicContext::Menu;
     playMusicFile("music/Menu.mp3", true);
 }
-
+// Reproduce la playlist de la musica
 void AudioManager::startGameplayMusic() {
     context = MusicContext::Gameplay;
     reshuffleGameplayPlaylist();
@@ -222,7 +222,7 @@ void AudioManager::playBossSpawnMusic() {
     context = MusicContext::BossSpawn;
     playMusicFile("music/Boss_Spawn.mp3", false);
 }
-
+// Reproduce la musica de pre-batalla
 void AudioManager::playBossPreBattleMusic() {
     if (context == MusicContext::BossPreBattle) return;
 

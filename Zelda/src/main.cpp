@@ -4,6 +4,6 @@
 
 int main() {
     std::cout << "The Legend of Pachen" << std::endl;
-    runGame();
+    runGame();// Ejecuta el juego
     return 0;
 }

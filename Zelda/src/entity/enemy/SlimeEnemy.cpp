@@ -20,7 +20,7 @@ SlimeEnemy::SlimeEnemy(sf::Vector2f pos)
     stateTimer.start(randomRange(0.12f, 0.30f));
 }
 
-void SlimeEnemy::initKindStats() {
+void SlimeEnemy::initKindStats() { // Inicializa las estadisticas del enemigo
     moveSpeed = 58.f;
     chaseSpeed = 78.f;
     aggroRadius = 200.f;
@@ -29,11 +29,11 @@ void SlimeEnemy::initKindStats() {
     maxChaseFromSpawn = 220.f;
 }
 
-void SlimeEnemy::think(Player& player, float dt, const Map& map) {
+void SlimeEnemy::think(Player& player, float dt, const Map& map) { // Piensa el enemigo
     if (deathAnimPending) return;
     updateHopTimers(dt);
 
-    if (aiState == EnemyState::Idle && stateTimer.isActive()) {
+    if (aiState == EnemyState::Idle && stateTimer.isActive()) { // Actualiza el timer de estado
         stateTimer.tick(dt * 0.85f);
     } else if (aiState == EnemyState::Wander && stateTimer.isActive()) {
         stateTimer.tick(dt * 0.65f);
@@ -42,7 +42,7 @@ void SlimeEnemy::think(Player& player, float dt, const Map& map) {
     Enemy::think(player, dt, map);
 }
 
-void SlimeEnemy::updateHopTimers(float dt) {
+void SlimeEnemy::updateHopTimers(float dt) { // Actualiza los timers de hop
     hopCooldown.tick(dt);
     hopBurstTimer.tick(dt);
 
@@ -62,7 +62,7 @@ void SlimeEnemy::updateHopTimers(float dt) {
     }
 }
 
-void SlimeEnemy::modifyVelocity(float dt) {
+void SlimeEnemy::modifyVelocity(float dt) { // Modifica la velocidad del enemigo
     (void)dt;
     if (aiState == EnemyState::Idle) {
         velocity = {0.f, 0.f};
@@ -82,11 +82,11 @@ void SlimeEnemy::modifyVelocity(float dt) {
     }
 }
 
-void SlimeEnemy::takeHit(int damage, sf::Vector2f knockback) {
+void SlimeEnemy::takeHit(int damage, sf::Vector2f knockback) { // Recibe un hit
     Enemy::takeHit(damage, knockback);
 }
 
-void SlimeEnemy::onDeathSplit(sf::Vector2f pos, EntityManager& manager) {
+void SlimeEnemy::onDeathSplit(sf::Vector2f pos, EntityManager& manager) { // Spawna un slime cuando el enemigo muere
     manager.spawn<SlimeEnemy>(pos + sf::Vector2f(-16.f, 0.f));
     manager.spawn<SlimeEnemy>(pos + sf::Vector2f(16.f, 0.f));
 }

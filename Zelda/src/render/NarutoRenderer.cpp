@@ -12,7 +12,7 @@ const char* kNarutoFolder = "enemies/naruto";
 constexpr float kRasenCastFrameDuration = 0.18f;
 constexpr float kOdamaCastFrameDuration = 0.18f;
 constexpr float kRunSpeedThreshold = 12.f;
-
+// Devuelve el clip de movimiento para el boss
 std::string movementClipForBoss(const NarutoBoss& boss) {
     sf::Vector2f vel = boss.getVelocity();
     float speed = std::sqrt(vel.x * vel.x + vel.y * vel.y);
@@ -24,7 +24,7 @@ std::string movementClipForBoss(const NarutoBoss& boss) {
     }
     return boss.facesLeft() ? "run_l" : "run_r";
 }
-
+// Registra un clip
 void registerClip(
     AnimationManager& anim,
     const std::string& name,
@@ -35,7 +35,7 @@ void registerClip(
     if (frames.empty()) return;
     anim.registerAnimation(name, AssetPaths::buildAnimation(frames, frameDuration, loop));
 }
-
+// Registra un clip con un prefijo
 void registerPrefixClip(
     AnimationManager& anim,
     const std::string& clipName,
@@ -88,7 +88,7 @@ NarutoRenderer::NarutoRenderer() {
     anim.play("idle_l");
     anim.applyToSprite(sprite, 2.f);
 }
-
+// Construye las animaciones
 void NarutoRenderer::buildAnimations() {
     registerPrefixClip(anim, "run_l", "running_l", 0.08f, true);
     registerPrefixClip(anim, "run_r", "running_r", 0.08f, true);
@@ -137,7 +137,7 @@ void NarutoRenderer::buildAnimations() {
         false
     );
 
-    registerClip(
+    registerClip(// Registra un clip
         anim,
         "clone_smoke",
         collectNumberedFrames("sustitucion_", 2, 5),
@@ -153,7 +153,7 @@ void NarutoRenderer::buildAnimations() {
 
     registerPrefixClip(anim, "death", "explosion", 0.14f, false);
 }
-
+// Devuelve el clip para el boss
 std::string NarutoRenderer::clipForBoss(NarutoBoss& boss) const {
     if (boss.isDeathAnimPending()) {
         return "death";
@@ -201,7 +201,7 @@ std::string NarutoRenderer::clipForBoss(NarutoBoss& boss) const {
     }
     return boss.facesLeft() ? "idle_l" : "idle_r";
 }
-
+// Devuelve el clip para el clone
 std::string NarutoRenderer::clipForClone(NarutoCloneEnemy& clone) const {
     if (clone.isVanishing()) {
         return "clone_vanish_smoke";

@@ -5,11 +5,11 @@
 
 
 TilemapRenderer::TilemapRenderer()
-{
+{// Constructor
     floorTexture = &TextureCache::instance().get(
         "assets/sprites/map/floor/floor.png"
     );
-
+// Carga el texture para el wall top
     wallTopTexture = &TextureCache::instance().get(
         "assets/sprites/map/walls/wall_top.png"
     );
@@ -99,20 +99,21 @@ TilemapRenderer::TilemapRenderer()
 
     sprite.setScale(2.f, 2.f);
 }
-
+// Dibuja el tilemap
 void TilemapRenderer::draw(sf::RenderWindow& window,
                            const Map& map)
 {
+    // Dibuja el tilemap
     for (int y = 0; y < map.getHeight(); ++y)
     {
         for (int x = 0; x < map.getWidth(); ++x)
         {
-            TileType t = map.getTile(x, y);
+            TileType t = map.getTile(x, y);// Obtiene el tipo de tile
 
-            switch (t)
+            switch (t)// Switch para el tipo de tile
             {
                 case TileType::FLOOR:
-                    sprite.setTexture(*floorTexture, true);
+                    sprite.setTexture(*floorTexture, true);// Setea el texture para el floor
                     break;
 
                 case TileType::WALL:

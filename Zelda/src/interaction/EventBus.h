@@ -11,7 +11,7 @@ public:
     using Handler = std::function<void()>;
 
     static EventBus& instance();
-
+// Suscribe un evento y ejecuta el handler del evento
     void subscribe(const std::string& event, Handler handler);
     void emit(const std::string& event);
 

@@ -1,12 +1,15 @@
 #include "PlayerMovement.h"
 #include "../core/Constants.h"
-
+// 
 void PlayerMovement::move(Player& player, char input, Map& map) {
     sf::Vector2f pos = player.getPosition();
     int tx = static_cast<int>(pos.x) / Constants::TILE_SIZE;
     int ty = static_cast<int>(pos.y) / Constants::TILE_SIZE;
 
     switch (input) {
+    // Si el jugador esta presionando la tecla s, se establece la direccion del jugador a abajo
+    // Si el jugador esta presionando la tecla a, se establece la direccion del jugador a izquierda
+    // Si el jugador esta presionando la tecla d, se establece la direccion del jugador a derecha
         case 'w': ty--; player.setDirection(Direction::UP); break;
         case 's': ty++; player.setDirection(Direction::DOWN); break;
         case 'a': tx--; player.setDirection(Direction::LEFT); break;

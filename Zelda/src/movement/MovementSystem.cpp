@@ -7,12 +7,12 @@
 #include <SFML/Window/Keyboard.hpp>
 
 #include "../utils/MathUtils.h"
-
+// Actualiza el movimiento del jugador
 void MovementSystem::update(float dt, Player& player, const Map& map) {
     using namespace sf;
 
     if (player.getState() == PlayerState::Dead) return;
-
+// Si el jugador esta muerto, no se actualiza el movimiento
     if (Keyboard::isKeyPressed(Keyboard::F) && !attackPressed) {
         if (player.isShieldActive()) {
             player.breakShieldForAttack();
@@ -21,13 +21,13 @@ void MovementSystem::update(float dt, Player& player, const Map& map) {
         attackPressed = true;
     }
     if (!Keyboard::isKeyPressed(Keyboard::F)) attackPressed = false;
-
+// Si el jugador no esta presionando la tecla X, se establece berserkPressed a false
     if (Keyboard::isKeyPressed(Keyboard::X) && !berserkPressed) {
         player.tryActivateBerserk();
         berserkPressed = true;
     }
     if (!Keyboard::isKeyPressed(Keyboard::X)) berserkPressed = false;
-
+// Si el jugador no esta presionando la tecla V, se establece shield a false            
     bool shield = Keyboard::isKeyPressed(Keyboard::V) &&
                   player.getState() != PlayerState::Attack;
     player.setShieldHeld(shield);
@@ -37,8 +37,8 @@ void MovementSystem::update(float dt, Player& player, const Map& map) {
         player.setVelocity({0.f, 0.f});
         return;
     }
-
-    sf::Vector2f input(0.f, 0.f);
+// Si el jugador no puede moverse, se establece moving a false y se establece la velocidad a 0
+    sf::Vector2f input(0.f, 0.f); // Input del jugador          
     if (Keyboard::isKeyPressed(Keyboard::W)) input.y -= 1.f;
     if (Keyboard::isKeyPressed(Keyboard::S)) input.y += 1.f;
     if (Keyboard::isKeyPressed(Keyboard::A)) input.x -= 1.f;
@@ -55,15 +55,15 @@ void MovementSystem::update(float dt, Player& player, const Map& map) {
             player.setDirection(input.y > 0 ? Direction::DOWN : Direction::UP);
         }
     }
-
+// Calcula la velocidad del jugador
     float speed = player.getMoveSpeed();
     sf::Vector2f vel = input * speed;
     player.setVelocity(vel);
-
-    sf::FloatRect bounds = player.getBounds();
-    sf::Vector2f from(bounds.left, bounds.top);
-    sf::Vector2f to = from + vel * dt;
+// Resuelve la movimiento con colisiones    
+    sf::FloatRect bounds = player.getBounds(); // Bounds del jugador
+    sf::Vector2f from(bounds.left, bounds.top); // Posicion inicial del jugador
+    sf::Vector2f to = from + vel * dt; // Posicion final del jugador
     sf::Vector2f resolved = CollisionSystem::resolveMovement(map,from,to,{bounds.width, bounds.height});
-    float offsetX = (player.getSize().x - bounds.width) * 0.5f;
+    float offsetX = (player.getSize().x - bounds.width) * 0.5f; // Offset x del jugador
     float offsetY = player.getSize().y - bounds.height;player.setPosition({resolved.x - offsetX,resolved.y - offsetY});
 }

@@ -1,9 +1,9 @@
 #include "Input.h"
 #include <conio.h>
 
-char getInput() {
+char getInput() { // Obtiene la entrada del teclado
     if (_kbhit()) {
-        return _getch();
+        return _getch(); // Devuelve el caracter presionado
     }
-    return '\0';
+    return '\0'; // Devuelve un caracter nulo
 }

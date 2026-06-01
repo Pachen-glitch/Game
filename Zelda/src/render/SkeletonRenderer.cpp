@@ -14,7 +14,7 @@ SkeletonRenderer::SkeletonRenderer() {
     anim.applyToSprite(sprite, 2.f);
 }
 
-void SkeletonRenderer::buildAnimations() {
+void SkeletonRenderer::buildAnimations() {// Construye las animaciones
 
     registerWalkClips();
 

@@ -4,26 +4,26 @@
 
 #include <cmath>
 
-std::string DirectionalEnemyAnimator::directionToString(
+std::string DirectionalEnemyAnimator::directionToString(// Convierte la direccion a un string
     Direction dir
 ) const {
 
-    switch (dir) {
+    switch (dir) { // Switch para la direccion
 
         case Direction::UP:
-            return "arriba";
+            return "arriba"; // Arriba
 
         case Direction::DOWN:
-            return "abajo";
+            return "abajo"; // Abajo
 
         case Direction::LEFT:
-            return "izquierda";
+            return "izquierda"; // Izquierda
 
         case Direction::RIGHT:
-            return "derecha";
+            return "derecha"; // Derecha
     }
 
-    return "abajo";
+    return "abajo"; // Abajo
 }
 
 void DirectionalEnemyAnimator::setupSkeleton() {
@@ -50,13 +50,13 @@ void DirectionalEnemyAnimator::setupSkeleton() {
                 state + "_" + dir + "_";
 
             auto frames =
-                AssetPaths::collectFramesByPrefix(
-                    "enemies/skeleton",
+                AssetPaths::collectFramesByPrefix(// Colecciona los frames por prefijo
+                    "enemies/skeleton",// Carpeta de los skeletons
                     prefix
                 );
 
             Animation clip =
-                AssetPaths::buildAnimation(
+                AssetPaths::buildAnimation(// Construye la animacion
                     frames,
                     state == "attack" ? 0.08f :
                     state == "death" ? 0.14f :
@@ -72,11 +72,11 @@ void DirectionalEnemyAnimator::setupSkeleton() {
         }
     }
 }
-
+// Elige el clip de la animacion
 std::string DirectionalEnemyAnimator::pickClip(
     const Enemy& enemy
 ) const {
-
+// Convierte la direccion a un string
     std::string dir =
         directionToString(
             enemy.getFacingDirection()
@@ -95,18 +95,18 @@ std::string DirectionalEnemyAnimator::pickClip(
 
     float speed =
         std::sqrt(
-            vel.x * vel.x +
-            vel.y * vel.y
+            vel.x * vel.x +// Velocidad x al cuadrado
+            vel.y * vel.y// Velocidad y al cuadrado
         );
 
     // NO diagonal real
     // prioriza eje dominante
 
     if (speed > 5.f) {
-        return "walk_" + dir;
+        return "walk_" + dir;// Walk
     }
 
-    return "idle_" + dir;
+    return "idle_" + dir;// Idle
 }
 
 void DirectionalEnemyAnimator::update(
@@ -118,16 +118,16 @@ void DirectionalEnemyAnimator::update(
         pickClip(enemy);
 
     if (clip != lastClip) {
-
+// Reproduce la animacion
         anim.play(
             clip,
             enemy.getAIState() == EnemyState::Attack
         );
-
+// Establece el ultimo clip
         lastClip = clip;
     }
 
-    anim.update(dt);
+    anim.update(dt);// Actualiza la animacion
 }
 
 void DirectionalEnemyAnimator::applyToEntity(
@@ -137,7 +137,7 @@ void DirectionalEnemyAnimator::applyToEntity(
 
     anim.applyToSprite(
         entity.getSprite(),
-        scale
+        scale// Escala del sprite
     );
 
     entity.getSprite().setPosition(

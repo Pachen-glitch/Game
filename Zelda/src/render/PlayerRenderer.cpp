@@ -3,19 +3,19 @@
 #include "../utils/AssetPaths.h"
 
 #include <cmath>
-
+// Constructor
 PlayerRenderer::PlayerRenderer() {
     buildAnimations();
     anim.play("idle_down");
     anim.applyToSprite(sprite, 2.f);
 }
-
+// Construye las animaciones
 void PlayerRenderer::buildAnimations() {
     registerWalkClips();
     registerIdleClips();
     registerAttackClips();
 }
-
+// Registra las animaciones de caminata
 void PlayerRenderer::registerWalkClips() {
     const Direction dirs[] = {Direction::DOWN, Direction::UP, Direction::LEFT, Direction::RIGHT};
     const char* names[] = {"down", "up", "left", "right"};
@@ -47,7 +47,7 @@ void PlayerRenderer::registerIdleClips() {
         anim.registerAnimation(std::string("idle_") + names[d], idle);
     }
 }
-
+// Registra las animaciones de ataque
 void PlayerRenderer::registerAttackClips() {
     const Direction dirs[] = {Direction::DOWN, Direction::UP, Direction::LEFT, Direction::RIGHT};
     const char* names[] = {"down", "up", "left", "right"};
@@ -61,7 +61,7 @@ void PlayerRenderer::registerAttackClips() {
         anim.registerAnimation(std::string("attack_") + names[d], attack);
     }
 }
-
+// Devuelve el clip para el estado del jugador
 std::string PlayerRenderer::clipForState(Player& player) const {
     std::string dir;
     switch (player.getFacingDirection()) {

@@ -17,7 +17,7 @@ std::vector<std::string> FontLoader::defaultPaths() {
     paths.push_back("assets/fonts/arial.ttf");
     paths.push_back("assets/fonts/default.ttf");
 
-#ifdef _WIN32
+#ifdef _WIN32// Si es windows
     char winDir[MAX_PATH];
     if (GetEnvironmentVariableA("WINDIR", winDir, MAX_PATH) > 0) {
         std::string base(winDir);
@@ -28,7 +28,7 @@ std::vector<std::string> FontLoader::defaultPaths() {
 
     return paths;
 }
-
+// Carga una fuente
 bool FontLoader::load(sf::Font& font, const std::vector<std::string>& extraPaths) {
     auto paths = defaultPaths();
     paths.insert(paths.end(), extraPaths.begin(), extraPaths.end());

@@ -40,7 +40,7 @@
 
 #include <cstdlib>
 
-
+// Genera el dungeon actual
 
 void World::generateCurrentFloor(int seed) {
 
@@ -66,7 +66,7 @@ void World::generateCurrentFloor(int seed) {
 
 }
 
-
+// Inicia un nuevo run
 
 void World::newRun(int seed) {
 
@@ -89,7 +89,7 @@ void World::newRun(int seed) {
 }
 
 
-
+// Carga una room
 void World::loadRoom(int roomId) {
 
     if (roomId < 0 || roomId >= static_cast<int>(rooms.size())) return;
@@ -115,7 +115,7 @@ void World::loadRoom(int roomId) {
 }
 
 
-
+// Desbloquea la puerta del boss
 void World::unlockBossGate() {
 
     if (bossGateUnlocked) return;
@@ -163,7 +163,7 @@ void World::unlockBossGate() {
 }
 
 
-
+// Spawna las puertas de conexion
 void World::spawnConnectionDoors(Room& room) {
 
     for (const auto& conn : room.connections) {
@@ -260,7 +260,7 @@ void World::populateRoom() {
         }
 
 
-
+// Cleara la room del boss
         case RoomType::BossAntechamber:
 
             room.cleared = true;

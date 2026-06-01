@@ -8,7 +8,7 @@ TextureCache& TextureCache::instance() {
     static TextureCache cache;
     return cache;
 }
-
+// Asegura el fallback
 void TextureCache::ensureFallback() {
     if (fallbackReady) return;
     sf::Image img;
@@ -16,7 +16,7 @@ void TextureCache::ensureFallback() {
     fallback.loadFromImage(img);
     fallbackReady = true;
 }
-
+// Devuelve el texture para el path
 const sf::Texture& TextureCache::get(const std::string& path) {
     ensureFallback();
 
@@ -32,7 +32,7 @@ const sf::Texture& TextureCache::get(const std::string& path) {
     if (it != textures.end()) {
         return it->second;
     }
-
+// Si el archivo no existe, se registra como fallido
     if (!std::filesystem::exists(path)) {
         if (!loggedFailures.count(path)) {
             loggedFailures.insert(path);
@@ -55,11 +55,11 @@ const sf::Texture& TextureCache::get(const std::string& path) {
     textures[path] = std::move(tex);
     return textures[path];
 }
-
+// Devuelve si el texture existe para el path
 bool TextureCache::has(const std::string& path) const {
     return textures.find(path) != textures.end();
 }
-
+// Devuelve si el texture se cargo correctamente para el path
 bool TextureCache::loadSucceeded(const std::string& path) const {
     return textures.find(path) != textures.end();
 }

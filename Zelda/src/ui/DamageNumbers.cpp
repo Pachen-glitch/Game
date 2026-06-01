@@ -9,7 +9,7 @@ DamageNumbers::DamageNumbers() {
     fontLoaded = FontLoader::load(font);
 }
 
-void DamageNumbers::spawn(sf::Vector2f pos, int amount, bool crit) {
+void DamageNumbers::spawn(sf::Vector2f pos, int amount, bool crit) {// Spawns a damage number
     FloatingText ft;
     ft.pos = pos;
     ft.text = std::to_string(amount);
@@ -23,13 +23,13 @@ void DamageNumbers::update(float dt) {
         t.pos.y -= 30.f * dt;
     }
     texts.erase(
-        std::remove_if(texts.begin(), texts.end(),
+        std::remove_if(texts.begin(), texts.end(),// Elimina los textos que han pasado su tiempo de vida
             [](const FloatingText& t) { return t.age >= t.lifetime; }),
         texts.end()
     );
 }
 
-void DamageNumbers::draw(sf::RenderWindow& window) {
+void DamageNumbers::draw(sf::RenderWindow& window) {// Dibuja los textos
     if (!fontLoaded) return;
 
     for (const auto& t : texts) {
