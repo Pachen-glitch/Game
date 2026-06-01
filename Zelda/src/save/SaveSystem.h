@@ -13,6 +13,7 @@ struct SaveData {
     int totalDeaths = 0;
     int maxRoomReached = 0;
     int totalRupeesCollected = 0;
+    int narutoDefeated = 0;
     float totalPlayTimeSeconds = 0.f;
     int bestScore = 0;
     std::string bestScoreHolder = "Aventurero";

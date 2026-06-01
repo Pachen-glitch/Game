@@ -4,7 +4,8 @@
 
 enum class DoorKind {
     Normal,
-    BossGate
+    BossGate,
+    Victory
 };
 
 class Door : public Entity {
@@ -19,6 +20,7 @@ public:
     bool isLocked() const;
     bool canPass() const;
     bool isBossGate() const { return doorKind == DoorKind::BossGate; }
+    bool isVictoryDoor() const { return doorKind == DoorKind::Victory; }
 
     void onInteract(Player& player) override;
     void update(float dt) override;

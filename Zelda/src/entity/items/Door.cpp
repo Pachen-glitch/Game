@@ -9,6 +9,13 @@
 
 #include <cmath>
 
+namespace {
+
+const sf::Vector2f kLargeDoorSize{64.f, 80.f};
+const sf::Vector2f kNormalDoorSize{48.f, 64.f};
+
+} // namespace
+
 Door::Door(
     sf::Vector2f pos,
     bool isLocked,
@@ -16,17 +23,23 @@ Door::Door(
 )
     : Entity(
         pos,
-        kind == DoorKind::BossGate ? sf::Vector2f{64.f, 80.f} : sf::Vector2f{48.f, 64.f},
+        (kind == DoorKind::BossGate || kind == DoorKind::Victory)
+            ? kLargeDoorSize
+            : kNormalDoorSize,
         AssetPaths::getDoorSprite(),
         EntityType::Door
     )
     , locked(isLocked)
     , doorKind(kind)
 {
-    float scale = doorKind == DoorKind::BossGate ? 2.4f : 2.f;
+    const bool largeDoor =
+        doorKind == DoorKind::BossGate || doorKind == DoorKind::Victory;
+    float scale = largeDoor ? 2.4f : 2.f;
     sprite.setScale(scale, scale);
 
-    if (doorKind == DoorKind::BossGate) {
+    if (doorKind == DoorKind::Victory) {
+        sprite.setColor(sf::Color(255, 220, 80));
+    } else if (doorKind == DoorKind::BossGate) {
         sprite.setColor(locked ? sf::Color(255, 180, 60) : sf::Color(120, 255, 120));
     } else if (!locked) {
         sprite.setColor(sf::Color(120, 255, 120));
@@ -34,6 +47,8 @@ Door::Door(
 }
 
 void Door::unlock() {
+    if (doorKind == DoorKind::Victory) return;
+
     locked = false;
     sprite.setColor(sf::Color(120, 255, 120));
 
@@ -56,6 +71,8 @@ bool Door::canPass() const {
 }
 
 void Door::onInteract(Player& player) {
+    if (doorKind == DoorKind::Victory) return;
+
     if (!locked) return;
 
     if (doorKind == DoorKind::BossGate) {
@@ -74,7 +91,7 @@ void Door::onInteract(Player& player) {
 }
 
 void Door::update(float dt) {
-    if (!locked) return;
+    if (!locked || doorKind == DoorKind::Victory) return;
 
     static float timer = 0.f;
     timer += dt;
