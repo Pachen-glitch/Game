@@ -78,7 +78,7 @@ constexpr float kJutsuAttackTail = 0.12f;
 
 constexpr float kRasenProjectileFrame = kRasenCastDuration;
 
-constexpr float kComboHitWindow = 2.2f;
+constexpr float kComboHitWindow = 3.7f;
 
 constexpr int kComboHitThreshold = 2;
 
@@ -268,7 +268,7 @@ void NarutoBoss::tickCooldowns(float dt) {
 
     dashCooldown = std::max(0.f, dashCooldown - dt);
 
-    defensiveSubCooldown = std::max(0.f, defensiveSubCooldown - dt);
+    defensiveSubCooldown = std::max(0.f, defensiveSubCooldown - dt);// Defensive
 
 
 
@@ -598,7 +598,7 @@ float NarutoBoss::attackDurationFor(NarutoAttack attack) const {
 
         case NarutoAttack::DefensiveSubstitution:
 
-            return kSubstitutionSmokeDuration * 2.f + 0.05f;
+            return kSubstitutionSmokeDuration * 2.f + 0.05f;// Extra tail to ensure the attack doesn't end until the smoke fully clears.
 
         default:
 
@@ -912,13 +912,13 @@ void NarutoBoss::stampAttackCooldown(NarutoAttack attack) {
 
         case NarutoAttack::Substitution:
 
-            substitutionCooldown = 8.f;
+            substitutionCooldown = 6.f;// Substitution cooldown is the same for both offensive and defensive, since they share the same pool and are both strong options to use defensively, so it makes sense to just have one cooldown for both.
 
             break;
 
         case NarutoAttack::DefensiveSubstitution:
 
-            defensiveSubCooldown = 6.f;
+            defensiveSubCooldown = 3.f;// retardo de substitución defensiva
 
             break;
 
