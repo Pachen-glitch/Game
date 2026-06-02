@@ -85,6 +85,32 @@ void EnemyAnimator::setupSummoner() {
     deathFinished = false;
 }
 
+void EnemyAnimator::setupBat() {
+
+    auto reg = [this](const std::string& name,
+                      const std::string& state,
+                      float dur,
+                      bool loop) {
+
+        auto frames =
+            AssetPaths::getEnemyAnimFrames("bat", state);// Colecciona los frames por prefijo
+
+        Animation clip =// Construye la animacion
+            AssetPaths::buildAnimation(frames, dur, loop);
+
+        if (!clip.getCurrentFramePath().empty()) {
+            anim.registerAnimation(name, clip);
+        }
+    };
+
+    reg("walk", "walk", 0.10f, true);
+    reg("hurt", "hurt", 0.12f, false);
+    reg("death", "death", 0.14f, false);
+
+    lastClip.clear();
+    deathFinished = false;
+}
+
 void EnemyAnimator::update(Enemy& enemy, float dt) {
 
     if (enemy.isDeathAnimPending()) {

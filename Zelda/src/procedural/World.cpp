@@ -12,6 +12,8 @@
 
 #include "../entity/enemy/SlimeEnemy.h"
 
+#include "../entity/enemy/BatEnemy.h"
+
 #include "../entity/enemy/SkeletonEnemy.h"
 
 #include "../entity/enemy/SummonerEnemy.h"
@@ -108,7 +110,10 @@ void World::loadRoom(int roomId) {
 
     populateRoom();
 
-    if (rooms[roomId].type == RoomType::BossAntechamber) {
+    if (rooms[roomId].type == RoomType::Shop) {
+        AudioManager::instance().playShopMusic();
+    }
+    else if (rooms[roomId].type == RoomType::BossAntechamber) {
         AudioManager::instance().playBossPreBattleMusic();
     } else {
         AudioManager::instance().resumeGameplayMusic();
@@ -238,6 +243,8 @@ void World::populateRoom() {
 
             entities.spawn<Key>(rndPos());
 
+            entities.spawn<BatEnemy>(rndPos());
+
             break;
 
 
@@ -248,10 +255,11 @@ void World::populateRoom() {
             const int enemyCount = 2 + std::rand() % 5;
 
             for (int i = 0; i < enemyCount; ++i) {
-                switch (std::rand() % 3) {
+                switch (std::rand() % 4) {
                     case 0: entities.spawn<SlimeEnemy>(rndPos()); break;
                     case 1: entities.spawn<SkeletonEnemy>(rndPos()); break;
                     case 2: entities.spawn<SummonerEnemy>(rndPos()); break;
+                    case 3: entities.spawn<BatEnemy>(rndPos()); break;
                 }
             }
 

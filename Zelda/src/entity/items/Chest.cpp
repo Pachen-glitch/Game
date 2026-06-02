@@ -23,7 +23,7 @@ Chest::Chest(
 
         pos,
 
-        {220.f, 202.f},
+        {80.f, 80.f},
 
         AssetPaths::getChestClosedSprite(),
 
@@ -36,8 +36,10 @@ Chest::Chest(
 }
 
 void Chest::onInteract(Player& player) {
-
     if (opened)
+        return;
+
+    if (!player.useKey())
         return;
 
     opened = true;

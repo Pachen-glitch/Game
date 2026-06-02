@@ -9,6 +9,7 @@
 BatEnemy::BatEnemy(sf::Vector2f pos)
     : Enemy(pos, EnemyKind::Bat, 1, AssetPaths::getEnemySprite("bat"))
 {
+    sprite.setScale(0.75f, 0.75f);
     initKindStats();
 }
 

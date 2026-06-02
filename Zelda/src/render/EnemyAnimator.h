@@ -12,6 +12,7 @@ public:
     void setupSlime();
     void setupSkeleton();
     void setupSummoner();
+    void setupBat();
 
     void update(Enemy& enemy, float dt);
 

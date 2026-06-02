@@ -233,7 +233,10 @@ void GameSession::run() {
                     if (state == GameState::Shop) {
                         state = GameState::Playing;
                         interaction.startShopCooldown(Constants::SHOP_EXIT_COOLDOWN);
-                        AudioManager::instance().resumeGameplayMusic();
+                        if (world.currentRoom().type == RoomType::Shop) {
+                                AudioManager::instance().playShopMusic();}
+                        else {
+                                AudioManager::instance().resumeGameplayMusic();}
                     } else if (state == GameState::Playing) {
                         state = GameState::Paused;
                     } else if (state == GameState::Paused) {

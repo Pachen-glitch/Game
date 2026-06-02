@@ -20,6 +20,7 @@ public:
     void playMenuMusic();
     void startGameplayMusic();
     void enterShop();
+    void playShopMusic();
     void resumeGameplayMusic();
     void playGameOverMusic();
 

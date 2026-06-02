@@ -7,10 +7,13 @@
 #include "../entity/enemy/SummonerEnemy.h"
 #include "../entity/enemy/NarutoBoss.h"
 #include "../entity/enemy/NarutoCloneEnemy.h"
+#include "../entity/enemy/BatEnemy.h"
 
 #include "../render/EnemyAnimator.h"
 #include "../render/SkeletonRenderer.h"
 #include "../render/NarutoRenderer.h"
+
+
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
@@ -38,6 +41,11 @@ private:
         SlimeEnemy*,
         EnemyAnimator
     > slimeAnimators;
+
+    std::unordered_map<
+        BatEnemy*,
+        EnemyAnimator
+    > batAnimators;
 
     std::unordered_map<
         SummonerEnemy*,

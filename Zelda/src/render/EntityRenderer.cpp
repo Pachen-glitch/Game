@@ -39,6 +39,7 @@ void EntityRenderer::update(
     pruneAnimatorMap(skeletonAnimators, entities);
     pruneAnimatorMap(narutoBossAnimators, entities);
     pruneAnimatorMap(narutoCloneAnimators, entities);
+    pruneAnimatorMap(batAnimators, entities);
 
     for (auto& ent : entities.all()) {
 
@@ -184,6 +185,39 @@ void EntityRenderer::update(
             iter->second.updateClone(
                 *narutoClone,
                 dt
+            );
+
+            continue;
+        }
+
+        // =====================
+        // BAT 
+        // =====================
+
+        auto* bat =
+            dynamic_cast<BatEnemy*>(
+                ent.get()
+            );
+            
+        if (bat) {
+                
+            auto [iter, inserted] =
+                batAnimators.try_emplace(
+                    bat
+                );
+
+            if (inserted) {
+                iter->second.setupBat();
+            }
+
+            iter->second.update(
+                *bat,
+                dt
+            );
+
+            iter->second.applyToEntity(
+                *bat,
+                2.f
             );
 
             continue;

@@ -247,6 +247,22 @@ void AudioManager::playBossPreBattleMusic() {
     }
 }
 
+void AudioManager::playShopMusic() {
+    context = MusicContext::Shop;
+
+    music.stop();
+
+    music.openFromFile(
+        AssetPaths::getAudioPath(
+            "music/shop_music.mp3"
+        )
+    );
+
+    music.setLoop(true);
+
+    music.play();
+}
+
 void AudioManager::playBossBattleMusic() {
     context = MusicContext::BossBattle;
     playMusicFile("music/Naruto_Batle.mp3", true);

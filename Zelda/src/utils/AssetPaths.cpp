@@ -434,6 +434,10 @@ void AssetPaths::validateCriticalAssets() {
     logClip("summoner_walk", getEnemyAnimFrames("summoner", "walk"));
     logClip("summoner_hurt", getEnemyAnimFrames("summoner", "hurt"));
     logClip("summoner_death", getEnemyAnimFrames("summoner", "death"));
+    logClip("bat_walk", getEnemyAnimFrames("bat", "walk"));
+    logClip("bat_hurt", getEnemyAnimFrames("bat", "hurt"));
+    logClip("bat_death", getEnemyAnimFrames("bat", "death"));
+
 }
 
 std::string AssetPaths::getChestClosedSprite() {
