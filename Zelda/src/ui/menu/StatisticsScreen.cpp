@@ -50,7 +50,8 @@ void StatisticsScreen::prepare(sf::Vector2u windowSize, const SaveData& data) {
         "Sala maxima alcanzada: " + std::to_string(data.maxRoomReached),
         "Rupias recolectadas: " + std::to_string(data.totalRupeesCollected),
         "Tiempo jugado: " + formatPlayTime(data.totalPlayTimeSeconds),
-        "Enemigos derrotados: " + std::to_string(data.enemiesDefeated)
+        "Enemigos derrotados: " + std::to_string(data.enemiesDefeated),
+        "Naruto derrotado: " + std::to_string(data.narutoDefeated)
     };
 
     leaderboardLines = {"TOP 5 AVENTUREROS"};

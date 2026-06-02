@@ -152,12 +152,20 @@ void NarutoRenderer::buildAnimations() {
         registerClip(anim, "clone_vanish_smoke", vanishFrames, 0.1f, false);
     }
 
+    registerClip(
+        anim,
+        "boss_death_vanish",
+        collectNumberedFrames("sustitucion_", 2, 5),
+        0.1f,
+        false
+    );
+
     registerPrefixClip(anim, "death", "explosion", 0.14f, false);
 }
 // Devuelve el clip para el boss
 std::string NarutoRenderer::clipForBoss(NarutoBoss& boss) const {
     if (boss.isDeathAnimPending()) {
-        return "death";
+        return "boss_death_vanish";
     }
     if (boss.isIntroSmokeActive()) {
         return "boss_spawn_smoke";
@@ -257,8 +265,15 @@ void NarutoRenderer::update(NarutoBoss& boss, float deltaTime) {
 
     anim.update(deltaTime);
 
-    if (boss.isDeathAnimPending() && anim.isFinished()) {
-        boss.deactivate();
+    if (boss.isDeathAnimPending()) {
+        anim.applyToSprite(sprite, 2.f);
+        sprite.setColor(sf::Color(255, 255, 255, 230));
+        sprite.setPosition(boss.getPosition());
+        boss.getSprite() = sprite;
+
+        if (anim.isFinished()) {
+            boss.deactivate();
+        }
         return;
     }
 

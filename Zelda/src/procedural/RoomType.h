@@ -7,6 +7,7 @@ enum class RoomType {
     Shop,
     BossAntechamber,
     Boss,
+    Victory,
     Corridor
 };
 

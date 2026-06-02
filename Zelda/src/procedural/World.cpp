@@ -41,6 +41,7 @@
 
 
 #include <cstdlib>
+#include <vector>
 
 // Genera el dungeon actual
 
@@ -79,6 +80,8 @@ void World::newRun(int seed) {
     maxFloors = Constants::MAX_FLOORS;
 
     bossGateUnlocked = false;
+    inVictoryRoom = false;
+    victoryDoorSpawned = false;
 
     generateCurrentFloor(seed);
 
@@ -103,6 +106,7 @@ void World::loadRoom(int roomId) {
     }
 
     currentRoomId = roomId;
+    inVictoryRoom = false;
 
     entities.clear();
 
@@ -344,17 +348,17 @@ void World::populateRoom() {
 
 
 Room& World::currentRoom() {
-
+    if (inVictoryRoom) {
+        return victoryRoom;
+    }
     return rooms[currentRoomId];
-
 }
 
-
-
 const Room& World::currentRoom() const {
-
+    if (inVictoryRoom) {
+        return victoryRoom;
+    }
     return rooms[currentRoomId];
-
 }
 
 
@@ -371,6 +375,95 @@ bool World::hasActiveNarutoBoss() const {
 
     return false;
 
+}
+
+void World::buildVictoryRoom() {
+    if (victoryRoomBuilt) return;
+
+    static const std::vector<std::string> kVictoryLayout = {
+        "####################",
+        "#..................#",
+        "#..................#",
+        "#..................#",
+        "#..................#",
+        "#..................#",
+        "#..................#",
+        "#..................#",
+        "#..................#",
+        "#..................#",
+        "#..................#",
+        "#..................#",
+        "#..................#",
+        "#..................#",
+        "#..................#",
+        "#..................#",
+        "#..................#",
+        "#..................#",
+        "#..................#",
+        "####################"
+    };
+
+    victoryRoom.id = -1;
+    victoryRoom.type = RoomType::Victory;
+    victoryRoom.cleared = true;
+    victoryRoom.visited = true;
+    victoryRoom.templateId = "victory";
+
+    for (int y = 0; y < static_cast<int>(kVictoryLayout.size()); ++y) {
+        for (int x = 0; x < static_cast<int>(kVictoryLayout[y].size()); ++x) {
+            char c = kVictoryLayout[static_cast<size_t>(y)][static_cast<size_t>(x)];
+            TileType tile = (c == '#') ? TileType::WALL : TileType::FLOOR;
+            victoryRoom.map.setTile(x, y, tile);
+        }
+    }
+
+    victoryRoomBuilt = true;
+}
+
+void World::spawnVictoryDoor() {
+    if (victoryDoorSpawned || inVictoryRoom) return;
+    if (currentRoom().type != RoomType::Boss) return;
+
+    Room& room = currentRoom();
+    entities.spawn<Door>(room.getBossGateWorldPos(), false, DoorKind::Victory);
+    victoryDoorSpawned = true;
+}
+
+void World::trySpawnVictoryDoorAfterBossDefeat() {
+    if (victoryDoorSpawned || inVictoryRoom) return;
+    if (currentRoom().type != RoomType::Boss) return;
+    if (hasActiveNarutoBoss()) return;
+
+    Room& room = currentRoom();
+    if (!room.cleared) {
+        room.cleared = true;
+        if (RunScoreTracker* tracker = RunScoreTracker::active()) {
+            tracker->onRoomCleared(room.id);
+        }
+    }
+
+    spawnVictoryDoor();
+}
+
+bool World::tryEnterVictoryRoom(Player& player) {
+    if (inVictoryRoom || !victoryDoorSpawned) return false;
+    if (currentRoom().type != RoomType::Boss) return false;
+
+    for (auto& e : entities.all()) {
+        if (!e || !e->isActive()) continue;
+
+        auto* door = dynamic_cast<Door*>(e.get());
+        if (!door || !door->isVictoryDoor()) continue;
+        if (!door->getBounds().intersects(player.getBounds())) continue;
+
+        buildVictoryRoom();
+        inVictoryRoom = true;
+        entities.clear();
+        player.setPosition(victoryRoom.getPlayerSpawn());
+        return true;
+    }
+
+    return false;
 }
 
 
@@ -421,6 +514,46 @@ bool World::debugRemoveNaruto() {
 
     return removed;
 
+}
+
+int World::debugKillNormalEnemies() {
+    auto shouldDropHeart = [](const Enemy& enemy) {
+        switch (enemy.getKind()) {
+            case EnemyKind::Slime:
+            case EnemyKind::Skeleton:
+            case EnemyKind::Summoner:
+                return std::rand() % 100 < 25;
+            default:
+                return false;
+        }
+    };
+
+    int killed = 0;
+    std::vector<sf::Vector2f> pendingHearts;
+
+    for (auto& e : entities.all()) {
+        if (!e || !e->isActive() || e->getType() != EntityType::Enemy) continue;
+        if (dynamic_cast<NarutoBoss*>(e.get())) continue;
+
+        auto* enemy = dynamic_cast<Enemy*>(e.get());
+        if (!enemy || enemy->isDead() || enemy->isDeathAnimPending()) continue;
+
+        const sf::Vector2f deathPos = enemy->getPosition();
+        const bool wasAlive = !enemy->isDeathAnimPending();
+        enemy->takeHit(9999, {0.f, 0.f});
+        ++killed;
+
+        if (wasAlive && enemy->isDeathAnimPending() && shouldDropHeart(*enemy)) {
+            pendingHearts.push_back(deathPos + sf::Vector2f(8.f, 8.f));
+        }
+    }
+
+    for (const sf::Vector2f& pos : pendingHearts) {
+        entities.spawn<Heart>(pos);
+    }
+
+    entities.removeInactive();
+    return killed;
 }
 
 
@@ -527,23 +660,20 @@ void World::updateEnemies(Player& player, float dt, const Map& map) {
             tracker->onRoomCleared(room.id);
         }
 
-        spawnConnectionDoors(room);
+        if (room.type == RoomType::Boss) {
+            spawnVictoryDoor();
+        } else {
+            spawnConnectionDoors(room);
 
+            if (room.type != RoomType::Shop && room.type != RoomType::Start &&
+                room.type != RoomType::BossAntechamber) {
 
-
-        if (room.type != RoomType::Shop && room.type != RoomType::Start &&
-            room.type != RoomType::BossAntechamber) {
-
-            entities.spawn<Chest>(
-
-                room.getPlayerSpawn() + sf::Vector2f(180.f, 0.f),
-
-                &entities
-
-            );
-
+                entities.spawn<Chest>(
+                    room.getPlayerSpawn() + sf::Vector2f(180.f, 0.f),
+                    &entities
+                );
+            }
         }
-
     }
 
 }

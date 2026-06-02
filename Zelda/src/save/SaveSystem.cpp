@@ -34,7 +34,8 @@ bool SaveSystem::save(const SaveData& data) {// Guarda el save data
         << data.maxRoomReached << " " // Habitación más alta alcanzada
         << data.totalRupeesCollected << " " // Total de rupias recogidas
         << data.totalPlayTimeSeconds << " " // Tiempo total de juego
-        << data.bestScore << "\n"; // Mejor puntaje
+        << data.bestScore << " "
+        << data.narutoDefeated << "\n";
 
     out << sanitizeStoredName(data.bestScoreHolder) << "\n";
     out << data.highScores.size() << "\n";
@@ -67,6 +68,11 @@ bool SaveSystem::load(SaveData& data) {
            >> data.totalRupeesCollected
            >> data.totalPlayTimeSeconds
            >> data.bestScore;
+        if (in >> data.narutoDefeated) {
+            // New field present.
+        } else {
+            data.narutoDefeated = 0;
+        }
     }
 
     std::string line;

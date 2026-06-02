@@ -23,13 +23,17 @@ public:
     int getMaxFloors() const { return maxFloors; }
     bool isBossGateUnlocked() const { return bossGateUnlocked; }
     int getBossRoomId() const { return bossRoomId; }
+    bool isInVictoryRoom() const { return inVictoryRoom; }
 
     EntityManager& getEntities() { return entities; }
     void updateEnemies(Player& player, float dt, const Map& map);
+    void trySpawnVictoryDoorAfterBossDefeat();
+    bool tryEnterVictoryRoom(Player& player);
 
     bool hasActiveNarutoBoss() const;
     bool debugSpawnNarutoNear(sf::Vector2f pos);
     bool debugRemoveNaruto();
+    int debugKillNormalEnemies();
 
     bool tryTransition(Player& player, DoorSide& outSide);
     void unlockBossGate();
@@ -37,15 +41,21 @@ public:
 private:
     void generateCurrentFloor(int seed);
     void spawnConnectionDoors(Room& room);
+    void spawnVictoryDoor();
+    void buildVictoryRoom();
     bool canTraverseConnection(const Room& room, const RoomConnection& conn) const;
     bool playerAtOpening(const Player& player, const Room& room, DoorSide side) const;
 
     std::vector<Room> rooms;
+    Room victoryRoom;
     int currentRoomId = 0;
     int bossRoomId = -1;
     int currentFloor = 1;
     int maxFloors = 1;
     bool bossGateUnlocked = false;
+    bool inVictoryRoom = false;
+    bool victoryDoorSpawned = false;
+    bool victoryRoomBuilt = false;
     EntityManager entities;
     DungeonGenerator generator;
     int runSeed = 0;

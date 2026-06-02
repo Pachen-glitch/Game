@@ -66,17 +66,19 @@ struct RunTracker {
         RunScoreTracker::setActive(&score);
     }
 
+    int lastFinalScore = 0;
+
     void submitScore(SaveData& saveData) {
         if (scoreSubmitted) return;
         scoreSubmitted = true;
 
-        const int finalScore = score.finalizeScore();
+        lastFinalScore = score.finalizeScore();
         submitHighScore(
             saveData.highScores,
             saveData.bestScore,
             saveData.bestScoreHolder,
             playerName,
-            finalScore
+            lastFinalScore
         );
         RunScoreTracker::setActive(nullptr);
     }
@@ -166,6 +168,8 @@ void GameSession::run() {
 
     GameState state = GameState::MainMenu;
     sf::Clock clock;
+    bool pauseMenuReady = false;
+    bool victoryScreenReady = false;
 
     EventBus::instance().subscribe("open_shop", [&]() {
         if (state == GameState::Shop) return;
@@ -228,6 +232,22 @@ void GameSession::run() {
                     AudioManager::instance().playMenuMusic();
                 }
                 state = next;
+            } else if (state == GameState::Paused) {
+                PauseMenuAction action = screens.handlePauseEvent(ev, window);
+                if (action == PauseMenuAction::Resume) {
+                    state = GameState::Playing;
+                } else if (action == PauseMenuAction::MainMenu) {
+                    state = GameState::MainMenu;
+                    pauseMenuReady = false;
+                    AudioManager::instance().playMenuMusic();
+                }
+            } else if (state == GameState::Victory) {
+                VictoryMenuAction action = screens.handleVictoryEvent(ev, window);
+                if (action == VictoryMenuAction::MainMenu) {
+                    state = GameState::MainMenu;
+                    victoryScreenReady = false;
+                    AudioManager::instance().playMenuMusic();
+                }
             } else if (ev.type == sf::Event::KeyPressed) {
                 if (ev.key.code == sf::Keyboard::Escape) {
                     if (state == GameState::Shop) {
@@ -239,8 +259,10 @@ void GameSession::run() {
                                 AudioManager::instance().resumeGameplayMusic();}
                     } else if (state == GameState::Playing) {
                         state = GameState::Paused;
-                    } else if (state == GameState::Paused) {
-                        state = GameState::Playing;
+                        if (!pauseMenuReady) {
+                            screens.preparePauseMenu(window.getSize());
+                            pauseMenuReady = true;
+                        }
                     }
                 }
                 if (ev.key.code == sf::Keyboard::E &&
@@ -269,6 +291,19 @@ void GameSession::run() {
                     if (world.debugRemoveNaruto()) {
                         std::cerr << "[DEBUG] NarutoBoss removed\n";
                     }
+                }
+                if (ev.key.code == sf::Keyboard::L &&
+                    state == GameState::Playing) {
+                    Player::setDebugGodMode(!Player::isDebugGodMode());
+                    std::cerr << "[DEBUG] GOD MODE "
+                              << (Player::isDebugGodMode() ? "ON" : "OFF")
+                              << "\n";
+                }
+                if (ev.key.code == sf::Keyboard::K &&
+                    state == GameState::Playing) {
+                    const int killed = world.debugKillNormalEnemies();
+                    std::cerr << "[DEBUG] Eliminated " << killed
+                              << " enemies\n";
                 }
             }
 
@@ -372,27 +407,47 @@ void GameSession::run() {
                 state = GameState::GameOver;
                 AudioManager::instance().playGameOverMusic();
             }
-            if (world.currentRoom().type == RoomType::Boss &&
-                world.currentRoom().cleared) {
+            if (world.tryEnterVictoryRoom(player)) {
+                saveData.narutoDefeated++;
                 runTracker.submitScore(saveData);
+                screens.prepareVictoryScreen(
+                    window.getSize(),
+                    runTracker.playerName,
+                    runTracker.lastFinalScore,
+                    saveData.bestScore
+                );
+                victoryScreenReady = true;
                 state = GameState::Victory;
             }
         }
 
-        playerRenderer.update(player, gameDt);
-        entityRenderer.update(world.getEntities(), gameDt);
-        camera.update(gameDt, player, world.currentRoom().map, window.getSize());
+        if (state == GameState::Playing || state == GameState::Paused ||
+            state == GameState::Victory) {
+            playerRenderer.update(player, gameDt);
+            entityRenderer.update(world.getEntities(), gameDt);
 
-        window.clear(sf::Color(30, 30, 40));
-        window.setView(camera.getView());
-        tilemap.draw(window, world.currentRoom().map);
-        entityRenderer.draw(window, player, world.getEntities());
-        damageNumbers.update(dt);
-        damageNumbers.draw(window);
+            if (state == GameState::Playing || state == GameState::Victory) {
+                world.trySpawnVictoryDoorAfterBossDefeat();
+            }
 
-        window.setView(window.getDefaultView());
-        hud.draw(window, player);
-        minimap.draw(window, world.getRooms(), world.getCurrentRoomId());
+            camera.update(gameDt, player, world.currentRoom().map, window.getSize());
+        }
+
+        if (state == GameState::Playing || state == GameState::Paused ||
+            state == GameState::Victory) {
+            window.clear(sf::Color(30, 30, 40));
+            window.setView(camera.getView());
+            tilemap.draw(window, world.currentRoom().map);
+            entityRenderer.draw(window, player, world.getEntities());
+            damageNumbers.update(dt);
+            damageNumbers.draw(window);
+
+            window.setView(window.getDefaultView());
+            hud.draw(window, player);
+            if (!world.isInVictoryRoom()) {
+                minimap.draw(window, world.getRooms(), world.getCurrentRoomId());
+            }
+        }
 
         if (state == GameState::Shop) {
             shopUI.draw(window, economy.getShop(), player);

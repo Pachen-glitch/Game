@@ -1532,6 +1532,16 @@ void NarutoBoss::takeHit(int damage, sf::Vector2f knockback) {
 
     if (deathAnimPending) {
 
+        currentAttack = NarutoAttack::None;
+
+        kickActive = false;
+
+        hidden = false;
+
+        mode = Mode::Recovery;
+
+        velocity = {0.f, 0.f};
+
         despawnAllClones();
 
         EventBus::instance().emit("naruto_boss_defeated");

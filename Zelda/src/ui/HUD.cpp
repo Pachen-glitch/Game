@@ -68,5 +68,15 @@ void HUD::draw(sf::RenderWindow& window, const Player& player) {
         berserk.setPosition(16.f, statusY);
         berserk.setString("[BERSERK]");
         window.draw(berserk);
+        statusY += 24.f;
+    }
+    if (Player::isDebugGodMode()) {
+        sf::Text godMode;
+        godMode.setFont(font);
+        godMode.setCharacterSize(18);
+        godMode.setFillColor(sf::Color(255, 255, 120));
+        godMode.setPosition(16.f, statusY);
+        godMode.setString("[GOD MODE]");
+        window.draw(godMode);
     }
 }
