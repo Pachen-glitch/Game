@@ -1,5 +1,6 @@
 #include "NarutoRenderer.h"
 
+#include "../entity/player/Direction.h"
 #include "../utils/AssetPaths.h"
 
 #include <algorithm>
@@ -203,14 +204,17 @@ std::string NarutoRenderer::clipForBoss(NarutoBoss& boss) const {
 }
 // Devuelve el clip para el clone
 std::string NarutoRenderer::clipForClone(NarutoCloneEnemy& clone) const {
-    if (clone.isVanishing()) {
+    if (clone.isVanishing() || clone.isDeathAnimPending()) {
         return "clone_vanish_smoke";
     }
     if (clone.isSpawning()) {
         return "clone_smoke";
     }
     if (clone.isHurtAnimating()) {
-        return "hit_l";
+        return clone.getFacingDirection() == Direction::LEFT ? "hit_l" : "hit_r";
+    }
+    if (clone.isAttacking() || clone.isKickActive()) {
+        return clone.getFacingDirection() == Direction::LEFT ? "kick_l" : "kick_r";
     }
 
     sf::Vector2f vel = clone.getVelocity();
@@ -218,7 +222,7 @@ std::string NarutoRenderer::clipForClone(NarutoCloneEnemy& clone) const {
     if (speed > 8.f) {
         return vel.x < 0.f ? "run_l" : "run_r";
     }
-    return "idle_l";
+    return clone.getFacingDirection() == Direction::LEFT ? "idle_l" : "idle_r";
 }
 
 void NarutoRenderer::update(NarutoBoss& boss, float deltaTime) {
@@ -293,13 +297,13 @@ void NarutoRenderer::updateClone(NarutoCloneEnemy& clone, float deltaTime) {
 
     anim.update(deltaTime);
 
-    if (clone.isVanishing() && anim.isFinished()) {
+    if (clone.isDeathAnimPending() && anim.isFinished()) {
         clone.deactivate();
         return;
     }
 
     anim.applyToSprite(sprite, 2.f);
-    if (clone.isVanishing() || clone.isSpawning()) {
+    if (clone.isVanishing() || clone.isDeathAnimPending() || clone.isSpawning()) {
         sprite.setColor(sf::Color(255, 255, 255, 230));
     } else {
         sprite.setColor(sf::Color::White);
