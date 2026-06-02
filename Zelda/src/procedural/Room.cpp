@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdlib>
+#include <iostream>
 #include <utility>
 #include <vector>
 
@@ -50,6 +51,37 @@ DoorSide oppositeSide(DoorSide side) {// Devuelve el lado opuesto
         case DoorSide::West: return DoorSide::East;
         default: return DoorSide::None;
     }
+}
+
+const char* sideName(DoorSide side) {
+    switch (side) {
+        case DoorSide::North: return "North";
+        case DoorSide::South: return "South";
+        case DoorSide::East: return "East";
+        case DoorSide::West: return "West";
+        default: return "None";
+    }
+}
+
+DoorSide pickAntechamberBossPassageSide(DoorSide entrySide) {
+    const DoorSide opposite = oppositeSide(entrySide);
+    if (opposite != DoorSide::None && opposite != entrySide) {
+        return opposite;
+    }
+
+    static const DoorSide kFallbackOrder[] = {
+        DoorSide::South,
+        DoorSide::North,
+        DoorSide::East,
+        DoorSide::West
+    };
+    for (DoorSide candidate : kFallbackOrder) {
+        if (candidate != entrySide) {
+            return candidate;
+        }
+    }
+
+    return DoorSide::South;
 }
 
 sf::Vector2i openingCenterTile(const Map& map, DoorSide side) {// Devuelve el centro de la puerta
@@ -184,7 +216,34 @@ void Room::applyConnectionTiles(bool bossGateUnlocked) {
     }
 }
 
+void Room::resolveAntechamberSides() {
+    DoorSide entrySide = DoorSide::South;
+    int primaryEntranceTarget = -1;
+
+    for (const auto& conn : connections) {
+        if (conn.isBossGate) continue;
+        if (primaryEntranceTarget < 0 ||
+            conn.targetRoomId < primaryEntranceTarget) {
+            primaryEntranceTarget = conn.targetRoomId;
+            entrySide = conn.side;
+        }
+    }
+
+    antechamberEntrySide = entrySide;
+    antechamberBossPassageSide = pickAntechamberBossPassageSide(entrySide);
+
+    std::cerr << "[BossAntechamber] EntrySide = "
+              << sideName(antechamberEntrySide)
+              << " BossGateSide = "
+              << sideName(antechamberBossPassageSide)
+              << "\n";
+}
+
 void Room::applyAntechamberConnectionTiles(bool bossGateUnlocked) {
+    if (antechamberBossPassageSide == DoorSide::None) {
+        resolveAntechamberSides();
+    }
+
     int primaryEntranceTarget = -1;
     for (const auto& conn : connections) {
         if (conn.isBossGate) continue;
@@ -196,7 +255,7 @@ void Room::applyAntechamberConnectionTiles(bool bossGateUnlocked) {
 
     for (const auto& conn : connections) {
         if (conn.isBossGate) {
-            if (conn.side != AntechamberSecretPassageSide) {
+            if (conn.side != antechamberBossPassageSide) {
                 carveEdge(conn.side, TileType::WALL);
             }
             continue;
@@ -210,7 +269,7 @@ void Room::applyAntechamberConnectionTiles(bool bossGateUnlocked) {
     }
 
     carveEdge(
-        AntechamberSecretPassageSide,
+        antechamberBossPassageSide,
         bossGateUnlocked ? TileType::OPENING : TileType::WALL
     );
 }
