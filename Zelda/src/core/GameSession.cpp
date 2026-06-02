@@ -138,6 +138,10 @@ void GameSession::run() {
         world.unlockBossGate();
     });
 
+    EventBus::instance().subscribe("enter_boss_arena", [&world, &player]() {
+        world.enterBossArena(player);
+    });
+
     MovementSystem movement;
     CombatSystem combat;
     InteractionSystem interaction;

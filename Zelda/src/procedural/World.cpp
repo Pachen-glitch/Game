@@ -153,15 +153,28 @@ void World::unlockBossGate() {
 
 
 
-    for (auto& e : entities.all()) {
+}
 
-        if (!e || !e->isActive()) continue;
 
-        if (auto* door = dynamic_cast<Door*>(e.get())) {
+bool World::enterBossArena(Player& player) {
 
-            if (door->isBossGate()) {
+    if (!bossGateUnlocked) return false;
 
-                e->deactivate();
+    if (currentRoom().type != RoomType::BossAntechamber) return false;
+
+
+
+    int targetBossId = bossRoomId;
+
+    if (targetBossId < 0) {
+
+        for (const auto& conn : currentRoom().connections) {
+
+            if (conn.isBossGate) {
+
+                targetBossId = conn.targetRoomId;
+
+                break;
 
             }
 
@@ -169,7 +182,37 @@ void World::unlockBossGate() {
 
     }
 
-    entities.removeInactive();
+    if (targetBossId < 0) return false;
+
+
+
+    const int fromRoomId = currentRoomId;
+
+    loadRoom(targetBossId);
+
+    transitionCooldown = 0.5f;
+
+
+
+    DoorSide spawnSide = DoorSide::South;
+
+    for (const auto& backConn : currentRoom().connections) {
+
+        if (backConn.targetRoomId == fromRoomId) {
+
+            spawnSide = backConn.side;
+
+            break;
+
+        }
+
+    }
+
+
+
+    player.setPosition(currentRoom().getTransitionSpawn(spawnSide));
+
+    return true;
 
 }
 
@@ -690,7 +733,7 @@ bool World::canTraverseConnection(
 
     if (conn.isBossGate) {
 
-        return bossGateUnlocked;
+        return false;
 
     }
 
@@ -734,8 +777,6 @@ bool World::tryTransition(Player& player, DoorSide& outSide) {
 
     Room& room = currentRoom();
 
-    const int fromRoomId = currentRoomId;
-
 
 
     for (const auto& conn : room.connections) {
@@ -744,15 +785,7 @@ bool World::tryTransition(Player& player, DoorSide& outSide) {
 
 
 
-        DoorSide openingSide = conn.side;
-
-        if (room.type == RoomType::BossAntechamber && conn.isBossGate) {
-
-            openingSide = room.getAntechamberBossPassageSide();
-
-        }
-
-        if (!playerAtOpening(player, room, openingSide)) continue;
+        if (!playerAtOpening(player, room, conn.side)) continue;
 
 
 
@@ -762,27 +795,9 @@ bool World::tryTransition(Player& player, DoorSide& outSide) {
 
 
 
-        DoorSide spawnSide = conn.side;
-
-        if (rooms[fromRoomId].type == RoomType::BossAntechamber && conn.isBossGate) {
-
-            for (const auto& backConn : currentRoom().connections) {
-
-                if (backConn.targetRoomId == fromRoomId && backConn.isBossGate) {
-
-                    spawnSide = backConn.side;
-
-                    break;
-
-                }
-
-            }
-
-        }
-
-
-
-        player.setPosition(currentRoom().getTransitionSpawn(spawnSide));
+        player.setPosition(
+            currentRoom().getTransitionSpawn(conn.side)
+        );
 
         outSide = conn.side;
 

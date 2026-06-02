@@ -75,6 +75,7 @@ private:
     MusicContext context = MusicContext::None;
     MusicContext pausedFromContext = MusicContext::None;
     sf::Time pausedMusicOffset = sf::Time::Zero;
+    std::string pauseMusicFile;
 
     std::vector<std::string> gameplayTracks;
     std::vector<std::string> shuffledPlaylist;

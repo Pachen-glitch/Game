@@ -116,6 +116,16 @@ void AudioManager::load() {
     music.setVolume(musicVolume);
     sfx.setVolume(sfxVolume);
 
+    pauseMusicFile = resolveExistingAudio({
+        "music/Pause.mp3",
+        "Pause.mp3",
+    });
+    if (pauseMusicFile.empty()) {
+        std::cerr << "[Audio] Pause missing\n";
+    } else {
+        std::cerr << "[Audio] Pause loaded\n";
+    }
+
     loaded = true;
 }
 
@@ -289,7 +299,12 @@ void AudioManager::playBossDeathMusic() {
 }
 
 void AudioManager::playPauseMusic() {
-    if (context == MusicContext::Pause) return;
+    if (context == MusicContext::Pause) {
+        std::cerr << "[Audio] Enter Pause (already paused, skipped)\n";
+        return;
+    }
+
+    std::cerr << "[Audio] Enter Pause\n";
 
     pausedFromContext = context;
     if (music.getStatus() == sf::Music::Playing ||
@@ -301,7 +316,20 @@ void AudioManager::playPauseMusic() {
 
     context = MusicContext::Pause;
     music.stop();
-    playMusicFile("music/Pause.mp3", true);
+
+    if (pauseMusicFile.empty()) {
+        pauseMusicFile = resolveExistingAudio({
+            "music/Pause.mp3",
+            "Pause.mp3",
+        });
+    }
+
+    if (pauseMusicFile.empty()) {
+        std::cerr << "[Audio] Pause missing\n";
+        return;
+    }
+
+    openMusic(music, pauseMusicFile, true, musicVolume);
 }
 
 void AudioManager::resumeFromPause() {
@@ -354,6 +382,9 @@ void AudioManager::resumeFromPause() {
             break;
         case MusicContext::Shop:
             enterShop();
+            break;
+        case MusicContext::Menu:
+            playMenuMusic();
             break;
         case MusicContext::GameOver:
             playGameOverMusic();

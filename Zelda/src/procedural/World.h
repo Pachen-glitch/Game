@@ -36,6 +36,7 @@ public:
     int debugKillNormalEnemies();
 
     bool tryTransition(Player& player, DoorSide& outSide);
+    bool enterBossArena(Player& player);
     void unlockBossGate();
 
 private:

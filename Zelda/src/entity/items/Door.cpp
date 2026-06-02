@@ -48,6 +48,7 @@ Door::Door(
 
 void Door::unlock() {
     if (doorKind == DoorKind::Victory) return;
+    if (!locked) return;
 
     locked = false;
     sprite.setColor(sf::Color(120, 255, 120));
@@ -73,16 +74,20 @@ bool Door::canPass() const {
 void Door::onInteract(Player& player) {
     if (doorKind == DoorKind::Victory) return;
 
-    if (!locked) return;
-
     if (doorKind == DoorKind::BossGate) {
-        if (player.getKeys() < Constants::KEYS_REQUIRED_FOR_BOSS) return;
-        for (int i = 0; i < Constants::KEYS_REQUIRED_FOR_BOSS; ++i) {
-            player.useKey();
+        if (locked) {
+            if (player.getKeys() < Constants::KEYS_REQUIRED_FOR_BOSS) return;
+            for (int i = 0; i < Constants::KEYS_REQUIRED_FOR_BOSS; ++i) {
+                player.useKey();
+            }
+            unlock();
+        } else {
+            EventBus::instance().emit("enter_boss_arena");
         }
-        unlock();
         return;
     }
+
+    if (!locked) return;
 
     if (player.getKeys() <= 0) return;
     if (player.useKey()) {

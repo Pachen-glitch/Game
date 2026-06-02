@@ -36,20 +36,11 @@ public:
 
     sf::Vector2f getBossGateWorldPos() const;
 
-    DoorSide getAntechamberEntrySide() const { return antechamberEntrySide; }
-    DoorSide getAntechamberBossPassageSide() const {
-        return antechamberBossPassageSide;
-    }
-
     bool exitsAreOpen() const;
 
 private:
-    DoorSide antechamberEntrySide = DoorSide::None;
-    DoorSide antechamberBossPassageSide = DoorSide::None;
-
     TileType charToTile(char c);
     void loadTemplate(const std::vector<std::string>& layout);
     void carveEdge(DoorSide side, TileType tile);
-    void resolveAntechamberSides();
     void applyAntechamberConnectionTiles(bool bossGateUnlocked);
 };
