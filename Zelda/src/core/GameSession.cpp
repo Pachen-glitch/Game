@@ -247,8 +247,6 @@ void GameSession::run() {
                     state = GameState::MainMenu;
                     victoryScreenReady = false;
                     AudioManager::instance().playMenuMusic();
-                } else if (action == VictoryMenuAction::ExitGame) {
-                    window.close();
                 }
             } else if (ev.type == sf::Event::KeyPressed) {
                 if (ev.key.code == sf::Keyboard::Escape) {

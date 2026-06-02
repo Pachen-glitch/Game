@@ -50,15 +50,14 @@ void GameScreens::buildPauseButtons(sf::Vector2u windowSize) {
 void GameScreens::buildVictoryButtons(sf::Vector2u windowSize) {
     victoryButtons.clear();
 
-    const float width = windowSize.x * 0.34f;
-    const float height = windowSize.y * 0.07f;
+    const float width = windowSize.x * 0.42f;
+    const float height = windowSize.y * 0.075f;
     const float left = (windowSize.x - width) * 0.5f;
-    float top = windowSize.y * 0.72f;
-    const float step = windowSize.y * 0.11f;
+    const float top = windowSize.y * 0.62f;
 
-    victoryButtons.push_back({{left, top, width, height}, "Return to Main Menu"});
-    top += step;
-    victoryButtons.push_back({{left, top, width, height}, "Exit Game"});
+    victoryButtons.push_back(
+        {{left, top, width, height}, "Volver al men\u00fa principal"}
+    );
 }
 
 void GameScreens::preparePauseMenu(sf::Vector2u windowSize) {
@@ -151,7 +150,13 @@ VictoryMenuAction GameScreens::handleVictoryEvent(
         updateVictoryMenu(mouse);
 
         if (victoryHovered == 0) return VictoryMenuAction::MainMenu;
-        if (victoryHovered == 1) return VictoryMenuAction::ExitGame;
+    }
+
+    if (event.type == sf::Event::KeyPressed) {
+        if (event.key.code == sf::Keyboard::Enter ||
+            event.key.code == sf::Keyboard::Escape) {
+            return VictoryMenuAction::MainMenu;
+        }
     }
 
     (void)window;
@@ -247,14 +252,14 @@ void GameScreens::drawVictory(sf::RenderWindow& window) {
         sf::Color(200, 200, 200)
     );
 
-    for (size_t i = 0; i < victoryButtons.size(); ++i) {
-        const auto& btn = victoryButtons[i];
-        if (static_cast<int>(i) == victoryHovered) {
+    if (!victoryButtons.empty()) {
+        const auto& btn = victoryButtons.front();
+        if (victoryHovered == 0) {
             sf::RectangleShape highlight;
             highlight.setPosition(btn.bounds.left, btn.bounds.top);
             highlight.setSize({btn.bounds.width, btn.bounds.height});
-            highlight.setFillColor(sf::Color(255, 230, 100, 70));
-            highlight.setOutlineColor(sf::Color(255, 240, 160, 140));
+            highlight.setFillColor(sf::Color(255, 230, 100, 90));
+            highlight.setOutlineColor(sf::Color(255, 240, 160, 180));
             highlight.setOutlineThickness(2.f);
             window.draw(highlight);
         }
@@ -263,8 +268,17 @@ void GameScreens::drawVictory(sf::RenderWindow& window) {
             font,
             btn.label,
             btn.bounds.top + btn.bounds.height * 0.5f,
-            26,
-            sf::Color(230, 230, 230)
+            28,
+            victoryHovered == 0 ? sf::Color::White : sf::Color(230, 230, 230)
         );
     }
+
+    drawCenteredText(
+        window,
+        font,
+        "ENTER o ESC",
+        window.getSize().y * 0.72f,
+        18,
+        sf::Color(180, 180, 180)
+    );
 }

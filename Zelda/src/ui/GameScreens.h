@@ -17,8 +17,7 @@ enum class PauseMenuAction {
 
 enum class VictoryMenuAction {
     None,
-    MainMenu,
-    ExitGame
+    MainMenu
 };
 
 class GameScreens {
