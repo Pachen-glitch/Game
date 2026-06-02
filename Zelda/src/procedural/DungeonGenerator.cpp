@@ -6,9 +6,11 @@
 
 #include <cstdlib>
 #include <ctime>
+#include <iostream>
 #include <map>
 #include <queue>
 #include <set>
+#include <vector>
 
 static int rnd(int seed, int mod) {// Genera un numero aleatorio
     if (mod <= 0) return 0;
@@ -95,7 +97,9 @@ std::vector<Room> DungeonGenerator::generate(
     if (placeBoss) {// Si se debe colocar el boss
         int bossId = assignBossRoom(rooms); // Asigna el boss a la room
         rooms[bossId].type = RoomType::Boss;
-        markBossGates(rooms, bossId); // Marca las puertas del boss
+        int antechamberId = pickBossAntechamberId(rooms, bossId);
+        markBossGates(rooms, bossId, antechamberId);
+        validateBossGeneration(rooms, bossId, antechamberId);
     }
 
     buildAllLayouts(rooms);
@@ -151,21 +155,175 @@ int DungeonGenerator::assignBossRoom(std::vector<Room>& rooms) const {// Asigna 
     return bestId;
 }
 
-void DungeonGenerator::markBossGates(std::vector<Room>& rooms, int bossRoomId) {// Marca las puertas del boss
-    for (auto& room : rooms) {
-        for (auto& conn : room.connections) {
-            if (conn.targetRoomId != bossRoomId) continue;
+namespace {
 
-            conn.isBossGate = true;
-            conn.locked = true;
+bool isEligibleAntechamber(const Room& room, int bossRoomId) {
+    return room.id != bossRoomId
+        && room.type != RoomType::Shop
+        && room.type != RoomType::Start;
+}
 
-            if (room.id != bossRoomId &&
-                room.type != RoomType::Shop &&
-                room.type != RoomType::Start) {
-                room.type = RoomType::BossAntechamber;
+int countBossGates(const std::vector<Room>& rooms) {
+    int count = 0;
+    for (const auto& room : rooms) {
+        for (const auto& conn : room.connections) {
+            if (conn.isBossGate) {
+                ++count;
             }
         }
     }
+    return count;
+}
+
+} // namespace
+
+int DungeonGenerator::pickBossAntechamberId(
+    const std::vector<Room>& rooms,
+    int bossRoomId
+) const {
+    if (rooms.empty() || bossRoomId < 0 ||
+        bossRoomId >= static_cast<int>(rooms.size())) {
+        return -1;
+    }
+
+    const int roomCount = static_cast<int>(rooms.size());
+    std::vector<int> parent(roomCount, -1);
+    std::vector<bool> visited(roomCount, false);
+    std::queue<int> frontier;
+    frontier.push(0);
+    visited[0] = true;
+
+    while (!frontier.empty()) {
+        const int roomId = frontier.front();
+        frontier.pop();
+
+        for (const auto& conn : rooms[roomId].connections) {
+            const int nextId = conn.targetRoomId;
+            if (nextId < 0 || nextId >= roomCount || visited[nextId]) {
+                continue;
+            }
+            visited[nextId] = true;
+            parent[nextId] = roomId;
+            frontier.push(nextId);
+        }
+    }
+
+    if (visited[bossRoomId]) {
+        int candidate = parent[bossRoomId];
+        while (candidate >= 0) {
+            if (isEligibleAntechamber(rooms[candidate], bossRoomId)) {
+                return candidate;
+            }
+            candidate = parent[candidate];
+        }
+    }
+
+    int fallbackId = -1;
+    int fallbackDist = -1;
+    const sf::Vector2i startPos = rooms.front().gridPos;
+
+    for (const auto& conn : rooms[bossRoomId].connections) {
+        const int neighborId = conn.targetRoomId;
+        if (neighborId < 0 || neighborId >= roomCount) continue;
+        const Room& neighbor = rooms[neighborId];
+        if (!isEligibleAntechamber(neighbor, bossRoomId)) continue;
+
+        const int dist = std::abs(neighbor.gridPos.x - startPos.x)
+            + std::abs(neighbor.gridPos.y - startPos.y);
+        if (fallbackId < 0 || dist > fallbackDist) {
+            fallbackId = neighborId;
+            fallbackDist = dist;
+        }
+    }
+
+    return fallbackId;
+}
+
+void DungeonGenerator::markBossGates(
+    std::vector<Room>& rooms,
+    int bossRoomId,
+    int antechamberId
+) {
+    if (antechamberId < 0 || antechamberId >= static_cast<int>(rooms.size())) {
+        return;
+    }
+
+    rooms[antechamberId].type = RoomType::BossAntechamber;
+
+    for (auto& conn : rooms[antechamberId].connections) {
+        if (conn.targetRoomId != bossRoomId) continue;
+
+        conn.isBossGate = true;
+        conn.locked = true;
+        break;
+    }
+}
+
+void DungeonGenerator::validateBossGeneration(
+    std::vector<Room>& rooms,
+    int bossRoomId,
+    int antechamberId
+) {
+    int bossRooms = 0;
+    int antechambers = 0;
+
+    for (auto& room : rooms) {
+        if (room.type == RoomType::Boss) {
+            ++bossRooms;
+            if (room.id != bossRoomId) {
+                room.type = RoomType::Combat;
+            }
+        } else if (room.type == RoomType::BossAntechamber) {
+            ++antechambers;
+            if (room.id != antechamberId) {
+                room.type = RoomType::Combat;
+            }
+        }
+    }
+
+    if (antechamberId >= 0 &&
+        antechamberId < static_cast<int>(rooms.size()) &&
+        rooms[antechamberId].type != RoomType::BossAntechamber) {
+        rooms[antechamberId].type = RoomType::BossAntechamber;
+    }
+
+    for (auto& room : rooms) {
+        for (auto& conn : room.connections) {
+            if (!conn.isBossGate) continue;
+
+            const bool keepGate = room.id == antechamberId
+                && conn.targetRoomId == bossRoomId;
+            if (!keepGate) {
+                conn.isBossGate = false;
+                conn.locked = false;
+            }
+        }
+    }
+
+    if (antechamberId >= 0 &&
+        antechamberId < static_cast<int>(rooms.size()) &&
+        countBossGates(rooms) == 0) {
+        for (auto& conn : rooms[antechamberId].connections) {
+            if (conn.targetRoomId != bossRoomId) continue;
+            conn.isBossGate = true;
+            conn.locked = true;
+            break;
+        }
+    }
+
+    bossRooms = 0;
+    antechambers = 0;
+    for (const auto& room : rooms) {
+        if (room.type == RoomType::Boss) ++bossRooms;
+        if (room.type == RoomType::BossAntechamber) ++antechambers;
+    }
+
+    const int bossGates = countBossGates(rooms);
+
+    std::cerr << "[Dungeon]\n"
+              << "BossRooms = " << bossRooms << "\n"
+              << "BossAntechambers = " << antechambers << "\n"
+              << "BossGates = " << bossGates << "\n";
 }
 
 void DungeonGenerator::buildAllLayouts(std::vector<Room>& rooms) {// Construye todas las layouts

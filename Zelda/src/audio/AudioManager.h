@@ -29,6 +29,9 @@ public:
     void playBossBattleMusic();
     void playBossDeathMusic();
 
+    void playPauseMusic();
+    void resumeFromPause();
+
     // --- Future special attack sounds (registered, not used yet) ---
     void playRasenganSound();
     void playOdamaSound();
@@ -48,7 +51,8 @@ private:
         BossSpawn,
         BossPreBattle,
         BossBattle,
-        BossDeath
+        BossDeath,
+        Pause
     };
 
     AudioManager() = default;
@@ -68,6 +72,8 @@ private:
     std::unordered_map<std::string, sf::SoundBuffer> soundBuffers;
 
     MusicContext context = MusicContext::None;
+    MusicContext pausedFromContext = MusicContext::None;
+    sf::Time pausedMusicOffset = sf::Time::Zero;
 
     std::vector<std::string> gameplayTracks;
     std::vector<std::string> shuffledPlaylist;

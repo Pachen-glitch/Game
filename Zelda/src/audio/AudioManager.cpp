@@ -272,6 +272,81 @@ void AudioManager::playBossDeathMusic() {
     playMusicFile("music/Naruto_Dead.mp3", false);
 }
 
+void AudioManager::playPauseMusic() {
+    if (context == MusicContext::Pause) return;
+
+    pausedFromContext = context;
+    if (music.getStatus() == sf::Music::Playing ||
+        music.getStatus() == sf::Music::Paused) {
+        pausedMusicOffset = music.getPlayingOffset();
+    } else {
+        pausedMusicOffset = sf::Time::Zero;
+    }
+
+    context = MusicContext::Pause;
+    music.stop();
+    playMusicFile("music/Pause.mp3", true);
+}
+
+void AudioManager::resumeFromPause() {
+    if (context != MusicContext::Pause) return;
+
+    const MusicContext restore = pausedFromContext;
+    const sf::Time offset = pausedMusicOffset;
+
+    music.stop();
+    context = restore;
+    pausedFromContext = MusicContext::None;
+    pausedMusicOffset = sf::Time::Zero;
+
+    switch (restore) {
+        case MusicContext::Gameplay:
+            if (shuffledPlaylist.empty()) {
+                reshuffleGameplayPlaylist();
+            }
+            if (!shuffledPlaylist.empty()) {
+                playMusicFile(shuffledPlaylist[playlistIndex], false);
+                if (offset.asMilliseconds() > 0) {
+                    music.setPlayingOffset(offset);
+                }
+            }
+            break;
+        case MusicContext::BossPreBattle:
+            context = MusicContext::None;
+            playBossPreBattleMusic();
+            if (offset.asMilliseconds() > 0) {
+                music.setPlayingOffset(offset);
+            }
+            break;
+        case MusicContext::BossBattle:
+            playBossBattleMusic();
+            if (offset.asMilliseconds() > 0) {
+                music.setPlayingOffset(offset);
+            }
+            break;
+        case MusicContext::BossSpawn:
+            playBossSpawnMusic();
+            if (offset.asMilliseconds() > 0) {
+                music.setPlayingOffset(offset);
+            }
+            break;
+        case MusicContext::BossDeath:
+            playBossDeathMusic();
+            if (offset.asMilliseconds() > 0) {
+                music.setPlayingOffset(offset);
+            }
+            break;
+        case MusicContext::Shop:
+            enterShop();
+            break;
+        case MusicContext::GameOver:
+            playGameOverMusic();
+            break;
+        default:
+            break;
+    }
+}
+
 void AudioManager::playNarutoPhaseTransitionSound() {
     if (!rasenganSfxReady) return;
     rasenganSfx.stop();

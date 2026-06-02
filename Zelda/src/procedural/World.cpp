@@ -740,7 +740,7 @@ bool World::tryTransition(Player& player, DoorSide& outSide) {
 
         if (room.type == RoomType::BossAntechamber && conn.isBossGate) {
 
-            openingSide = Room::AntechamberSecretPassageSide;
+            openingSide = room.getAntechamberBossPassageSide();
 
         }
 

@@ -236,6 +236,7 @@ void GameSession::run() {
                 PauseMenuAction action = screens.handlePauseEvent(ev, window);
                 if (action == PauseMenuAction::Resume) {
                     state = GameState::Playing;
+                    AudioManager::instance().resumeFromPause();
                 } else if (action == PauseMenuAction::MainMenu) {
                     state = GameState::MainMenu;
                     pauseMenuReady = false;
@@ -260,6 +261,7 @@ void GameSession::run() {
                             screens.preparePauseMenu(window.getSize());
                             pauseMenuReady = true;
                         }
+                        AudioManager::instance().playPauseMusic();
                     }
                 }
                 if (ev.key.code == sf::Keyboard::E &&
