@@ -19,6 +19,11 @@ private:
         int bossRoomId,
         int antechamberId
     );
+    void isolateBossRoom(
+        std::vector<Room>& rooms,
+        int bossRoomId,
+        int antechamberId
+    );
     void validateBossGeneration(
         std::vector<Room>& rooms,
         int bossRoomId,

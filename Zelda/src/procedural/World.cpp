@@ -41,6 +41,7 @@
 
 
 #include <cstdlib>
+#include <iostream>
 #include <vector>
 
 // Genera el dungeon actual
@@ -186,31 +187,13 @@ bool World::enterBossArena(Player& player) {
 
 
 
-    const int fromRoomId = currentRoomId;
-
     loadRoom(targetBossId);
 
     transitionCooldown = 0.5f;
 
 
 
-    DoorSide spawnSide = DoorSide::South;
-
-    for (const auto& backConn : currentRoom().connections) {
-
-        if (backConn.targetRoomId == fromRoomId) {
-
-            spawnSide = backConn.side;
-
-            break;
-
-        }
-
-    }
-
-
-
-    player.setPosition(currentRoom().getTransitionSpawn(spawnSide));
+    player.setPosition(currentRoom().getPlayerSpawn());
 
     return true;
 
@@ -220,15 +203,22 @@ bool World::enterBossArena(Player& player) {
 // Spawna las puertas de conexion
 void World::spawnConnectionDoors(Room& room) {
 
+    if (room.type == RoomType::BossAntechamber) {
+        const sf::Vector2f pos = room.getBossGateWorldPos();
+        const bool locked = !bossGateUnlocked;
+        entities.spawn<Door>(pos, locked, DoorKind::BossGate);
+        std::cerr << "[BossGate] Spawned at "
+                  << pos.x << "," << pos.y << "\n";
+        return;
+    }
+
     for (const auto& conn : room.connections) {
 
         if (!conn.isBossGate) continue;
 
 
 
-        sf::Vector2f pos = room.type == RoomType::BossAntechamber
-            ? room.getBossGateWorldPos()
-            : room.getOpeningWorldPos(conn.side);
+        sf::Vector2f pos = room.getOpeningWorldPos(conn.side);
 
         bool locked = !bossGateUnlocked;
 

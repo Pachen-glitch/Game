@@ -4,6 +4,7 @@
 
 #include <SFML/System/Vector2.hpp>
 
+#include <algorithm>
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
@@ -259,6 +260,35 @@ void DungeonGenerator::markBossGates(
     }
 }
 
+void DungeonGenerator::isolateBossRoom(
+    std::vector<Room>& rooms,
+    int bossRoomId,
+    int antechamberId
+) {
+    if (bossRoomId < 0 || bossRoomId >= static_cast<int>(rooms.size())) {
+        return;
+    }
+
+    rooms[bossRoomId].connections.clear();
+
+    for (auto& room : rooms) {
+        if (room.id == bossRoomId) continue;
+
+        auto& conns = room.connections;
+        conns.erase(
+            std::remove_if(
+                conns.begin(),
+                conns.end(),
+                [&](const RoomConnection& conn) {
+                    if (conn.targetRoomId != bossRoomId) return false;
+                    return !(room.id == antechamberId && conn.isBossGate);
+                }
+            ),
+            conns.end()
+        );
+    }
+}
+
 void DungeonGenerator::validateBossGeneration(
     std::vector<Room>& rooms,
     int bossRoomId,
@@ -311,6 +341,8 @@ void DungeonGenerator::validateBossGeneration(
         }
     }
 
+    isolateBossRoom(rooms, bossRoomId, antechamberId);
+
     bossRooms = 0;
     antechambers = 0;
     for (const auto& room : rooms) {
@@ -319,11 +351,16 @@ void DungeonGenerator::validateBossGeneration(
     }
 
     const int bossGates = countBossGates(rooms);
+    const int bossRoomConnections = bossRoomId >= 0 &&
+        bossRoomId < static_cast<int>(rooms.size())
+        ? static_cast<int>(rooms[bossRoomId].connections.size())
+        : -1;
 
     std::cerr << "[Dungeon]\n"
               << "BossRooms = " << bossRooms << "\n"
               << "BossAntechambers = " << antechambers << "\n"
-              << "BossGates = " << bossGates << "\n";
+              << "BossGates = " << bossGates << "\n"
+              << "BossRoomConnections = " << bossRoomConnections << "\n";
 }
 
 void DungeonGenerator::buildAllLayouts(std::vector<Room>& rooms) {// Construye todas las layouts
